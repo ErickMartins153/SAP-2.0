@@ -8,16 +8,13 @@ import { Alert, StyleSheet, View } from "react-native";
 import NavbarItem from "./NavbarItem";
 import useAuth from "@/hooks/useAuth";
 import UserAvatar from "../UI/UserAvatar";
+import { Colors } from "@/constants/Colors";
 
 export default function Navbar({ ...props }: DrawerContentComponentProps) {
   const { logout } = useAuth();
 
   function handleNavigation(destinyPage: string) {
     props.navigation.navigate(destinyPage);
-  }
-
-  function formatName(name: string) {
-    return name[0].toUpperCase() + name.slice(1);
   }
 
   function handleLogout() {
@@ -43,7 +40,7 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
           <View style={styles.avatar}>
             <UserAvatar size={144} />
             <View style={styles.userInfoSection}>
-              <Title style={styles.userInfoText}>{formatName("Usuário")}</Title>
+              <Title style={styles.userInfoText}>Usuário</Title>
               <Caption>Cargo/função</Caption>
             </View>
           </View>
@@ -53,7 +50,7 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               icon="user"
               size={50}
               onPress={handleNavigation}
-              page="Profile"
+              page="perfil"
             />
             <NavbarItem
               label="Mural"
@@ -120,10 +117,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   userInfoText: {
-    // ...GlobalStyles.defaultText,
+    textTransform: "capitalize",
     fontSize: 18,
     textAlign: "center",
-    // borderBottomColor: Colors.borderGreen,
+    borderBottomColor: Colors.border,
     borderBottomWidth: 1,
   },
   LabelStyle: {

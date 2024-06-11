@@ -6,7 +6,7 @@ import { Redirect } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Dimensions } from "react-native";
 
-export default function RootLayout() {
+export default function Layout() {
   const { user } = useAuth();
   if (!user) {
     return <Redirect href="/login" />;
@@ -39,6 +39,22 @@ export default function RootLayout() {
           drawerLabel: "Mural",
           headerTitleAlign: "center",
           drawerType: "slide",
+        }}
+      />
+      <Drawer.Screen
+        name="perfil"
+        options={{
+          title: "Perfil",
+          drawerLabel: "Perfil",
+          headerTitleAlign: "center",
+          drawerType: "slide",
+        }}
+      />
+      <Drawer.Screen
+        name="detalhesPost"
+        options={{
+          swipeEnabled: false,
+          headerShown: false,
         }}
       />
     </Drawer>

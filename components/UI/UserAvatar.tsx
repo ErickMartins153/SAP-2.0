@@ -12,7 +12,7 @@ export default function UserAvatar({ size, style }: UserAvatarProps) {
     <View style={[styles.avatarContainer, style]}>
       <Avatar.Image
         style={styles.avatar}
-        source={require("@/assets/images/DefaultAvatar.png")}
+        source={require("@/assets/images/avatar.png")}
         size={size}
       />
     </View>

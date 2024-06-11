@@ -10,6 +10,7 @@ export const Colors = {
   viridian: "#4C4C4C",
   button: "#5DA4A4",
   buttonRipple: "#64c7c7",
+  red: "#F01212",
 };
 
 StyleSheet.create({});

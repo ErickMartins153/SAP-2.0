@@ -4,6 +4,7 @@ import { Colors } from "@/constants/Colors";
 import Post from "@/interfaces/Post";
 import StyledText from "../general/StyledText";
 import Badge from "../UI/Badge";
+import { router } from "expo-router";
 
 type PostItemProps = {
   postData: Post;
@@ -16,7 +17,9 @@ export default function PostItem({ postData }: PostItemProps) {
     imageUri = postData.imagemURL;
   }
 
-  function handleShowPost() {}
+  function showPostHandler() {
+    router.navigate(`detalhesPost/${postData.id}`);
+  }
 
   return (
     <View style={styles.rootContainer}>
@@ -26,21 +29,21 @@ export default function PostItem({ postData }: PostItemProps) {
           pressed && styles.pressed,
         ]}
         android_ripple={{ color: Colors.buttonRipple }}
-        onPress={handleShowPost}
+        onPress={showPostHandler}
       >
         <View style={styles.postHeader}>
           <Badge />
           <View style={styles.dateContainer}>
-            <StyledText customStyle={styles.dateText} mode="small">
+            <StyledText style={styles.dateText} mode="small">
               {postData.horario.toLocaleString()}
             </StyledText>
           </View>
         </View>
-        <StyledText mode="big" color="text" fontWeight="bold">
+        <StyledText mode="big" color="viridian" fontWeight="bold">
           {postData.titulo}
         </StyledText>
         <View style={styles.postContent}>
-          <StyledText customStyle={styles.postText} mode="small">
+          <StyledText style={styles.postText} mode="small">
             {postData.conteudo}
           </StyledText>
         </View>
