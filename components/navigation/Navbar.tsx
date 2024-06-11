@@ -2,11 +2,12 @@ import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
-import { Drawer } from "react-native-paper";
+import { Caption, Drawer, Title } from "react-native-paper";
 
 import { Alert, StyleSheet, View } from "react-native";
 import NavbarItem from "./NavbarItem";
 import useAuth from "@/hooks/useAuth";
+import UserAvatar from "../UI/UserAvatar";
 
 export default function Navbar({ ...props }: DrawerContentComponentProps) {
   const { logout } = useAuth();
@@ -40,7 +41,11 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
       <DrawerContentScrollView {...props}>
         <View>
           <View style={styles.avatar}>
-            <View style={styles.userInfoSection}></View>
+            <UserAvatar size={144} />
+            <View style={styles.userInfoSection}>
+              <Title style={styles.userInfoText}>{formatName("Usuário")}</Title>
+              <Caption>Cargo/função</Caption>
+            </View>
           </View>
           <Drawer.Section>
             <NavbarItem
@@ -55,7 +60,7 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               icon="message-square"
               size={50}
               onPress={handleNavigation}
-              page="Home"
+              page="index"
             />
             <NavbarItem
               label="Horário"
@@ -66,7 +71,7 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
             />
 
             <NavbarItem
-              label="Gerenciar Usuários"
+              label="Gerenciar"
               icon="users"
               size={50}
               onPress={handleNavigation}

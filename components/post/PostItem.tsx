@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 import Post from "@/interfaces/Post";
 import StyledText from "../general/StyledText";
+import Badge from "../UI/Badge";
 
 type PostItemProps = {
   postData: Post;
@@ -28,19 +29,18 @@ export default function PostItem({ postData }: PostItemProps) {
         onPress={handleShowPost}
       >
         <View style={styles.postHeader}>
-          <View style={styles.userContainer}>
-            <StyledText customStyle={styles.userText}>abc</StyledText>
-          </View>
-
+          <Badge />
           <View style={styles.dateContainer}>
-            <StyledText customStyle={styles.dateText}>
+            <StyledText customStyle={styles.dateText} mode="small">
               {postData.horario.toLocaleString()}
             </StyledText>
           </View>
         </View>
+        <StyledText mode="big" color="text" fontWeight="bold">
+          {postData.titulo}
+        </StyledText>
         <View style={styles.postContent}>
-          <StyledText>{postData.titulo}</StyledText>
-          <StyledText customStyle={styles.postText}>
+          <StyledText customStyle={styles.postText} mode="small">
             {postData.conteudo}
           </StyledText>
         </View>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   rootContainer: {
     borderRadius: 8,
     elevation: 2,
-    marginVertical: "2%",
+    margin: "2%",
   },
   postContainer: {
     backgroundColor: Colors.white,
@@ -68,15 +68,7 @@ const styles = StyleSheet.create({
   postHeader: {
     flexDirection: "row",
     paddingTop: "4%",
-    paddingLeft: "4%",
     alignItems: "center",
-  },
-  userContainer: {
-    paddingVertical: "1%",
-    paddingHorizontal: "8%",
-    borderRadius: 8,
-    position: "absolute",
-    borderWidth: 1,
   },
   userText: {
     color: "white",
@@ -88,6 +80,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   postContent: {
+    flexDirection: "row",
     alignItems: "center",
   },
   image: {

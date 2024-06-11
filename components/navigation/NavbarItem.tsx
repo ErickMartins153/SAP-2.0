@@ -21,6 +21,7 @@ export default function NavbarItem({
   return (
     <DrawerItem
       label={label}
+      labelStyle={{ fontSize: 18 }}
       icon={() => <Icon name={icon} color="icon" size={size} />}
       onPress={() => onPress(page)}
     />
