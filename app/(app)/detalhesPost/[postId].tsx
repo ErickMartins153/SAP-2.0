@@ -1,10 +1,12 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import Icon from "@/components/general/Icon";
 
 import { router, useLocalSearchParams } from "expo-router";
-import Badge from "@/components/UI/Badge";
+
+import StyledText from "@/components/general/StyledText";
+import UserAvatar from "@/components/UI/UserAvatar";
 
 export default function detalhesPost() {
   const { postId } = useLocalSearchParams<{ postId: string }>();
@@ -58,14 +60,19 @@ export default function detalhesPost() {
         </View>
         <View style={styles.postContent}>
           <View style={styles.userContainer}>
-            <Badge />
+            <UserAvatar size={120} alignSelf="flex-start" />
+            <StyledText mode="title" textAlign="center" style={{ flex: 1 }}>
+              Usuário
+            </StyledText>
           </View>
         </View>
         <View style={styles.content}>
           <View style={styles.imageContainer}>
             {/* <FormattedImage path={postData.imageUri} /> */}
           </View>
-          <Text style={styles.description}>{postId} </Text>
+          <StyledText style={styles.description}>
+            {postId || "testando"}
+          </StyledText>
         </View>
         <View style={styles.submitContainer}></View>
       </View>
@@ -102,13 +109,13 @@ const styles = StyleSheet.create({
   },
   postContent: {
     paddingHorizontal: "auto",
-    marginTop: 18,
+    marginTop: "12%",
   },
   userContainer: {
-    borderWidth: 2,
     paddingLeft: "2%",
     paddingRight: "8%",
-    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
   },
   userText: {
     fontWeight: "bold",
@@ -116,16 +123,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 32,
   },
-  content: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  content: {},
   imageContainer: {},
   description: {
-    paddingVertical: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 24,
+    paddingVertical: "4%",
+    paddingHorizontal: "8%",
   },
   submitContainer: {
     flex: 1,

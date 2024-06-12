@@ -5,6 +5,7 @@ import Input from "../general/Input";
 import Button from "../general/Button";
 import useAuth from "@/hooks/useAuth";
 import { router } from "expo-router";
+import StyledText from "../general/StyledText";
 
 export default function LoginForm() {
   const [inputs, setInputs] = useState({ login: "", password: "" });
@@ -37,7 +38,9 @@ export default function LoginForm() {
             mode="password"
           />
 
-          <View style={styles.passwordTextContainer}></View>
+          <View style={styles.recoverContainer}>
+            <StyledText color="icon">Esqueci minha senha</StyledText>
+          </View>
         </View>
       </View>
       <View>
@@ -57,7 +60,7 @@ const styles = StyleSheet.create({
   passwordInput: {
     marginBottom: "2%",
   },
-  passwordTextContainer: {
+  recoverContainer: {
     alignItems: "flex-end",
   },
   invalid: {

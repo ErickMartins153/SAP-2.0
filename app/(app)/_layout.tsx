@@ -25,11 +25,16 @@ export default function Layout() {
             name="align-justify"
             color="text"
             size={32}
-            style={{ padding: "6%" }}
+            style={{ padding: "6%", marginLeft: "8%" }}
             onPress={navigation.toggleDrawer}
           />
         ),
         headerTintColor: Colors.viridian,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          textTransform: "capitalize",
+          fontSize: 24,
+        },
       })}
     >
       <Drawer.Screen
@@ -37,8 +42,6 @@ export default function Layout() {
         options={{
           title: "Mural",
           drawerLabel: "Mural",
-          headerTitleAlign: "center",
-          drawerType: "slide",
         }}
       />
       <Drawer.Screen
@@ -57,6 +60,7 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      <Drawer.Screen name="horarios" />
     </Drawer>
   );
 }

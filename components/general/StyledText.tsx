@@ -14,6 +14,7 @@ type StyledTextProps = {
   color?: keyof typeof Colors;
   textTransform?: "capitalize" | "none";
   fontWeight?: "regular" | "bold";
+  textAlign?: "center" | "auto";
 } & PropsWithoutRef<TextProps>;
 
 export default function StyledText({
@@ -23,12 +24,13 @@ export default function StyledText({
   textTransform = "none",
   fontWeight = "regular",
   style,
+  textAlign = "auto",
   ...props
 }: StyledTextProps) {
   return (
     <Text
       style={[
-        { color: Colors[color], textTransform, fontWeight },
+        { color: Colors[color], textTransform, fontWeight, textAlign },
         styles[mode],
         style,
       ]}

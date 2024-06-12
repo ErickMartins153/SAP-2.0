@@ -11,6 +11,7 @@ export const Colors = {
   button: "#5DA4A4",
   buttonRipple: "#64c7c7",
   red: "#F01212",
+  scheduleHeader: "#71c5c5",
 };
 
 StyleSheet.create({});

@@ -60,11 +60,11 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               page="index"
             />
             <NavbarItem
-              label="Horário"
+              label="Horários"
               icon="calendar"
               size={50}
               onPress={handleNavigation}
-              page="Schedule"
+              page="horarios"
             />
 
             <NavbarItem

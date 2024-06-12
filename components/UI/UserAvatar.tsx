@@ -5,11 +5,16 @@ import { Colors } from "@/constants/Colors";
 type UserAvatarProps = {
   size: number;
   style?: StyleProp<ViewProps>;
+  alignSelf?: "flex-start" | "center";
 };
 
-export default function UserAvatar({ size, style }: UserAvatarProps) {
+export default function UserAvatar({
+  size,
+  style,
+  alignSelf = "center",
+}: UserAvatarProps) {
   return (
-    <View style={[styles.avatarContainer, style]}>
+    <View style={[styles.avatarContainer, style, { alignSelf }]}>
       <Avatar.Image
         style={styles.avatar}
         source={require("@/assets/images/avatar.png")}
@@ -25,6 +30,7 @@ const styles = StyleSheet.create({
     padding: 2,
     backgroundColor: Colors.icon,
     overflow: "hidden",
+    alignSelf: "flex-start",
   },
   avatar: {
     backgroundColor: Colors.icon,

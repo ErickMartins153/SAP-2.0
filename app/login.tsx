@@ -13,13 +13,16 @@ export default function Login() {
 
   return (
     <PageLayout>
-      <View style={styles.rootContainer}>
+      <ScrollView
+        contentContainerStyle={styles.rootContainer}
+        scrollEnabled={false}
+      >
         <Image
           style={styles.image}
           source={require("@/assets/images/SAP-logo.png")}
         />
         <LoginForm />
-      </View>
+      </ScrollView>
     </PageLayout>
   );
 }
@@ -33,7 +36,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   rootContainer: {
-    flex: 1,
     alignItems: "center",
   },
   welcomeText: {

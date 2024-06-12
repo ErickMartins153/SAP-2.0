@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   },
   contentStyle: {
     marginTop: "32%",
-    marginHorizontal: "8%",
+    marginHorizontal: "4%",
     flexGrow: 1,
   },
 });
