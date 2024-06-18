@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { Colors } from "@/constants/Colors";
 import LoginForm from "@/components/form/LoginForm";
 import PageLayout from "@/components/general/PageLayout";
+import StyledText from "@/components/general/StyledText";
 
 export default function Login() {
   const [isvalid, setIsValid] = useState(true);
@@ -19,8 +20,9 @@ export default function Login() {
       >
         <Image
           style={styles.image}
-          source={require("@/assets/images/SAP-logo.png")}
+          source={require("@/assets/images/logo.png")}
         />
+
         <LoginForm />
       </ScrollView>
     </PageLayout>

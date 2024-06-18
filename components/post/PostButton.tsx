@@ -14,7 +14,7 @@ export default function PostButton() {
       <Pressable
         onPress={handleAddPost}
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-        android_ripple={{ color: Colors.buttonRipple }}
+        android_ripple={{ color: Colors.lightRipple }}
       >
         <Icon name="plus" size={64} color="white" />
       </Pressable>
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.button,
     borderWidth: 3,
-    borderColor: "#69b8b8",
+    borderColor: Colors.border,
     borderRadius: 100,
     position: "absolute",
     bottom: "3%",

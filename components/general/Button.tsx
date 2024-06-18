@@ -5,14 +5,10 @@ import StyledText from "./StyledText";
 
 type ButtonProps = {
   children: ReactNode;
-  onPress: () => void;
+  onPress?: () => void;
 } & PropsWithoutRef<PressableProps>;
 
-export default function Button({
-  children: text,
-  onPress,
-  ...rest
-}: ButtonProps) {
+export default function Button({ children, onPress, ...rest }: ButtonProps) {
   return (
     <View style={styles.externalContainer}>
       <Pressable
@@ -21,12 +17,12 @@ export default function Button({
           styles.internalContainer,
           pressed && styles.pressed,
         ]}
-        android_ripple={{ color: Colors.buttonRipple }}
+        android_ripple={{ color: Colors.darkRipple }}
         {...rest}
       >
         <View>
           <StyledText mode="big" color="white">
-            {text}
+            {children}
           </StyledText>
         </View>
       </Pressable>

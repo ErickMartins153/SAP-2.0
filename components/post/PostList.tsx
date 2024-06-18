@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FlatList } from "react-native";
 
 import Post, { POSTS } from "@/interfaces/Post";

@@ -28,7 +28,7 @@ export default function PostItem({ postData }: PostItemProps) {
           styles.postContainer,
           pressed && styles.pressed,
         ]}
-        android_ripple={{ color: Colors.buttonRipple }}
+        android_ripple={{ color: Colors.lightRipple }}
         onPress={showPostHandler}
       >
         <View style={styles.postHeader}>

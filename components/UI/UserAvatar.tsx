@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   avatar: {
-    backgroundColor: Colors.icon,
     borderRadius: 500,
   },
 });

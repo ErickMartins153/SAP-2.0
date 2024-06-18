@@ -5,6 +5,7 @@ import useAuth from "@/hooks/useAuth";
 import { Redirect } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Dimensions } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Layout() {
   const { user } = useAuth();
@@ -16,7 +17,13 @@ export default function Layout() {
     <Drawer
       drawerContent={(props) => <Navbar {...props} />}
       screenOptions={({ navigation }) => ({
-        headerTransparent: true,
+        headerStyle: {
+          backgroundColor: Colors.background,
+          height: 100,
+        },
+        headerBackgroundContainerStyle: {
+          elevation: 2,
+        },
         drawerStyle: {
           maxWidth: Dimensions.get("window").width / 1.5,
         },
@@ -60,7 +67,12 @@ export default function Layout() {
           headerShown: false,
         }}
       />
-      <Drawer.Screen name="horarios" />
+      <Drawer.Screen
+        name="horarios"
+        options={{
+          title: "Horários",
+        }}
+      />
     </Drawer>
   );
 }

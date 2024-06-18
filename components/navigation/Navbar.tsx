@@ -105,14 +105,15 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
 const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
+    backgroundColor: Colors.white,
   },
   avatar: {
     flex: 1,
-    marginTop: 16,
+    marginTop: "4%",
     alignItems: "center",
   },
   userInfoSection: {
-    marginVertical: 12,
+    marginVertical: "4%",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -120,11 +121,11 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontSize: 18,
     textAlign: "center",
-    borderBottomColor: Colors.border,
+    borderBottomColor: Colors.text,
+    color: Colors.text,
     borderBottomWidth: 1,
   },
   LabelStyle: {
-    // ...GlobalStyles.largeText,
     textAlign: "left",
   },
 });
