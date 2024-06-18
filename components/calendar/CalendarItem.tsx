@@ -6,13 +6,16 @@ type CalendarItemProps = {
   id: string | number;
   lastIndex: boolean;
   timeInterval: string;
+  available: boolean;
 };
 export default function CalendarItem({
   id,
   lastIndex,
   timeInterval,
+  available,
 }: CalendarItemProps) {
   let appliedStyle = [styles.rootContainer, styles.borderBottom];
+  let availableText = available ? "Disponivel" : "Ocupado";
   if (lastIndex) {
     appliedStyle.pop();
   }
@@ -23,6 +26,7 @@ export default function CalendarItem({
       </View>
       <Pressable
         style={({ pressed }) => [
+          available ? styles.available : styles.occupied,
           styles.appointmentContainer,
           pressed && styles.pressed,
         ]}
@@ -30,7 +34,7 @@ export default function CalendarItem({
           Alert.alert("Em breve!");
         }}
       >
-        <Text style={{ color: Colors.white, fontWeight: "bold" }}>Ocupado</Text>
+        <Text style={[styles.text]}>{availableText}</Text>
       </Pressable>
     </View>
   );
@@ -55,7 +59,19 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ff3c3c",
+  },
+  occupied: {
+    backgroundColor: Colors.red,
+  },
+  available: {
+    backgroundColor: Colors.green,
+  },
+  text: {
+    color: Colors.white,
+    fontWeight: "bold",
+  },
+  occupiedText: {
+    color: Colors.scheduleHeader,
   },
   pressed: {
     opacity: 0.85,

@@ -32,11 +32,16 @@ export default function DaySelector() {
         return (
           <View key={weekDay.formatted}>
             <Pressable
-              style={({ pressed }) => [pressed && styles.pressed]}
+              style={({ pressed }) => [
+                styles.dateContainer,
+                selectedDay === weekDay.day && styles.selectedDayContainer,
+                pressed && styles.pressed,
+              ]}
               onPress={() => handleSelectedDay(weekDay.day)}
             >
               <StyledText
                 style={[
+                  styles.text,
                   selectedDay === weekDay.day && styles.selectedDay,
                   today === weekDay.day && styles.today,
                   { textTransform: "capitalize" },
@@ -47,6 +52,7 @@ export default function DaySelector() {
               <View>
                 <StyledText
                   style={[
+                    styles.text,
                     styles.weekDayNumber,
                     selectedDay === weekDay.day && styles.selectedDay,
                   ]}
@@ -91,30 +97,30 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     elevation: 2,
   },
-  selectedDay: {
+  dateContainer: {
+    alignItems: "center",
+  },
+  text: {
     color: Colors.white,
+  },
+  selectedDay: {
     fontWeight: "bold",
   },
   weekDayNumber: {
-    color: "black",
-    padding: 6,
-    borderRadius: 99,
-    minWidth: 30,
+    padding: 4,
   },
   selectedDayContainer: {
-    color: Colors.button,
-    borderWidth: 1,
-    borderRadius: 100,
-    backgroundColor: Colors.border,
+    backgroundColor: "#705344",
+    minWidth: "14%",
+    padding: 2,
+    borderRadius: 4,
   },
   pressed: {
     opacity: 0.25,
   },
-  selectedDayText: {
-    color: Colors.white,
-  },
+  selectedDayText: {},
   today: {
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
+    borderBottomColor: Colors.white,
   },
 });

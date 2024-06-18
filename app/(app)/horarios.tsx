@@ -1,14 +1,19 @@
 import Calendar from "@/components/calendar/Calendar";
+
 import PageLayout from "@/components/general/PageLayout";
 
-import { View } from "react-native";
+import { useCallback, useState } from "react";
 
 export default function Horarios() {
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModalHandler = useCallback(() => {
+    setShowModal((prev) => !prev);
+  }, []);
+
   return (
-    <PageLayout>
-      <View style={{ flex: 1 }}>
-        <Calendar />
-      </View>
+    <PageLayout isModalVisible={showModal}>
+      <Calendar onShowModal={toggleModalHandler} />
     </PageLayout>
   );
 }

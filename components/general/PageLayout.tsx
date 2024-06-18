@@ -1,12 +1,37 @@
 import { Colors } from "@/constants/Colors";
-import { ReactNode } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { useEffect, type ReactNode } from "react";
+import { StyleSheet, View } from "react-native";
 
-export default function PageLayout({ children }: { children: ReactNode }) {
+import { useNavigation } from "expo-router";
+import Modal from "./BottomSheet";
+
+type PageLayoutProps = {
+  children: ReactNode;
+  isModalVisible?: boolean;
+};
+
+export default function PageLayout({
+  children,
+  isModalVisible = false,
+}: PageLayoutProps) {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (isModalVisible) {
+      navigation.setOptions({
+        headerLeft: () => {},
+        swipeEnabled: false,
+      });
+    }
+  }, [isModalVisible]);
+
   return (
-    <View style={styles.rootLayout}>
-      <View style={styles.contentStyle}>{children}</View>
-    </View>
+    <>
+      <View style={styles.rootLayout}>
+        <View style={styles.contentStyle}>{children}</View>
+      </View>
+      <Modal isVisible={isModalVisible} />
+    </>
   );
 }
 
@@ -16,7 +41,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   contentStyle: {
-    marginTop: "32%",
     marginHorizontal: "4%",
     flexGrow: 1,
   },
