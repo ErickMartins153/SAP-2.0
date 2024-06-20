@@ -3,34 +3,45 @@ import { useEffect, type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { useNavigation } from "expo-router";
-import Modal from "./BottomSheet";
+import Modal from "./Modal";
+import Icon from "./Icon";
+import useModal from "@/hooks/useModal";
 
 type PageLayoutProps = {
   children: ReactNode;
-  isModalVisible?: boolean;
 };
 
-export default function PageLayout({
-  children,
-  isModalVisible = false,
-}: PageLayoutProps) {
+export default function PageLayout({ children }: PageLayoutProps) {
+  const { isVisible } = useModal();
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (isModalVisible) {
+    if (isVisible) {
       navigation.setOptions({
         headerLeft: () => {},
-        swipeEnabled: false,
+      });
+    } else {
+      navigation.setOptions({
+        headerLeft: () => (
+          <Icon
+            name="align-justify"
+            color="text"
+            size={32}
+            style={{ padding: "6%", marginLeft: "8%" }}
+            // @ts-expect-error
+            onPress={navigation.toggleDrawer}
+          />
+        ),
       });
     }
-  }, [isModalVisible]);
+  }, [isVisible]);
 
   return (
     <>
       <View style={styles.rootLayout}>
         <View style={styles.contentStyle}>{children}</View>
       </View>
-      <Modal isVisible={isModalVisible} />
+      <Modal />
     </>
   );
 }

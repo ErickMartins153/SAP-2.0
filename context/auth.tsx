@@ -1,4 +1,3 @@
-import { useRouter, useSegments } from "expo-router";
 import { ReactNode, createContext, useState } from "react";
 
 interface AuthContextType {
@@ -22,9 +21,6 @@ export default function AuthContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const rootSegment = useSegments();
-  const router = useRouter();
-
   const [user, setUser] = useState<User | null>(null);
 
   function login(id: string) {

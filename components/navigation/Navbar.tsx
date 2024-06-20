@@ -77,27 +77,14 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>
-      <View
-        style={{
-          width: "100%",
-          bottom: "10%",
-        }}
-      >
-        <NavbarItem
-          label="Ajuda"
-          icon="help-circle"
-          size={50}
-          onPress={() => Alert.alert("Em breve!")}
-          page=""
-        />
-        <NavbarItem
-          label="Sair"
-          icon="power"
-          size={50}
-          onPress={handleLogout}
-          page=""
-        />
-      </View>
+
+      <NavbarItem
+        label="Sair"
+        icon="power"
+        size={50}
+        onPress={handleLogout}
+        page=""
+      />
     </View>
   );
 }

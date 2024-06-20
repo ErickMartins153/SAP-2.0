@@ -6,11 +6,19 @@ import StyledText from "./StyledText";
 type ButtonProps = {
   children: ReactNode;
   onPress?: () => void;
+  color?: keyof typeof Colors;
 } & PropsWithoutRef<PressableProps>;
 
-export default function Button({ children, onPress, ...rest }: ButtonProps) {
+export default function Button({
+  children,
+  onPress,
+  color = "button",
+  ...rest
+}: ButtonProps) {
   return (
-    <View style={styles.externalContainer}>
+    <View
+      style={[styles.externalContainer, { backgroundColor: Colors[color] }]}
+    >
       <Pressable
         onPress={onPress}
         style={({ pressed }) => [
@@ -33,7 +41,6 @@ export default function Button({ children, onPress, ...rest }: ButtonProps) {
 const styles = StyleSheet.create({
   externalContainer: {
     borderRadius: 18,
-    backgroundColor: Colors.button,
     elevation: 4,
     overflow: "hidden",
   },

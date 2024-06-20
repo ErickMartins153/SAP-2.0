@@ -15,6 +15,8 @@ export const POSTS: Post[] = [
     titulo: "Reflexões sobre a vida",
     conteudo:
       "Hoje eu gostaria de compartilhar algumas reflexões sobre a vida. Às vezes, nos encontramos em momentos de dúvida e incerteza, mas é importante lembrar que esses momentos são parte de nossa jornada. Cada desafio que enfrentamos nos ajuda a crescer e a nos tornar pessoas mais fortes. É fundamental manter a fé e a esperança, mesmo nos dias mais sombrios, pois o sol sempre volta a brilhar.",
+    imagemURL:
+      "https://img.freepik.com/fotos-premium/cachorro-pug-engracado-dando-sua-pata-e-usando-um-chapeu-de-feliz-aniversario-na-cor-rosa_273003-4071.jpg",
   },
   {
     id: "125",
@@ -23,6 +25,8 @@ export const POSTS: Post[] = [
     titulo: "A importância da educação",
     conteudo:
       "A educação é a base para o desenvolvimento de qualquer sociedade. Investir em educação é investir no futuro. Através do conhecimento, podemos transformar realidades, combater a desigualdade e promover a justiça social. É crucial que todos tenham acesso a uma educação de qualidade, pois somente assim conseguiremos construir um mundo mais justo e igualitário.",
+    imagemURL:
+      "https://i.pinimg.com/564x/df/1e/73/df1e7348e82c484d59c3b55c6034414c.jpg",
   },
   {
     id: "126",
@@ -31,6 +35,8 @@ export const POSTS: Post[] = [
     titulo: "A magia da leitura",
     conteudo:
       "Ler é viajar sem sair do lugar. Através dos livros, podemos conhecer diferentes culturas, aprender sobre a história, explorar novos mundos e expandir nossa imaginação. A leitura é uma ferramenta poderosa que nos permite adquirir conhecimento e desenvolver empatia. Nunca subestime o poder de um bom livro!",
+    imagemURL:
+      "https://i.pinimg.com/564x/4a/aa/98/4aaa9861a37fe2d7ffa95530c0fa5509.jpg",
   },
   {
     id: "127",
@@ -39,6 +45,8 @@ export const POSTS: Post[] = [
     titulo: "Tecnologia e futuro",
     conteudo:
       "Vivemos em uma era de avanços tecnológicos incríveis. A cada dia, novas inovações surgem, transformando a maneira como vivemos e trabalhamos. Desde a inteligência artificial até a biotecnologia, a tecnologia está moldando o futuro de formas que nunca imaginamos. É essencial que nos mantenhamos atualizados e abertos às mudanças, para que possamos aproveitar ao máximo as oportunidades que essas inovações trazem.",
+    imagemURL:
+      "https://i.pinimg.com/564x/9e/65/f8/9e65f88667f8357ac12b030435e18e54.jpg",
   },
   {
     id: "128",
@@ -47,6 +55,8 @@ export const POSTS: Post[] = [
     titulo: "Sustentabilidade e meio ambiente",
     conteudo:
       "A sustentabilidade é um tema crucial nos dias de hoje. Precisamos cuidar do nosso planeta e garantir que ele seja um lugar saudável para as futuras gerações. Pequenas ações, como reduzir o consumo de plástico, reciclar e economizar água, podem fazer uma grande diferença. Cada um de nós tem um papel importante na preservação do meio ambiente. Vamos fazer nossa parte!",
+    imagemURL:
+      "https://i.pinimg.com/564x/53/6e/65/536e657c2135e7debd6f6fd4b3ecca70.jpg",
   },
   {
     id: "129",
@@ -55,6 +65,8 @@ export const POSTS: Post[] = [
     titulo: "A importância da saúde mental",
     conteudo:
       "Cuidar da saúde mental é tão importante quanto cuidar da saúde física. Vivemos em um mundo acelerado e cheio de pressões, o que pode afetar nosso bem-estar emocional. É essencial tirar um tempo para relaxar, praticar atividades que gostamos e buscar ajuda quando necessário. A terapia é uma ferramenta valiosa que pode nos ajudar a lidar com os desafios da vida e a encontrar equilíbrio.",
+    imagemURL:
+      "https://i.pinimg.com/564x/f4/85/3a/f4853a553e797ab43c4914d5a27dddc0.jpg",
   },
   {
     id: "130",

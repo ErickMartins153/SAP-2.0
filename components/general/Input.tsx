@@ -18,7 +18,7 @@ export default function Input({
   changeText: onChangeText,
   placeholder,
   value,
-  maxLength,
+  maxLength = 32,
   mode,
   field,
   ...rest
@@ -34,7 +34,7 @@ export default function Input({
   }
 
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, rest.style]}>
       <TextInput
         style={styles.input}
         placeholder={placeholder}
@@ -43,7 +43,7 @@ export default function Input({
         autoComplete="off"
         autoCorrect={false}
         secureTextEntry={mode === "password" && !hide}
-        maxLength={32}
+        maxLength={maxLength}
         value={value}
         onChangeText={changeTextHandler}
         {...rest}
