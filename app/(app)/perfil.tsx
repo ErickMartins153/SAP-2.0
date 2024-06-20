@@ -4,6 +4,7 @@ import { Colors } from "@/constants/Colors";
 import UserAvatar from "@/components/UI/UserAvatar";
 import Button from "@/components/general/Button";
 import StyledText from "@/components/general/StyledText";
+import MainPageLayout from "@/components/layouts/MainPageLayout";
 
 export default function ProfileScreen() {
   function handleEdit() {
@@ -11,28 +12,26 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={styles.rootContainer}>
-      <View style={styles.contentContainer}>
-        <View style={styles.userContainer}>
-          <UserAvatar size={144} />
-          <StyledText fontWeight="bold" textTransform="capitalize">
-            Usuário
-          </StyledText>
-          <StyledText>(Ele/Dele)</StyledText>
-          <View style={styles.buttonsContainer}>
-            <Button style={styles.button} onPress={() => {}}>
-              Dados pessoais
-            </Button>
-            <Button style={styles.button} onPress={() => {}}>
-              Segurança e Privacidade
-            </Button>
-            <Button style={styles.button} onPress={() => {}}>
-              Estatísticas
-            </Button>
-          </View>
+    <MainPageLayout>
+      <View style={styles.userContainer}>
+        <UserAvatar size={144} />
+        <StyledText fontWeight="bold" textTransform="capitalize">
+          Usuário
+        </StyledText>
+        <StyledText>(Ele/Dele)</StyledText>
+        <View style={styles.buttonsContainer}>
+          <Button style={styles.button} onPress={() => {}}>
+            Dados pessoais
+          </Button>
+          <Button style={styles.button} onPress={() => {}}>
+            Segurança e Privacidade
+          </Button>
+          <Button style={styles.button} onPress={() => {}}>
+            Estatísticas
+          </Button>
         </View>
       </View>
-    </View>
+    </MainPageLayout>
   );
 }
 

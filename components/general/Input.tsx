@@ -9,9 +9,7 @@ type InputProps = {
   mode?: "password";
   maxLength?: number;
   value: string;
-  field: string;
-
-  changeText: (text: string, field: string) => void;
+  changeText: (text: string) => void;
 } & PropsWithoutRef<TextInputProps>;
 
 export default function Input({
@@ -20,7 +18,6 @@ export default function Input({
   value,
   maxLength = 32,
   mode,
-  field,
   ...rest
 }: InputProps) {
   const [hide, setHide] = useState(false);
@@ -30,7 +27,7 @@ export default function Input({
   }
 
   function changeTextHandler(text: string) {
-    onChangeText(text, field);
+    onChangeText(text);
   }
 
   return (
@@ -49,11 +46,7 @@ export default function Input({
         {...rest}
       />
       {mode === "password" && (
-        <Icon
-          name={hide ? "eye-off" : "eye"}
-          color="viridian"
-          onPress={hideHandler}
-        />
+        <Icon name={hide ? "eye-off" : "eye"} onPress={hideHandler} />
       )}
     </View>
   );
@@ -65,10 +58,12 @@ const styles = StyleSheet.create({
     padding: "4%",
     marginVertical: "6%",
     backgroundColor: Colors.white,
-    borderColor: "#5F9F62",
+    borderColor: Colors.border,
     borderWidth: 1,
     borderRadius: 6,
     elevation: 2,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   icon: {
     justifyContent: "center",
@@ -76,7 +71,7 @@ const styles = StyleSheet.create({
     padding: "2%",
   },
   input: {
-    minWidth: "72%",
+    width: "100%",
     textAlign: "justify",
     fontSize: 16,
   },

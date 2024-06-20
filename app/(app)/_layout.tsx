@@ -36,7 +36,7 @@ export default function Layout() {
             onPress={navigation.toggleDrawer}
           />
         ),
-        headerTintColor: Colors.viridian,
+        headerTintColor: Colors.text,
         headerTitleAlign: "center",
         headerTitleStyle: {
           textTransform: "capitalize",
@@ -58,7 +58,6 @@ export default function Layout() {
           title: "Perfil",
           drawerLabel: "Perfil",
           headerTitleAlign: "center",
-          drawerType: "slide",
         }}
       />
       <Drawer.Screen

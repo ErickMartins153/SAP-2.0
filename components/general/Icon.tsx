@@ -14,7 +14,7 @@ export type IconProps = {
 export default function Icon({
   name,
   size = 24,
-  color,
+  color = "icon",
   onPress,
   style,
   showBg = false,
@@ -24,7 +24,7 @@ export default function Icon({
       <Feather
         name={name}
         size={size}
-        color={color ? Colors[color] : Colors["viridian"]}
+        color={Colors[color]}
         onPress={onPress}
         style={{ zIndex: 10 }}
       />

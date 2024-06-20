@@ -7,16 +7,21 @@ import useAuth from "@/hooks/useAuth";
 import { router } from "expo-router";
 import StyledText from "../general/StyledText";
 
+type LoginContent = {
+  email: string;
+  senha: string;
+};
+
 export default function LoginForm() {
-  const [inputs, setInputs] = useState({ login: "", password: "" });
+  const [inputs, setInputs] = useState<LoginContent>({ email: "", senha: "" });
   const { login } = useAuth();
 
-  function InputChangeHandler(text: string, field: string) {
+  function InputChangeHandler(field: keyof LoginContent, text: string) {
     setInputs((prevInput) => ({ ...prevInput, [field]: text }));
   }
 
   function onSubmitHandler() {
-    login(inputs.login);
+    login(inputs.email);
     router.replace("/");
   }
 
@@ -25,16 +30,15 @@ export default function LoginForm() {
       <View style={styles.inputContainer}>
         <Input
           placeholder="email@upe.br"
-          changeText={InputChangeHandler}
-          field="login"
-          value={inputs.login}
+          changeText={InputChangeHandler.bind(null, "email")}
+          value={inputs.email}
         />
         <View style={styles.passwordContainer}>
           <Input
-            changeText={InputChangeHandler}
-            field="password"
+            changeText={InputChangeHandler.bind(null, "senha")}
             placeholder="Digite sua senha"
-            value={inputs.password}
+            style={styles.passwordInput}
+            value={inputs.senha}
             mode="password"
           />
 

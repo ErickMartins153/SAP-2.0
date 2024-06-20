@@ -2,7 +2,7 @@ import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useContext, useState } from "react";
 import { Colors } from "@/constants/Colors";
 import LoginForm from "@/components/form/LoginForm";
-import PageLayout from "@/components/general/PageLayout";
+import MainPageLayout from "@/components/layouts/MainPageLayout";
 import StyledText from "@/components/general/StyledText";
 
 export default function Login() {
@@ -13,10 +13,11 @@ export default function Login() {
   }
 
   return (
-    <PageLayout>
+    <MainPageLayout>
       <ScrollView
         contentContainerStyle={styles.rootContainer}
         scrollEnabled={false}
+        keyboardShouldPersistTaps="handled"
       >
         <Image
           style={styles.image}
@@ -25,7 +26,7 @@ export default function Login() {
 
         <LoginForm />
       </ScrollView>
-    </PageLayout>
+    </MainPageLayout>
   );
 }
 

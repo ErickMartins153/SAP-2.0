@@ -19,7 +19,6 @@ export default function CommentList() {
       </StyledText>
       <View style={styles.form}>
         <Input
-          field=""
           placeholder="Insira seu comentário aqui"
           multiline
           autoCapitalize="sentences"

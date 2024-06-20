@@ -25,6 +25,7 @@ import { FUNCIONARIOS } from "@/interfaces/Funcionario";
 import useModal from "@/hooks/useModal";
 import CommentModal from "@/components/comentario/CommentModal";
 import Button from "@/components/general/Button";
+import StackPageLayout from "@/components/layouts/StackPageLayout";
 
 export default function detalhesPost() {
   const { postId } = useLocalSearchParams<{ postId: string }>();
@@ -82,106 +83,43 @@ export default function detalhesPost() {
     );
   }
 
-  function goBackHandler() {
-    router.navigate("(app)");
-  }
-
-  function reportHandler() {
-    Alert.alert("Confirmar denúncia?", "", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Confirmar",
-        style: "destructive",
-      },
-    ]);
-  }
-
   function deleteHandler(id: string) {}
 
   return (
-    <View style={styles.rootContainer}>
-      <View style={styles.contentContainer}>
-        <View style={styles.headerIcons}>
-          <Icon
-            name="corner-down-left"
-            size={32}
-            style={styles.icon}
-            onPress={goBackHandler}
-          />
-
-          <Icon
-            name="trash-2"
-            color="red"
-            size={32}
-            style={styles.icon}
-            onPress={reportHandler}
-          />
-        </View>
-        <View style={styles.postContent}>
-          <View style={styles.userContainer}>
-            <UserAvatar size={64} alignSelf="flex-start" />
-            <StyledText
-              mode="title"
-              style={{ marginHorizontal: "4%", flex: 1 }}
-            >
-              {`${selectedUser?.nome} ${selectedUser?.sobrenome}`}
-            </StyledText>
-          </View>
-        </View>
-        <ScrollView contentContainerStyle={styles.description}>
-          <StyledText mode="title" fontWeight="bold">
-            {selectedPost?.titulo}
+    <StackPageLayout HeadRight={<Icon name="trash-2" color="red" size={32} />}>
+      <View style={styles.postContent}>
+        <View style={styles.userContainer}>
+          <UserAvatar size={64} alignSelf="flex-start" />
+          <StyledText mode="title" style={{ marginHorizontal: "4%", flex: 1 }}>
+            {`${selectedUser?.nome} ${selectedUser?.sobrenome}`}
           </StyledText>
-          <ImageBackground
-            resizeMode="cover"
-            style={styles.imageContainer}
-            imageStyle={styles.image}
-            source={{
-              uri: selectedPost?.imagemURL,
-            }}
-          />
-
-          <StyledText>{selectedPost?.conteudo}</StyledText>
-        </ScrollView>
-
-        <View style={{ borderTopWidth: 1, paddingTop: "8%" }}>
-          <Button onPress={openModal}>Ver comentários</Button>
         </View>
-        <View style={styles.submitContainer}></View>
       </View>
-    </View>
+      <ScrollView contentContainerStyle={styles.description}>
+        <StyledText mode="title" fontWeight="bold">
+          {selectedPost?.titulo}
+        </StyledText>
+        <ImageBackground
+          resizeMode="cover"
+          style={styles.imageContainer}
+          imageStyle={styles.image}
+          source={{
+            uri: selectedPost?.imagemURL,
+          }}
+        />
+
+        <StyledText>{selectedPost?.conteudo}</StyledText>
+      </ScrollView>
+
+      <View style={{ borderTopWidth: 1, paddingTop: "8%" }}>
+        <Button onPress={openModal}>Ver comentários</Button>
+      </View>
+      <View style={styles.submitContainer}></View>
+    </StackPageLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  rootContainer: {
-    flex: 1,
-    paddingTop: "12%",
-    paddingBottom: "2%",
-    backgroundColor: Colors.background,
-    alignItems: "center",
-  },
-  contentContainer: {
-    flex: 1,
-    marginVertical: "2%",
-    width: "90%",
-    borderWidth: 1,
-    backgroundColor: Colors.white,
-    elevation: 4,
-    borderRadius: 20,
-    paddingLeft: "2%",
-    paddingRight: "2%",
-  },
-  headerIcons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  icon: {
-    marginLeft: 0,
-    marginTop: "2%",
-  },
   postContent: {
     marginTop: "8%",
   },

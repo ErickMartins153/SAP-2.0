@@ -3,14 +3,14 @@ import { useEffect, type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { useNavigation } from "expo-router";
-import Icon from "./Icon";
+import Icon from "../general/Icon";
 import useModal from "@/hooks/useModal";
 
 type PageLayoutProps = {
   children: ReactNode;
 };
 
-export default function PageLayout({ children }: PageLayoutProps) {
+export default function MainPageLayout({ children }: PageLayoutProps) {
   const { isVisible } = useModal();
   const navigation = useNavigation();
 

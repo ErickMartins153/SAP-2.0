@@ -1,6 +1,6 @@
 import Calendar from "@/components/horario/Calendar";
 
-import PageLayout from "@/components/general/PageLayout";
+import MainPageLayout from "@/components/layouts/MainPageLayout";
 import useModal from "@/hooks/useModal";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useEffect, useLayoutEffect } from "react";
@@ -43,8 +43,8 @@ export default function Horarios() {
   );
 
   return (
-    <PageLayout>
+    <MainPageLayout>
       <Calendar />
-    </PageLayout>
+    </MainPageLayout>
   );
 }

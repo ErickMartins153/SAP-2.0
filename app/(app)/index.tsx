@@ -1,15 +1,24 @@
-import PageLayout from "@/components/general/PageLayout";
+import MainPageLayout from "@/components/layouts/MainPageLayout";
+import AddPost from "@/components/post/AddPost";
 import PostButton from "@/components/post/PostButton";
 import PostList from "@/components/post/PostList";
+import { useState } from "react";
 import { View } from "react-native";
 
 export default function Mural() {
+  const [showPostModal, setShowPostModal] = useState(false);
+
+  function togglePostModal() {
+    setShowPostModal((prev) => !prev);
+  }
+
   return (
-    <PageLayout>
+    <MainPageLayout>
       <View>
         <PostList />
+        <AddPost visible={showPostModal} toggleModal={togglePostModal} />
       </View>
-      <PostButton />
-    </PageLayout>
+      <PostButton addPostHandler={togglePostModal} />
+    </MainPageLayout>
   );
 }
