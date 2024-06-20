@@ -1,11 +1,10 @@
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
-  BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
 import { useEffect, useMemo, useRef } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import useModal from "@/hooks/useModal";
 
 import { Easing } from "react-native-reanimated";
@@ -52,7 +51,7 @@ export default function Modal() {
       enablePanDownToClose
       onClose={closeModal}
     >
-      <BottomSheetView>{modalContent}</BottomSheetView>
+      {modalContent}
     </BottomSheet>
   );
 }

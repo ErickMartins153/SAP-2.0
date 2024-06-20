@@ -42,6 +42,7 @@ export default function Layout() {
           textTransform: "capitalize",
           fontSize: 24,
         },
+        unmountOnBlur: true,
       })}
     >
       <Drawer.Screen

@@ -3,6 +3,7 @@ import StyledText from "../general/StyledText";
 import Sala, { SALAS, TipoSala } from "@/interfaces/Sala";
 import Button from "../general/Button";
 import useModal from "@/hooks/useModal";
+import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
 export default function RoomModal() {
   const { onSelectValue } = useModal();
@@ -19,17 +20,17 @@ export default function RoomModal() {
   }
 
   return (
-    <>
-      <StyledText mode="title" textAlign="center" fontWeight="bold">
-        Salas
-      </StyledText>
-      <FlatList
-        data={SALAS}
-        renderItem={({ item }) => renderSalaHandler(item)}
-        keyExtractor={({ idSala }) => idSala}
-        contentContainerStyle={styles.items}
-      />
-    </>
+    <BottomSheetFlatList
+      ListHeaderComponent={
+        <StyledText mode="title" textAlign="center" fontWeight="bold">
+          Salas
+        </StyledText>
+      }
+      data={SALAS}
+      renderItem={({ item }) => renderSalaHandler(item)}
+      keyExtractor={({ idSala }) => idSala}
+      contentContainerStyle={styles.items}
+    ></BottomSheetFlatList>
   );
 }
 

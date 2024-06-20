@@ -50,6 +50,7 @@ export default function ModalContextProvider({
   function clear() {
     setIsVisible(false);
     setSelectedValue(undefined);
+    setModalContent(null);
   }
 
   const value: ModalContextType = {

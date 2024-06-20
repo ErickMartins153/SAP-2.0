@@ -4,15 +4,9 @@ import StyledText from "../general/StyledText";
 import Icon from "../general/Icon";
 import { Colors } from "@/constants/Colors";
 import useModal from "@/hooks/useModal";
-import { useLayoutEffect } from "react";
-import RoomModal from "./roomModal";
 
 export default function RoomSelector() {
-  const { openModal, selectedValue, changeModalContent } = useModal();
-
-  useLayoutEffect(() => {
-    changeModalContent(<RoomModal />);
-  }, []);
+  const { openModal, selectedValue } = useModal();
 
   return (
     <Pressable

@@ -20,7 +20,7 @@ import {
 import StyledText from "@/components/general/StyledText";
 import UserAvatar from "@/components/UI/UserAvatar";
 import { POSTS } from "@/interfaces/Post";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useLayoutEffect } from "react";
 import { FUNCIONARIOS } from "@/interfaces/Funcionario";
 import useModal from "@/hooks/useModal";
 import CommentModal from "@/components/comentario/CommentModal";
@@ -34,25 +34,38 @@ export default function detalhesPost() {
   );
 
   const navigation = useNavigation();
-  const { changeModalContent, openModal } = useModal();
+  const { changeModalContent, openModal, isVisible, closeModal, clear } =
+    useModal();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     changeModalContent(<CommentModal />);
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("blur", (e) => {
+      clear();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useFocusEffect(
     useCallback(() => {
       function onBackPress() {
-        router.navigate("(app)");
-
-        return true;
+        if (isVisible) {
+          closeModal();
+          return true;
+        } else {
+          router.navigate("(app)");
+          return true;
+        }
       }
 
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
       return () =>
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    }, [navigation])
+    }, [isVisible, closeModal])
   );
 
   function handleDelete() {
@@ -115,20 +128,19 @@ export default function detalhesPost() {
             </StyledText>
           </View>
         </View>
-
-        <StyledText mode="title" fontWeight="bold">
-          {selectedPost?.titulo}
-        </StyledText>
-        <ImageBackground
-          resizeMode="cover"
-          style={styles.imageContainer}
-          imageStyle={styles.image}
-          source={{
-            uri: selectedPost?.imagemURL,
-          }}
-        />
-
         <ScrollView contentContainerStyle={styles.description}>
+          <StyledText mode="title" fontWeight="bold">
+            {selectedPost?.titulo}
+          </StyledText>
+          <ImageBackground
+            resizeMode="cover"
+            style={styles.imageContainer}
+            imageStyle={styles.image}
+            source={{
+              uri: selectedPost?.imagemURL,
+            }}
+          />
+
           <StyledText>{selectedPost?.conteudo}</StyledText>
         </ScrollView>
 

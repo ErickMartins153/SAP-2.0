@@ -3,7 +3,6 @@ import { useEffect, type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { useNavigation } from "expo-router";
-
 import Icon from "./Icon";
 import useModal from "@/hooks/useModal";
 
