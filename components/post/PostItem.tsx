@@ -5,12 +5,27 @@ import Post from "@/interfaces/Post";
 import StyledText from "../general/StyledText";
 import Badge from "../UI/Badge";
 import { router } from "expo-router";
+import { FUNCIONARIOS } from "@/interfaces/Funcionario";
 
 type PostItemProps = {
   postData: Post;
 };
 
+function formatText(text: string, maxLength: number) {
+  if (text.length <= maxLength) return text;
+
+  const truncated = text.substring(0, maxLength);
+  const lastSpaceIndex = truncated.lastIndexOf(" ");
+
+  if (lastSpaceIndex === -1) return truncated + "...";
+
+  return truncated.substring(0, lastSpaceIndex) + "...";
+}
+
 export default function PostItem({ postData }: PostItemProps) {
+  const selectedUser = FUNCIONARIOS.find(
+    (funcionario) => funcionario.id === postData?.idAutor
+  )!;
   let imageUri: string;
 
   if (postData.imagemURL) {
@@ -32,7 +47,7 @@ export default function PostItem({ postData }: PostItemProps) {
         onPress={showPostHandler}
       >
         <View style={styles.postHeader}>
-          <Badge />
+          <Badge label={selectedUser?.nome} />
           <View style={styles.dateContainer}>
             <StyledText style={styles.dateText} mode="small">
               {postData.horario.toLocaleString()}
@@ -44,7 +59,7 @@ export default function PostItem({ postData }: PostItemProps) {
         </StyledText>
         <View style={styles.postContent}>
           <StyledText style={styles.postText} mode="small">
-            {postData.conteudo}
+            {formatText(postData.conteudo, 360)}
           </StyledText>
         </View>
       </Pressable>

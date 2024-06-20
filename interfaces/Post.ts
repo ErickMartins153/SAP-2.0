@@ -1,6 +1,6 @@
 export default interface Post {
   id: string;
-  autor: string;
+  idAutor: string;
   horario: Date;
   titulo: string;
   imagemURL?: string;
@@ -10,17 +10,17 @@ export default interface Post {
 export const POSTS: Post[] = [
   {
     id: "124",
-    autor: "Alice",
+    idAutor: "1",
     horario: new Date(),
     titulo: "Reflexões sobre a vida",
     conteudo:
-      "Hoje eu gostaria de compartilhar algumas reflexões sobre a vida. Às vezes, nos encontramos em momentos de dúvida e incerteza, mas é importante lembrar que esses momentos são parte de nossa jornada. Cada desafio que enfrentamos nos ajuda a crescer e a nos tornar pessoas mais fortes. É fundamental manter a fé e a esperança, mesmo nos dias mais sombrios, pois o sol sempre volta a brilhar.",
+      "Hoje eu gostaria de compartilhar algumas reflexões sobre a vida. Às vezes, nos encontramos em momentos de dúvida e incerteza, mas é importante lembrar que esses momentos são parte de nossa jornada. Cada desafio que enfrentamos nos ajuda a crescer e a nos tornar pessoas mais fortes. É fundamental manter a fé e a esperança, mesmo nos dias mais sombrios, pois o sol sempre volta a brilhar. Hoje eu gostaria de compartilhar algumas reflexões sobre a vida. Às vezes, nos encontramos em momentos de dúvida e incerteza, mas é importante lembrar que esses momentos são parte de nossa jornada. Cada desafio que enfrentamos nos ajuda a crescer e a nos tornar pessoas mais fortes. É fundamental manter a fé e a esperança, mesmo nos dias mais sombrios, pois o sol sempre volta a brilhar.",
     imagemURL:
       "https://img.freepik.com/fotos-premium/cachorro-pug-engracado-dando-sua-pata-e-usando-um-chapeu-de-feliz-aniversario-na-cor-rosa_273003-4071.jpg",
   },
   {
     id: "125",
-    autor: "Bruno",
+    idAutor: "2",
     horario: new Date(),
     titulo: "A importância da educação",
     conteudo:
@@ -30,7 +30,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "126",
-    autor: "Carla",
+    idAutor: "3",
     horario: new Date(),
     titulo: "A magia da leitura",
     conteudo:
@@ -40,7 +40,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "127",
-    autor: "Daniel",
+    idAutor: "4",
     horario: new Date(),
     titulo: "Tecnologia e futuro",
     conteudo:
@@ -50,7 +50,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "128",
-    autor: "Eduarda",
+    idAutor: "5",
     horario: new Date(),
     titulo: "Sustentabilidade e meio ambiente",
     conteudo:
@@ -60,7 +60,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "129",
-    autor: "Fernando",
+    idAutor: "1",
     horario: new Date(),
     titulo: "A importância da saúde mental",
     conteudo:
@@ -70,7 +70,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "130",
-    autor: "Gabriela",
+    idAutor: "6",
     horario: new Date(),
     titulo: "O poder da música",
     conteudo:
@@ -78,7 +78,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "131",
-    autor: "Henrique",
+    idAutor: "7",
     horario: new Date(),
     titulo: "Viagens e descobertas",
     conteudo:

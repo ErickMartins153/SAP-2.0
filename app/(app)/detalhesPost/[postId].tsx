@@ -20,14 +20,25 @@ import {
 import StyledText from "@/components/general/StyledText";
 import UserAvatar from "@/components/UI/UserAvatar";
 import { POSTS } from "@/interfaces/Post";
-import { useCallback } from "react";
-import Input from "@/components/general/Input";
-import CommentList from "@/components/post/CommentList";
+import { useCallback, useEffect } from "react";
+import { FUNCIONARIOS } from "@/interfaces/Funcionario";
+import useModal from "@/hooks/useModal";
+import CommentModal from "@/components/comentario/CommentModal";
+import Button from "@/components/general/Button";
 
 export default function detalhesPost() {
   const { postId } = useLocalSearchParams<{ postId: string }>();
   const selectedPost = POSTS.find((post) => post.id === postId);
+  const selectedUser = FUNCIONARIOS.find(
+    (funcionario) => funcionario.id === selectedPost?.idAutor
+  );
+
   const navigation = useNavigation();
+  const { changeModalContent, openModal } = useModal();
+
+  useEffect(() => {
+    changeModalContent(<CommentModal />);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -100,30 +111,30 @@ export default function detalhesPost() {
               mode="title"
               style={{ marginHorizontal: "4%", flex: 1 }}
             >
-              {selectedPost?.autor}
+              {`${selectedUser?.nome} ${selectedUser?.sobrenome}`}
             </StyledText>
           </View>
         </View>
-        <ScrollView
-          contentContainerStyle={{ marginVertical: "4%", minHeight: "100%" }}
-          nestedScrollEnabled
-        >
-          <StyledText mode="title" fontWeight="bold">
-            {selectedPost?.titulo}
-          </StyledText>
-          <ImageBackground
-            resizeMode="cover"
-            style={styles.imageContainer}
-            imageStyle={styles.image}
-            source={{
-              uri: selectedPost?.imagemURL,
-            }}
-          />
-          <View style={styles.description}>
-            <StyledText>{selectedPost?.conteudo}</StyledText>
-          </View>
-          <CommentList />
+
+        <StyledText mode="title" fontWeight="bold">
+          {selectedPost?.titulo}
+        </StyledText>
+        <ImageBackground
+          resizeMode="cover"
+          style={styles.imageContainer}
+          imageStyle={styles.image}
+          source={{
+            uri: selectedPost?.imagemURL,
+          }}
+        />
+
+        <ScrollView contentContainerStyle={styles.description}>
+          <StyledText>{selectedPost?.conteudo}</StyledText>
         </ScrollView>
+
+        <View style={{ borderTopWidth: 1, paddingTop: "8%" }}>
+          <Button onPress={openModal}>Ver comentários</Button>
+        </View>
         <View style={styles.submitContainer}></View>
       </View>
     </View>
@@ -190,7 +201,6 @@ const styles = StyleSheet.create({
   },
   description: {
     paddingBottom: "4%",
-    borderBottomWidth: 1,
   },
   submitContainer: {
     flex: 1,
