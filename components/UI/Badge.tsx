@@ -3,11 +3,15 @@ import StyledText from "../general/StyledText";
 import UserAvatar from "./UserAvatar";
 import { Colors } from "@/constants/Colors";
 
-export default function Badge() {
+type BadgeProps = {
+  label: string;
+};
+
+export default function Badge({ label }: BadgeProps) {
   return (
     <>
       <View style={styles.userContainer}>
-        <StyledText color="white">Usuário</StyledText>
+        <StyledText color="white">{label}</StyledText>
       </View>
       <UserAvatar size={64} />
     </>

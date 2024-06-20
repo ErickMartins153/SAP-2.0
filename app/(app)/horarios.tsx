@@ -1,4 +1,4 @@
-import Calendar from "@/components/calendar/Calendar";
+import Calendar from "@/components/horario/Calendar";
 
 import PageLayout from "@/components/general/PageLayout";
 import useModal from "@/hooks/useModal";

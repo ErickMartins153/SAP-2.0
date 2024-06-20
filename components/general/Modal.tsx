@@ -5,11 +5,9 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 
 import { useEffect, useMemo, useRef } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import useModal from "@/hooks/useModal";
-import Button from "./Button";
-import Sala, { SALAS, TipoSala } from "@/interfaces/Sala";
-import StyledText from "./StyledText";
+
 import { Easing } from "react-native-reanimated";
 import { Colors } from "@/constants/Colors";
 
@@ -20,7 +18,7 @@ const animationConfig = {
 
 export default function Modal() {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { isVisible, closeModal, onSelectValue } = useModal();
+  const { isVisible, closeModal, onSelectValue, modalContent } = useModal();
   const snapPoints = useMemo(() => ["50%", "80%"], []);
 
   useEffect(() => {
@@ -41,18 +39,6 @@ export default function Modal() {
     closeModal();
   }
 
-  function renderSalaHandler(sala: Sala) {
-    let content: string;
-    if (sala.tipoSala === TipoSala.GRUPO) {
-      content = "Sala de Grupo";
-    } else if (sala.tipoSala === TipoSala.INDIVIDUAL) {
-      content = `Sala ${sala.idSala}`;
-    } else {
-      content = "Sala Infantil";
-    }
-    return <Button onPress={() => onSelectHandler(content)}>{content}</Button>;
-  }
-
   return (
     <BottomSheet
       backgroundStyle={{ backgroundColor: Colors.background }}
@@ -66,17 +52,7 @@ export default function Modal() {
       enablePanDownToClose
       onClose={closeModal}
     >
-      <BottomSheetView>
-        <StyledText mode="title" textAlign="center" fontWeight="bold">
-          Salas
-        </StyledText>
-        <FlatList
-          data={SALAS}
-          renderItem={({ item }) => renderSalaHandler(item)}
-          keyExtractor={({ idSala }) => idSala}
-          contentContainerStyle={styles.items}
-        />
-      </BottomSheetView>
+      <BottomSheetView>{modalContent}</BottomSheetView>
     </BottomSheet>
   );
 }

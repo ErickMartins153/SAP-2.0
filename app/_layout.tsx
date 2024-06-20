@@ -1,5 +1,7 @@
+import Modal from "@/components/general/Modal";
 import AuthContextProvider from "@/context/auth";
 import ModalContextProvider from "@/context/modal";
+import useModal from "@/hooks/useModal";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -11,6 +13,7 @@ export default function RootLayout() {
       <AuthContextProvider>
         <ModalContextProvider>
           <Slot />
+          <Modal />
         </ModalContextProvider>
       </AuthContextProvider>
     </GestureHandlerRootView>

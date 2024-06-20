@@ -3,7 +3,7 @@ import { useEffect, type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { useNavigation } from "expo-router";
-import Modal from "./Modal";
+
 import Icon from "./Icon";
 import useModal from "@/hooks/useModal";
 
@@ -41,7 +41,6 @@ export default function PageLayout({ children }: PageLayoutProps) {
       <View style={styles.rootLayout}>
         <View style={styles.contentStyle}>{children}</View>
       </View>
-      <Modal />
     </>
   );
 }
