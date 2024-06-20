@@ -14,7 +14,7 @@ export default function CommentList() {
 
   return (
     <View style={styles.mainContainer}>
-      <StyledText mode="big" fontWeight="bold">
+      <StyledText mode="title" fontWeight="bold" textAlign="center">
         Comentários
       </StyledText>
       <View style={styles.form}>
@@ -22,6 +22,8 @@ export default function CommentList() {
           field=""
           placeholder="Insira seu comentário aqui"
           multiline
+          autoCapitalize="sentences"
+          autoCorrect
           changeText={onCommentHandler}
           value={comment}
           maxLength={160}
@@ -34,10 +36,7 @@ export default function CommentList() {
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    paddingTop: "2%",
-  },
+  mainContainer: {},
   form: {
     flexDirection: "row",
     flex: 1,

@@ -1,28 +1,29 @@
-import { FlatList, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 import Comentario, { COMENTARIOS } from "@/interfaces/Comentario";
 import CommentItem from "./CommentItem";
+import CommentList from "./CommentList";
+import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
 export default function CommentModal() {
-  function renderSalaHandler(comentario: Comentario) {
+  function renderComentarioHandler(comentario: Comentario) {
     return <CommentItem comentario={comentario} />;
   }
 
   return (
-    <>
-      <FlatList
-        data={COMENTARIOS}
-        renderItem={({ item }) => renderSalaHandler(item)}
-        keyExtractor={({ id }) => id}
-        contentContainerStyle={styles.items}
-      />
-    </>
+    <BottomSheetFlatList
+      ListHeaderComponent={CommentList}
+      data={COMENTARIOS}
+      renderItem={({ item }) => renderComentarioHandler(item)}
+      keyExtractor={({ id }) => id}
+      contentContainerStyle={styles.container}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  items: {
-    marginVertical: "12%",
+  container: {
     gap: 12,
+    paddingBottom: "4%",
   },
 });
