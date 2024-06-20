@@ -7,12 +7,14 @@ type ButtonProps = {
   children: ReactNode;
   onPress?: () => void;
   color?: keyof typeof Colors;
+  leftIcon?: ReactNode;
 } & PropsWithoutRef<PressableProps>;
 
 export default function Button({
   children,
   onPress,
   color = "button",
+  leftIcon,
   ...rest
 }: ButtonProps) {
   return (
@@ -28,7 +30,8 @@ export default function Button({
         android_ripple={{ color: Colors.darkRipple }}
         {...rest}
       >
-        <View>
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          {leftIcon}
           <StyledText mode="big" color="white">
             {children}
           </StyledText>

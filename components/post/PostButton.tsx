@@ -2,19 +2,18 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import Icon from "../general/Icon";
-import { router } from "expo-router";
 
-export default function PostButton() {
-  function addPostHandler() {
-    router.navigate("detalhesPost/addPost");
-  }
+type PostButtonProps = {
+  addPostHandler: () => void;
+};
 
+export default function PostButton({ addPostHandler }: PostButtonProps) {
   return (
     <View style={styles.container}>
       <Pressable
         onPress={addPostHandler}
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-        android_ripple={{ color: Colors.lightRipple }}
+        android_ripple={{ color: Colors.darkRipple }}
       >
         <Icon name="plus" size={64} color="white" />
       </Pressable>
