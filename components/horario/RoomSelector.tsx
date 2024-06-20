@@ -4,13 +4,20 @@ import StyledText from "../general/StyledText";
 import Icon from "../general/Icon";
 import { Colors } from "@/constants/Colors";
 import useModal from "@/hooks/useModal";
+import { useLayoutEffect } from "react";
+import RoomModal from "./roomModal";
 
 export default function RoomSelector() {
-  const { openModal: toggleModalHandler, selectedValue } = useModal();
+  const { openModal, selectedValue, changeModalContent } = useModal();
+
+  useLayoutEffect(() => {
+    changeModalContent(<RoomModal />);
+  }, []);
+
   return (
     <Pressable
       style={({ pressed }) => [styles.mainContainer, pressed && styles.pressed]}
-      onPress={toggleModalHandler}
+      onPress={openModal}
     >
       <StyledText mode="big" color="white">
         {selectedValue ?? "Selecione a sala desejada"}

@@ -1,10 +1,9 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import StyledText from "../general/StyledText";
-import UserAvatar from "../UI/UserAvatar";
+
 import Input from "../general/Input";
 import { useState } from "react";
 import Icon from "../general/Icon";
-import { Colors } from "@/constants/Colors";
 
 export default function CommentList() {
   const [comment, setComment] = useState("");
@@ -30,14 +29,6 @@ export default function CommentList() {
         />
         <Icon name="send" size={32} style={styles.submitButton} />
       </View>
-
-      <FlatList
-        nestedScrollEnabled
-        data={[]}
-        ListEmptyComponent={
-          <StyledText>Esse post não possui nenhum comentário</StyledText>
-        }
-      />
     </View>
   );
 }
