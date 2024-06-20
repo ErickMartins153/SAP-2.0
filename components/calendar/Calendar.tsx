@@ -10,15 +10,11 @@ export type Day = {
   day: number;
 };
 
-type CalendarProps = {
-  onShowModal: () => void;
-};
-
-export default function Calendar({ onShowModal }: CalendarProps) {
+export default function Calendar() {
   return (
     <View style={{ flex: 1, marginTop: "4%" }}>
       <DaySelector />
-      <RoomSelector onPress={onShowModal} />
+      <RoomSelector />
       <CalendarList />
     </View>
   );

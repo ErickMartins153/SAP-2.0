@@ -5,7 +5,6 @@ import useAuth from "@/hooks/useAuth";
 import { Redirect } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Dimensions } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Layout() {
   const { user } = useAuth();
@@ -17,6 +16,7 @@ export default function Layout() {
     <Drawer
       drawerContent={(props) => <Navbar {...props} />}
       screenOptions={({ navigation }) => ({
+        swipeEnabled: false,
         headerStyle: {
           backgroundColor: Colors.background,
           height: 100,
@@ -63,7 +63,6 @@ export default function Layout() {
       <Drawer.Screen
         name="detalhesPost"
         options={{
-          swipeEnabled: false,
           headerShown: false,
         }}
       />

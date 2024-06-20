@@ -3,19 +3,17 @@ import { Pressable, StyleSheet } from "react-native";
 import StyledText from "../general/StyledText";
 import Icon from "../general/Icon";
 import { Colors } from "@/constants/Colors";
+import useModal from "@/hooks/useModal";
 
-type RoomSelectorProps = {
-  onPress?: () => void;
-};
-
-export default function RoomSelector({ onPress }: RoomSelectorProps) {
+export default function RoomSelector() {
+  const { openModal: toggleModalHandler, selectedValue } = useModal();
   return (
     <Pressable
       style={({ pressed }) => [styles.mainContainer, pressed && styles.pressed]}
-      onPress={onPress}
+      onPress={toggleModalHandler}
     >
       <StyledText mode="big" color="white">
-        Selecione a sala desejada
+        {selectedValue ?? "Selecione a sala desejada"}
       </StyledText>
       <Icon name="chevron-down" size={28} color="white" />
     </Pressable>

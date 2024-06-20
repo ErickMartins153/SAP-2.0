@@ -1,19 +1,25 @@
 import Calendar from "@/components/calendar/Calendar";
 
 import PageLayout from "@/components/general/PageLayout";
-
-import { useCallback, useState } from "react";
+import useModal from "@/hooks/useModal";
+import { useNavigation } from "expo-router";
+import { useEffect } from "react";
 
 export default function Horarios() {
-  const [showModal, setShowModal] = useState(false);
+  const navigation = useNavigation();
+  const { clear } = useModal();
 
-  const toggleModalHandler = useCallback(() => {
-    setShowModal((prev) => !prev);
-  }, []);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("blur", (e) => {
+      clear();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
-    <PageLayout isModalVisible={showModal}>
-      <Calendar onShowModal={toggleModalHandler} />
+    <PageLayout>
+      <Calendar />
     </PageLayout>
   );
 }
