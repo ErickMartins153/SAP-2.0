@@ -5,14 +5,14 @@ import Icon from "../general/Icon";
 import { router } from "expo-router";
 
 export default function PostButton() {
-  function handleAddPost() {
-    // router.navigate("/perfil");
+  function addPostHandler() {
+    router.navigate("detalhesPost/addPost");
   }
 
   return (
     <View style={styles.container}>
       <Pressable
-        onPress={handleAddPost}
+        onPress={addPostHandler}
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
         android_ripple={{ color: Colors.lightRipple }}
       >

@@ -1,15 +1,48 @@
-import { Alert, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  BackHandler,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import Icon from "@/components/general/Icon";
 
-import { router, useLocalSearchParams } from "expo-router";
+import {
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 
 import StyledText from "@/components/general/StyledText";
 import UserAvatar from "@/components/UI/UserAvatar";
+import { POSTS } from "@/interfaces/Post";
+import { useCallback } from "react";
+import Input from "@/components/general/Input";
+import CommentList from "@/components/post/CommentList";
 
 export default function detalhesPost() {
   const { postId } = useLocalSearchParams<{ postId: string }>();
+  const selectedPost = POSTS.find((post) => post.id === postId);
+  const navigation = useNavigation();
+
+  useFocusEffect(
+    useCallback(() => {
+      function onBackPress() {
+        router.navigate("(app)");
+
+        return true;
+      }
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [navigation])
+  );
 
   function handleDelete() {
     Alert.alert(
@@ -23,6 +56,10 @@ export default function detalhesPost() {
         },
       ]
     );
+  }
+
+  function goBackHandler() {
+    router.navigate("(app)");
   }
 
   function reportHandler() {
@@ -45,35 +82,48 @@ export default function detalhesPost() {
             name="corner-down-left"
             size={32}
             style={styles.icon}
-            onPress={router.back}
+            onPress={goBackHandler}
           />
 
-          <View>
-            <Icon
-              name="alert-triangle"
-              color="red"
-              size={32}
-              style={styles.icon}
-              onPress={reportHandler}
-            />
-          </View>
+          <Icon
+            name="trash-2"
+            color="red"
+            size={32}
+            style={styles.icon}
+            onPress={reportHandler}
+          />
         </View>
         <View style={styles.postContent}>
           <View style={styles.userContainer}>
-            <UserAvatar size={120} alignSelf="flex-start" />
-            <StyledText mode="title" textAlign="center" style={{ flex: 1 }}>
-              Usuário
+            <UserAvatar size={64} alignSelf="flex-start" />
+            <StyledText
+              mode="title"
+              style={{ marginHorizontal: "4%", flex: 1 }}
+            >
+              {selectedPost?.autor}
             </StyledText>
           </View>
         </View>
-        <View style={styles.content}>
-          <View style={styles.imageContainer}>
-            {/* <FormattedImage path={postData.imageUri} /> */}
-          </View>
-          <StyledText style={styles.description}>
-            {postId || "testando"}
+        <ScrollView
+          contentContainerStyle={{ marginVertical: "4%", minHeight: "100%" }}
+          nestedScrollEnabled
+        >
+          <StyledText mode="title" fontWeight="bold">
+            {selectedPost?.titulo}
           </StyledText>
-        </View>
+          <ImageBackground
+            resizeMode="cover"
+            style={styles.imageContainer}
+            imageStyle={styles.image}
+            source={{
+              uri: selectedPost?.imagemURL,
+            }}
+          />
+          <View style={styles.description}>
+            <StyledText>{selectedPost?.conteudo}</StyledText>
+          </View>
+          <CommentList />
+        </ScrollView>
         <View style={styles.submitContainer}></View>
       </View>
     </View>
@@ -83,19 +133,21 @@ export default function detalhesPost() {
 const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
-    paddingVertical: "12%",
+    paddingTop: "12%",
+    paddingBottom: "2%",
     backgroundColor: Colors.background,
-    borderWidth: 1,
     alignItems: "center",
   },
   contentContainer: {
     flex: 1,
-    marginVertical: "4%",
+    marginVertical: "2%",
     width: "90%",
     borderWidth: 1,
     backgroundColor: Colors.white,
     elevation: 4,
     borderRadius: 20,
+    paddingLeft: "2%",
+    paddingRight: "2%",
   },
   headerIcons: {
     flexDirection: "row",
@@ -105,29 +157,40 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 0,
-    marginTop: 12,
+    marginTop: "2%",
   },
   postContent: {
-    paddingHorizontal: "auto",
-    marginTop: "12%",
+    marginTop: "8%",
   },
   userContainer: {
-    paddingLeft: "2%",
-    paddingRight: "8%",
     flexDirection: "row",
     alignItems: "center",
+    paddingBottom: "2%",
+    borderBottomWidth: 1,
   },
   userText: {
     fontWeight: "bold",
     color: "white",
-    paddingVertical: 8,
-    paddingHorizontal: 32,
+    paddingVertical: "2%",
+    paddingHorizontal: "16%",
   },
   content: {},
-  imageContainer: {},
+  imageContainer: {
+    aspectRatio: 1,
+    width: "90%",
+    alignSelf: "center",
+  },
+  image: {
+    width: "100%",
+    marginVertical: "4%",
+    borderWidth: 2,
+    borderRadius: 4,
+    borderColor: Colors.border,
+    overflow: "hidden",
+  },
   description: {
-    paddingVertical: "4%",
-    paddingHorizontal: "8%",
+    paddingBottom: "4%",
+    borderBottomWidth: 1,
   },
   submitContainer: {
     flex: 1,
@@ -137,7 +200,7 @@ const styles = StyleSheet.create({
   submitButton: {
     justifyContent: "flex-start",
     alignItems: "flex-end",
-    paddingHorizontal: 16,
+    paddingHorizontal: "4%",
     overflow: "hidden",
   },
 });
