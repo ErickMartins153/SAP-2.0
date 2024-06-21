@@ -72,7 +72,7 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               icon="users"
               size={50}
               onPress={handleNavigation}
-              page="Register"
+              page="gerenciar"
             />
           </Drawer.Section>
         </View>

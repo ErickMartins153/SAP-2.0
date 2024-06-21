@@ -24,7 +24,7 @@ export default function ProfileScreen() {
             Dados pessoais
           </Button>
           <Button style={styles.button} onPress={() => {}}>
-            Segurança e Privacidade
+            Meus supervisionados
           </Button>
           <Button style={styles.button} onPress={() => {}}>
             Estatísticas
