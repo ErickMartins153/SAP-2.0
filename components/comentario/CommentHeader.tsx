@@ -5,7 +5,7 @@ import Input from "../general/Input";
 import { useState } from "react";
 import Icon from "../general/Icon";
 
-export default function CommentList() {
+export default function CommentHeader() {
   const [comment, setComment] = useState("");
 
   function onCommentHandler(text: string) {
@@ -23,7 +23,7 @@ export default function CommentList() {
           multiline
           autoCapitalize="sentences"
           autoCorrect
-          changeText={onCommentHandler}
+          onChangeText={onCommentHandler}
           value={comment}
           maxLength={160}
           style={{ flex: 1 }}

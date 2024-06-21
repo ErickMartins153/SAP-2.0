@@ -30,14 +30,14 @@ export default function LoginForm() {
       <View style={styles.inputContainer}>
         <Input
           placeholder="email@upe.br"
-          changeText={InputChangeHandler.bind(null, "email")}
+          onChangeText={InputChangeHandler.bind(null, "email")}
           value={inputs.email}
         />
         <View style={styles.passwordContainer}>
           <Input
-            changeText={InputChangeHandler.bind(null, "senha")}
+            onChangeText={InputChangeHandler.bind(null, "senha")}
             placeholder="Digite sua senha"
-            style={styles.passwordInput}
+            style={{}}
             value={inputs.senha}
             mode="password"
           />
@@ -61,10 +61,8 @@ const styles = StyleSheet.create({
   passwordContainer: {
     paddingBottom: "4%",
   },
-  passwordInput: {
-    marginBottom: "2%",
-  },
   recoverContainer: {
+    marginTop: "2%",
     alignItems: "flex-end",
   },
   invalid: {

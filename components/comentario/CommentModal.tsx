@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 import Comentario, { COMENTARIOS } from "@/interfaces/Comentario";
 import CommentItem from "./CommentItem";
-import CommentList from "./CommentList";
+import CommentHeader from "./CommentHeader";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
 export default function CommentModal() {
@@ -12,7 +12,7 @@ export default function CommentModal() {
 
   return (
     <BottomSheetFlatList
-      ListHeaderComponent={CommentList}
+      ListHeaderComponent={CommentHeader}
       data={COMENTARIOS}
       renderItem={({ item }) => renderComentarioHandler(item)}
       keyExtractor={({ id }) => id}

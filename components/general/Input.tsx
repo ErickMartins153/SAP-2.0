@@ -1,6 +1,6 @@
 import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
 
-import { PropsWithoutRef, useState } from "react";
+import { PropsWithoutRef, type ReactNode, useState } from "react";
 import { Colors } from "@/constants/Colors";
 import Icon from "./Icon";
 
@@ -9,15 +9,17 @@ type InputProps = {
   mode?: "password";
   maxLength?: number;
   value: string;
-  changeText: (text: string) => void;
+  onChangeText: (text: string) => void;
+  leftIcon?: ReactNode;
 } & PropsWithoutRef<TextInputProps>;
 
 export default function Input({
-  changeText: onChangeText,
+  onChangeText: onChangeText,
   placeholder,
   value,
   maxLength = 32,
   mode,
+  leftIcon,
   ...rest
 }: InputProps) {
   const [hide, setHide] = useState(false);
@@ -32,6 +34,7 @@ export default function Input({
 
   return (
     <View style={[styles.container, rest.style]}>
+      {leftIcon && <View style={{ paddingRight: "4%" }}>{leftIcon}</View>}
       <TextInput
         style={styles.input}
         placeholder={placeholder}

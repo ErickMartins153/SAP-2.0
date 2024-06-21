@@ -79,7 +79,7 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
             placeholder="Titulo do post"
             maxLength={50}
             value={postContent.titulo}
-            changeText={handleDescription.bind(null, "titulo")}
+            onChangeText={handleDescription.bind(null, "titulo")}
           />
 
           <Input
@@ -92,7 +92,7 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
             textAlignVertical="top"
             style={{ maxHeight: 135, width: "100%" }}
             value={postContent.conteudo}
-            changeText={handleDescription.bind(null, "conteudo")}
+            onChangeText={handleDescription.bind(null, "conteudo")}
           />
 
           <View style={{ padding: "8%", gap: 16 }}>
