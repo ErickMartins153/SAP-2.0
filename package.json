@@ -42,7 +42,8 @@
     "react-native-select-dropdown": "^4.0.1",
     "react-native-web": "~0.19.10",
     "expo-updates": "~0.25.17",
-    "expo-dev-client": "~4.0.18"
+    "expo-dev-client": "~4.0.18",
+    "expo-image": "~1.12.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

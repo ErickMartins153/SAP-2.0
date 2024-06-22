@@ -1,11 +1,5 @@
-import {
-  Alert,
-  BackHandler,
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Alert, BackHandler, ScrollView, StyleSheet, View } from "react-native";
+import { Image } from "expo-image";
 import {
   router,
   useFocusEffect,
@@ -25,6 +19,7 @@ import Button from "@/components/general/Button";
 import StackPageLayout from "@/components/layouts/StackPageLayout";
 import { getPostById } from "@/util/postHTTP";
 import { getFuncionarioById } from "@/util/funcionarioHTTP";
+import blurhash from "@/util/blurhash";
 
 export default function detalhesPost() {
   const { postId } = useLocalSearchParams<{ postId: string }>();
@@ -126,10 +121,11 @@ export default function detalhesPost() {
           {selectedPost?.titulo}
         </StyledText>
         {selectedPost?.imagemURL && (
-          <ImageBackground
-            resizeMode="cover"
+          <Image
+            contentFit="cover"
             style={styles.imageContainer}
-            imageStyle={styles.image}
+            placeholder={{ blurhash }}
+            transition={600}
             source={{
               uri: selectedPost?.imagemURL,
             }}
@@ -175,10 +171,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     width: "90%",
     alignSelf: "center",
-  },
-  image: {
-    width: "100%",
-    marginVertical: "4%",
     borderWidth: 2,
     borderRadius: 4,
     borderColor: Colors.border,

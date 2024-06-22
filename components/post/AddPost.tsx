@@ -1,13 +1,13 @@
 import { PropsWithoutRef, useCallback, useLayoutEffect, useState } from "react";
 import {
   BackHandler,
-  ImageBackground,
   Modal,
   ModalProps,
   ScrollView,
   StyleSheet,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 
@@ -20,6 +20,7 @@ import useImagePicker from "@/hooks/useImagePicker";
 
 import useAuth from "@/hooks/useAuth";
 import { newPost } from "@/interfaces/Post";
+import blurhash from "@/util/blurhash";
 
 type AddPostProps = {
   toggleModal: () => void;
@@ -130,12 +131,16 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
             </Button>
           </View>
           {imageURI && (
-            <ImageBackground
-              resizeMode="contain"
+            <Image
+              contentFit="contain"
+              placeholder={{ blurhash }}
               source={{ uri: imageURI }}
               style={{
                 aspectRatio: aspect,
-                borderWidth: 1,
+                borderWidth: 2,
+                borderRadius: 4,
+                borderColor: Colors.border,
+                overflow: "hidden",
               }}
             />
           )}
