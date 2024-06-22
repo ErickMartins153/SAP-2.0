@@ -4,7 +4,7 @@ import { Linking } from "react-native";
 
 export default function useImagePicker() {
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
-  const [imageURI, setImageURI] = useState<string | null>();
+  const [imageURI, setImageURI] = useState<string | undefined>();
   const [aspect, setAspect] = useState<[number, number]>([2, 3]);
 
   function changeAspect(newAspect: [number, number]) {

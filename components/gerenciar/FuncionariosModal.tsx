@@ -1,4 +1,4 @@
-import Funcionario, { FUNCIONARIOS } from "@/interfaces/Funcionario";
+import Funcionario from "@/interfaces/Funcionario";
 import { StyleSheet, View } from "react-native";
 import Input from "../general/Input";
 
@@ -8,18 +8,28 @@ import { useState } from "react";
 import Icon from "../general/Icon";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import StyledText from "../general/StyledText";
+import { useQuery } from "@tanstack/react-query";
+import { getFuncionarios } from "@/util/funcionarioHTTP";
 
 export default function FuncionariosModal() {
+  const {
+    data: funcionarios,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["funcionarios"],
+    queryFn: getFuncionarios,
+  });
+
   const [search, setSearch] = useState("");
-  const [filteredUsers, setFilteredUsers] =
-    useState<Funcionario[]>(FUNCIONARIOS);
+  const [filteredUsers, setFilteredUsers] = useState<Funcionario[]>([]);
 
   function searchHandler(text: string) {
     setSearch(text);
     if (text.trim() === "") {
-      setFilteredUsers(FUNCIONARIOS);
+      setFilteredUsers(funcionarios!);
     } else {
-      const filterUsers = FUNCIONARIOS.filter((funcionario) =>
+      const filterUsers = funcionarios!.filter((funcionario) =>
         funcionario.nome.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredUsers(filterUsers);
@@ -49,7 +59,11 @@ export default function FuncionariosModal() {
         </View>
       }
       stickyHeaderIndices={[0]}
-      data={filteredUsers}
+      data={
+        filteredUsers.length < 1 && search.trim() === ""
+          ? funcionarios
+          : filteredUsers
+      }
       renderItem={({ item }) => renderFuncionariosHandler(item)}
       keyExtractor={({ id }) => id}
       contentContainerStyle={styles.container}

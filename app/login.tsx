@@ -1,9 +1,9 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useContext, useState } from "react";
+import { useState } from "react";
+
 import { Colors } from "@/constants/Colors";
 import LoginForm from "@/components/form/LoginForm";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
-import StyledText from "@/components/general/StyledText";
 
 export default function Login() {
   const [isvalid, setIsValid] = useState(true);

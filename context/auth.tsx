@@ -24,7 +24,7 @@ export default function AuthContextProvider({
   const [user, setUser] = useState<User | null>(null);
 
   function login(id: string) {
-    setUser({ id });
+    setUser({ id: "1" });
   }
   function logout() {
     setUser(null);

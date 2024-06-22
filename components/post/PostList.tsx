@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { FlatList } from "react-native";
 
-import Post, { POSTS } from "@/interfaces/Post";
+import Post from "@/interfaces/Post";
 import PostItem from "./PostItem";
+import { useQuery } from "@tanstack/react-query";
+import { getPosts } from "@/util/postHTTP";
 
 export default function PostList() {
-  const [posts, setPosts] = useState<Post[]>(POSTS);
+  const {
+    data: posts,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["posts"],
+    queryFn: getPosts,
+  });
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   function handleRefresh() {}

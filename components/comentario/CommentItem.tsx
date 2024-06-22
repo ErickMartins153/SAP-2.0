@@ -1,24 +1,32 @@
-import Comentario from "@/interfaces/Comentario";
 import { StyleSheet, View } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+
+import Comentario from "@/interfaces/Comentario";
 import StyledText from "../general/StyledText";
 import UserAvatar from "../UI/UserAvatar";
 import { Colors } from "@/constants/Colors";
-import { FUNCIONARIOS } from "@/interfaces/Funcionario";
+import { getFuncionarioById } from "@/util/funcionarioHTTP";
 
 type CommentItemProps = {
   comentario: Comentario;
 };
 
 export default function CommentItem({ comentario }: CommentItemProps) {
-  const selectedUser = FUNCIONARIOS.find(
-    (funcionario) => funcionario.id === comentario.idAutor
-  );
+  const {
+    data: selectedFuncionario,
+    isLoading,
+    isError,
+  } = useQuery({
+    enabled: !!comentario?.idAutor,
+    queryKey: ["funcionarios", comentario?.idAutor],
+    queryFn: () => getFuncionarioById(comentario?.idAutor!),
+  });
   return (
     <View style={styles.rootContainer}>
       <UserAvatar size={64} />
       <View style={styles.mainContainer}>
         <StyledText mode="small" fontWeight="bold">
-          {selectedUser?.nome}
+          {selectedFuncionario?.nome}
         </StyledText>
         <StyledText style={styles.text}>{comentario.conteudo}</StyledText>
       </View>

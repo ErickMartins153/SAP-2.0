@@ -8,14 +8,18 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { router, useFocusEffect, useNavigation } from "expo-router";
+import { useMutation } from "@tanstack/react-query";
 
 import { Colors } from "@/constants/Colors";
 import Icon from "@/components/general/Icon";
-import { router, useFocusEffect, useNavigation } from "expo-router";
 import StyledText from "../general/StyledText";
 import Input from "../general/Input";
 import Button from "../general/Button";
 import useImagePicker from "@/hooks/useImagePicker";
+
+import useAuth from "@/hooks/useAuth";
+import { newPost } from "@/interfaces/Post";
 
 type AddPostProps = {
   toggleModal: () => void;
@@ -27,6 +31,12 @@ type PostContent = {
 };
 
 export default function AddPost({ toggleModal, ...props }: AddPostProps) {
+  const { user } = useAuth();
+  const { mutate, isPending } = useMutation<void, Error, newPost>({
+    mutationKey: ["addPost"],
+    onSuccess: toggleModal,
+  });
+
   const navigation = useNavigation();
   const { openLibrary, openCamera, imageURI, aspect } = useImagePicker();
 
@@ -57,8 +67,18 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
     });
   }, [navigation]);
 
-  function handleDescription(field: keyof PostContent, text: string) {
+  function inputHandler(field: keyof PostContent, text: string) {
     setPostContent((prev) => ({ ...prev, [field]: text }));
+  }
+
+  function createPostHandler() {
+    mutate({
+      conteudo: postContent.conteudo,
+      titulo: postContent.titulo,
+      imagemURL: imageURI,
+      horario: new Date(),
+      idAutor: user!.id,
+    });
   }
 
   return (
@@ -71,7 +91,7 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
               Criar post
             </StyledText>
           </View>
-          <Button>Postar</Button>
+          <Button onPress={createPostHandler}>Postar</Button>
         </View>
         <View style={{ marginHorizontal: "3%" }}>
           <Input
@@ -79,7 +99,7 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
             placeholder="Titulo do post"
             maxLength={50}
             value={postContent.titulo}
-            onChangeText={handleDescription.bind(null, "titulo")}
+            onChangeText={inputHandler.bind(null, "titulo")}
           />
 
           <Input
@@ -92,7 +112,7 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
             textAlignVertical="top"
             style={{ maxHeight: 135, width: "100%" }}
             value={postContent.conteudo}
-            onChangeText={handleDescription.bind(null, "conteudo")}
+            onChangeText={inputHandler.bind(null, "conteudo")}
           />
 
           <View style={{ padding: "8%", gap: 16 }}>

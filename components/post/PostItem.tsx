@@ -5,7 +5,8 @@ import Post from "@/interfaces/Post";
 import StyledText from "../general/StyledText";
 import Badge from "../UI/Badge";
 import { router } from "expo-router";
-import { FUNCIONARIOS } from "@/interfaces/Funcionario";
+import { useQuery } from "@tanstack/react-query";
+import { getFuncionarioById } from "@/util/funcionarioHTTP";
 
 type PostItemProps = {
   postData: Post;
@@ -23,9 +24,14 @@ function formatText(text: string, maxLength: number) {
 }
 
 export default function PostItem({ postData }: PostItemProps) {
-  const selectedUser = FUNCIONARIOS.find(
-    (funcionario) => funcionario.id === postData?.idAutor
-  )!;
+  const {
+    data: funcionario,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["funcionarios", postData.idAutor],
+    queryFn: () => getFuncionarioById(postData.idAutor),
+  });
   let imageUri: string;
 
   if (postData.imagemURL) {
@@ -34,6 +40,10 @@ export default function PostItem({ postData }: PostItemProps) {
 
   function showPostHandler() {
     router.navigate(`detalhesPost/${postData.id}`);
+  }
+
+  if (isLoading) {
+    return;
   }
 
   return (
@@ -47,14 +57,14 @@ export default function PostItem({ postData }: PostItemProps) {
         onPress={showPostHandler}
       >
         <View style={styles.postHeader}>
-          <Badge label={selectedUser?.nome} />
+          <Badge label={funcionario!.nome} imagemURL={funcionario?.imagemURL} />
           <View style={styles.dateContainer}>
             <StyledText style={styles.dateText} mode="small">
               {postData.horario.toLocaleString()}
             </StyledText>
           </View>
         </View>
-        <StyledText mode="big" color="viridian" fontWeight="bold">
+        <StyledText mode="big" color="text" fontWeight="bold">
           {postData.titulo}
         </StyledText>
         <View style={styles.postContent}>

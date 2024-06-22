@@ -5,15 +5,16 @@ import { Colors } from "@/constants/Colors";
 
 type BadgeProps = {
   label: string;
+  imagemURL?: string;
 };
 
-export default function Badge({ label }: BadgeProps) {
+export default function Badge({ label, imagemURL }: BadgeProps) {
   return (
     <>
       <View style={styles.userContainer}>
         <StyledText color="white">{label}</StyledText>
       </View>
-      <UserAvatar size={64} />
+      <UserAvatar size={64} imageURL={imagemURL} />
     </>
   );
 }

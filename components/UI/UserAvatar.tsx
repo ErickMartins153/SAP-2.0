@@ -6,18 +6,22 @@ type UserAvatarProps = {
   size: number;
   style?: StyleProp<ViewProps>;
   alignSelf?: "flex-start" | "center";
+  imageURL?: string;
 };
+
+const placeholder = require("@/assets/images/avatar.png");
 
 export default function UserAvatar({
   size,
   style,
   alignSelf = "center",
+  imageURL,
 }: UserAvatarProps) {
   return (
     <View style={[styles.avatarContainer, style, { alignSelf }]}>
       <Avatar.Image
         style={styles.avatar}
-        source={require("@/assets/images/avatar.png")}
+        source={imageURL ? { uri: imageURL } : placeholder}
         size={size}
       />
     </View>

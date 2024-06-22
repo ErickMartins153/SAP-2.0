@@ -1,5 +1,4 @@
-import Comentario from "@/interfaces/Comentario";
-import { StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, View } from "react-native";
 import StyledText from "../general/StyledText";
 import UserAvatar from "../UI/UserAvatar";
 import { Colors } from "@/constants/Colors";
@@ -10,8 +9,27 @@ type FuncionarioItemProps = {
 };
 
 export default function FuncionarioItem({ funcionario }: FuncionarioItemProps) {
+  function confirmHandler() {
+    Alert.alert(
+      "Você tem certeza?",
+      `Uma vez deletado, ${funcionario.nome} ${funcionario.sobrenome} precisará ser registrado novamente`,
+      [
+        { text: "Cancelar", isPreferred: true },
+        { text: "Confirmar", onPress: deleteHandler },
+      ]
+    );
+  }
+
+  function deleteHandler() {
+    console.log("deletou funcionário");
+  }
+
   return (
-    <View style={styles.rootContainer}>
+    <Pressable
+      style={({ pressed }) => [styles.rootContainer, pressed && styles.pressed]}
+      android_ripple={{ color: Colors.lightRipple }}
+      onPress={confirmHandler}
+    >
       <UserAvatar size={64} />
       <View style={styles.mainContainer}>
         <StyledText mode="small" fontWeight="bold">
@@ -19,7 +37,7 @@ export default function FuncionarioItem({ funcionario }: FuncionarioItemProps) {
         </StyledText>
         <StyledText style={styles.text}>{funcionario.email}</StyledText>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -40,5 +58,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexShrink: 1,
     flexWrap: "wrap",
+  },
+  pressed: {
+    opacity: 0.8,
   },
 });

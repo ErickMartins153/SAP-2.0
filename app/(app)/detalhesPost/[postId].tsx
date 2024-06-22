@@ -6,33 +6,52 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-
-import { Colors } from "@/constants/Colors";
-import Icon from "@/components/general/Icon";
-
 import {
   router,
   useFocusEffect,
   useLocalSearchParams,
   useNavigation,
 } from "expo-router";
+import { useCallback, useEffect, useLayoutEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
+import { Colors } from "@/constants/Colors";
+import Icon from "@/components/general/Icon";
 import StyledText from "@/components/general/StyledText";
 import UserAvatar from "@/components/UI/UserAvatar";
-import { POSTS } from "@/interfaces/Post";
-import { useCallback, useEffect, useLayoutEffect } from "react";
-import { FUNCIONARIOS } from "@/interfaces/Funcionario";
 import useModal from "@/hooks/useModal";
 import CommentModal from "@/components/comentario/CommentModal";
 import Button from "@/components/general/Button";
 import StackPageLayout from "@/components/layouts/StackPageLayout";
+import { getPostById } from "@/util/postHTTP";
+import { getFuncionarioById } from "@/util/funcionarioHTTP";
 
 export default function detalhesPost() {
   const { postId } = useLocalSearchParams<{ postId: string }>();
-  const selectedPost = POSTS.find((post) => post.id === postId);
-  const selectedUser = FUNCIONARIOS.find(
-    (funcionario) => funcionario.id === selectedPost?.idAutor
-  );
+  const {
+    data: selectedPost,
+    isLoading,
+    isError,
+  } = useQuery({
+    enabled: !!postId,
+    queryKey: ["posts", postId],
+    queryFn: () => getPostById(postId!),
+  });
+
+  const {
+    data: selectedFuncionario,
+    isLoading: isLoadingFuncionario,
+    isError: isErrorFuncionario,
+  } = useQuery({
+    enabled: !!selectedPost?.idAutor,
+    queryKey: ["funcionarios", selectedPost?.idAutor],
+    queryFn: () => getFuncionarioById(selectedPost?.idAutor!),
+  });
+
+  const { mutate } = useMutation<void, Error, string>({
+    mutationKey: ["deletePost"],
+    onSuccess: () => router.navigate("(app)"),
+  });
 
   const navigation = useNavigation();
   const { changeModalContent, openModal, isVisible, closeModal, clear } =
@@ -69,7 +88,7 @@ export default function detalhesPost() {
     }, [isVisible, closeModal])
   );
 
-  function handleDelete() {
+  function deleteHandler() {
     Alert.alert(
       "Você tem certeza?",
       "Uma vez deletado esse post não poderá ser recuperado!",
@@ -78,20 +97,27 @@ export default function detalhesPost() {
         {
           text: "Confirmar",
           style: "destructive",
+          onPress: () => mutate(postId!),
         },
       ]
     );
   }
 
-  function deleteHandler(id: string) {}
-
   return (
-    <StackPageLayout HeadRight={<Icon name="trash-2" color="red" size={32} />}>
+    <StackPageLayout
+      HeadRight={
+        <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
+      }
+    >
       <View style={styles.postContent}>
         <View style={styles.userContainer}>
-          <UserAvatar size={64} alignSelf="flex-start" />
+          <UserAvatar
+            size={64}
+            alignSelf="flex-start"
+            imageURL={selectedFuncionario?.imagemURL}
+          />
           <StyledText mode="title" style={{ marginHorizontal: "4%", flex: 1 }}>
-            {`${selectedUser?.nome} ${selectedUser?.sobrenome}`}
+            {`${selectedFuncionario?.nome} ${selectedFuncionario?.sobrenome}`}
           </StyledText>
         </View>
       </View>
@@ -99,19 +125,28 @@ export default function detalhesPost() {
         <StyledText mode="title" fontWeight="bold">
           {selectedPost?.titulo}
         </StyledText>
-        <ImageBackground
-          resizeMode="cover"
-          style={styles.imageContainer}
-          imageStyle={styles.image}
-          source={{
-            uri: selectedPost?.imagemURL,
-          }}
-        />
+        {selectedPost?.imagemURL && (
+          <ImageBackground
+            resizeMode="cover"
+            style={styles.imageContainer}
+            imageStyle={styles.image}
+            source={{
+              uri: selectedPost?.imagemURL,
+            }}
+          />
+        )}
 
         <StyledText>{selectedPost?.conteudo}</StyledText>
       </ScrollView>
 
-      <View style={{ borderTopWidth: 1, paddingTop: "8%" }}>
+      <View
+        style={{
+          borderTopWidth: 1,
+          paddingTop: "8%",
+          justifyContent: "flex-end",
+          alignContent: "flex-end",
+        }}
+      >
         <Button onPress={openModal}>Ver comentários</Button>
       </View>
       <View style={styles.submitContainer}></View>

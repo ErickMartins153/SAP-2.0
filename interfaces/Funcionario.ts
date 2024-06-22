@@ -1,6 +1,6 @@
 export default interface Funcionario {
   id: string;
-  imagemURL: string | null;
+  imagemURL: string | undefined;
   nome: string;
   sobrenome: string;
   email: string;
@@ -10,7 +10,9 @@ export default interface Funcionario {
 export const FUNCIONARIOS: Funcionario[] = [
   {
     id: "1",
-    imagemURL: null,
+    imagemURL: `https://avatar.iran.liara.run/public/${Math.floor(
+      Math.random() * 100
+    )}`,
     nome: "Carlos",
     sobrenome: "Silva",
     email: "carlos.silva@upe.br",
@@ -18,7 +20,9 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "2",
-    imagemURL: null,
+    imagemURL: `https://avatar.iran.liara.run/public/${Math.floor(
+      Math.random() * 100
+    )}`,
     nome: "Ana",
     sobrenome: "Oliveira",
     email: "ana.oliveira@upe.br",
@@ -26,7 +30,9 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "3",
-    imagemURL: null,
+    imagemURL: `https://avatar.iran.liara.run/public/${Math.floor(
+      Math.random() * 100
+    )}`,
     nome: "Marcos",
     sobrenome: "Souza",
     email: "marcos.souza@upe.br",
@@ -34,7 +40,9 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "4",
-    imagemURL: null,
+    imagemURL: `https://avatar.iran.liara.run/public/${Math.floor(
+      Math.random() * 100
+    )}`,
     nome: "Julia",
     sobrenome: "Ferreira",
     email: "julia.ferreira@upe.br",
@@ -42,7 +50,9 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "5",
-    imagemURL: null,
+    imagemURL: `https://avatar.iran.liara.run/public/${Math.floor(
+      Math.random() * 100
+    )}`,
     nome: "Roberto",
     sobrenome: "Costa",
     email: "roberto.costa@upe.br",
@@ -50,7 +60,9 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "6",
-    imagemURL: null,
+    imagemURL: `https://avatar.iran.liara.run/public/${Math.floor(
+      Math.random() * 100
+    )}`,
     nome: "Fernanda",
     sobrenome: "Ribeiro",
     email: "fernanda.ribeiro@upe.br",
@@ -58,7 +70,9 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "7",
-    imagemURL: null,
+    imagemURL: `https://avatar.iran.liara.run/public/${Math.floor(
+      Math.random() * 100
+    )}`,
     nome: "Ricardo",
     sobrenome: "Almeida",
     email: "ricardo.almeida@upe.br",
@@ -66,7 +80,9 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "8",
-    imagemURL: null,
+    imagemURL: `https://avatar.iran.liara.run/public/${Math.floor(
+      Math.random() * 100
+    )}`,
     nome: "Patricia",
     sobrenome: "Lima",
     email: "patricia.lima@upe.br",
