@@ -17,9 +17,11 @@ import useModal from "@/hooks/useModal";
 import CommentModal from "@/components/comentario/CommentModal";
 import Button from "@/components/general/Button";
 import StackPageLayout from "@/components/layouts/StackPageLayout";
-import { getPostById } from "@/util/postHTTP";
-import { getFuncionarioById } from "@/util/funcionarioHTTP";
+import { getPostById } from "@/util/requests/postHTTP";
+import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 import blurhash from "@/util/blurhash";
+import { getComentariosByPost } from "@/util/requests/comentarioHTTP";
+import Loading from "@/components/general/Loading";
 
 export default function detalhesPost() {
   const { postId } = useLocalSearchParams<{ postId: string }>();
@@ -43,6 +45,16 @@ export default function detalhesPost() {
     queryFn: () => getFuncionarioById(selectedPost?.idAutor!),
   });
 
+  const {
+    data: comentarios,
+    isLoading: isLoadingComentarios,
+    isError: isErrorComentarios,
+  } = useQuery({
+    queryKey: ["comentarios", postId],
+    queryFn: () => getComentariosByPost(postId!),
+    enabled: !!postId,
+  });
+
   const { mutate } = useMutation<void, Error, string>({
     mutationKey: ["deletePost"],
     onSuccess: () => router.navigate("(app)"),
@@ -53,8 +65,12 @@ export default function detalhesPost() {
     useModal();
 
   useLayoutEffect(() => {
-    changeModalContent(<CommentModal />);
-  }, []);
+    if (!isLoadingComentarios && postId) {
+      changeModalContent(
+        <CommentModal comentarios={comentarios!} postId={postId} />
+      );
+    }
+  }, [comentarios, isLoadingComentarios]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", (e) => {
@@ -100,6 +116,7 @@ export default function detalhesPost() {
 
   return (
     <StackPageLayout
+      isLoading={isLoadingFuncionario}
       HeadRight={
         <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
       }
@@ -139,11 +156,13 @@ export default function detalhesPost() {
         style={{
           borderTopWidth: 1,
           paddingTop: "8%",
-          justifyContent: "flex-end",
-          alignContent: "flex-end",
+          flexGrow: 1,
+          justifyContent: "center",
         }}
       >
-        <Button onPress={openModal}>Ver comentários</Button>
+        <Button onPress={openModal} disabled={isLoadingComentarios}>
+          Ver comentários
+        </Button>
       </View>
       <View style={styles.submitContainer}></View>
     </StackPageLayout>

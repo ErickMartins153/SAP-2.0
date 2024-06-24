@@ -13,6 +13,7 @@ export const Colors = {
   red: "#E95151",
   green: "#87AB69",
   scheduleHeader: "#3F2C23",
+  backdrop: "#000000AB",
 };
 
 StyleSheet.create({});

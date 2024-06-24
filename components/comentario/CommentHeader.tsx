@@ -5,11 +5,25 @@ import Input from "../general/Input";
 import { useState } from "react";
 import Icon from "../general/Icon";
 
-export default function CommentHeader() {
+type CommentHeaderProps = {
+  onComment: (conteudo: string) => void;
+};
+
+export default function CommentHeader({ onComment }: CommentHeaderProps) {
   const [comment, setComment] = useState("");
 
   function onCommentHandler(text: string) {
     setComment(text);
+  }
+
+  function clearCommentHandler() {
+    setComment("");
+  }
+
+  function sendCommentHandler() {
+    if (comment.trim() === "") return;
+    onComment(comment);
+    clearCommentHandler();
   }
 
   return (
@@ -28,7 +42,12 @@ export default function CommentHeader() {
           maxLength={160}
           style={{ flex: 1 }}
         />
-        <Icon name="send" size={32} style={styles.submitButton} />
+        <Icon
+          name="send"
+          size={32}
+          style={styles.submitButton}
+          onPress={sendCommentHandler}
+        />
       </View>
     </View>
   );

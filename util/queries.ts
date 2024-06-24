@@ -1,6 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 
-import { addPost, deletePost } from "./postHTTP";
+import { addPost, deletePost } from "./requests/postHTTP";
 
 export const queryClient = new QueryClient();
 
