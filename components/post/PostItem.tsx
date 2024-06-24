@@ -6,7 +6,8 @@ import StyledText from "../general/StyledText";
 import Badge from "../UI/Badge";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { getFuncionarioById } from "@/util/funcionarioHTTP";
+import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
+import { memo } from "react";
 
 type PostItemProps = {
   postData: Post;
@@ -23,7 +24,7 @@ function formatText(text: string, maxLength: number) {
   return truncated.substring(0, lastSpaceIndex) + "...";
 }
 
-export default function PostItem({ postData }: PostItemProps) {
+const PostItem = ({ postData }: PostItemProps) => {
   const {
     data: funcionario,
     isLoading,
@@ -75,7 +76,7 @@ export default function PostItem({ postData }: PostItemProps) {
       </Pressable>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   rootContainer: {
@@ -121,3 +122,5 @@ const styles = StyleSheet.create({
     paddingVertical: "2%",
   },
 });
+
+export default memo(PostItem);

@@ -4,7 +4,7 @@ import { FlatList } from "react-native";
 import Post from "@/interfaces/Post";
 import PostItem from "./PostItem";
 import { useQuery } from "@tanstack/react-query";
-import { getPosts } from "@/util/postHTTP";
+import { getPosts } from "@/util/requests/postHTTP";
 
 export default function PostList() {
   const {

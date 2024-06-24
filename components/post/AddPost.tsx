@@ -3,6 +3,7 @@ import {
   BackHandler,
   Modal,
   ModalProps,
+  Pressable,
   ScrollView,
   StyleSheet,
   View,
@@ -39,7 +40,8 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
   });
 
   const navigation = useNavigation();
-  const { openLibrary, openCamera, imageURI, aspect } = useImagePicker();
+  const { openLibrary, openCamera, imageURI, aspect, clearImage } =
+    useImagePicker();
 
   const [postContent, setPostContent] = useState<PostContent>({
     conteudo: "",
@@ -86,12 +88,15 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
     <Modal animationType="slide" onRequestClose={toggleModal} {...props}>
       <ScrollView contentContainerStyle={{ paddingBottom: "4%" }}>
         <View style={styles.header}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Icon name="chevron-left" size={32} onPress={toggleModal} />
+          <Pressable
+            style={{ flexDirection: "row", alignItems: "center" }}
+            onPress={toggleModal}
+          >
+            <Icon name="chevron-left" size={32} />
             <StyledText mode="big" fontWeight="bold" textAlign="center">
               Criar post
             </StyledText>
-          </View>
+          </Pressable>
           <Button onPress={createPostHandler}>Postar</Button>
         </View>
         <View style={{ marginHorizontal: "3%" }}>
@@ -131,18 +136,27 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
             </Button>
           </View>
           {imageURI && (
-            <Image
-              contentFit="contain"
-              placeholder={{ blurhash }}
-              source={{ uri: imageURI }}
-              style={{
-                aspectRatio: aspect,
-                borderWidth: 2,
-                borderRadius: 4,
-                borderColor: Colors.border,
-                overflow: "hidden",
-              }}
-            />
+            <View style={{ position: "relative" }}>
+              <Image
+                contentFit="contain"
+                placeholder={{ blurhash }}
+                source={{ uri: imageURI }}
+                style={{
+                  aspectRatio: aspect,
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  borderColor: Colors.border,
+                  overflow: "hidden",
+                }}
+              />
+              <Icon
+                name="x-square"
+                color="white"
+                size={36}
+                style={{ position: "absolute", right: 0, padding: "2%" }}
+                onPress={clearImage}
+              />
+            </View>
           )}
         </View>
       </ScrollView>

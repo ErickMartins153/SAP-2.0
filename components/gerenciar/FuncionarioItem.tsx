@@ -3,12 +3,13 @@ import StyledText from "../general/StyledText";
 import UserAvatar from "../UI/UserAvatar";
 import { Colors } from "@/constants/Colors";
 import Funcionario from "@/interfaces/Funcionario";
+import { memo } from "react";
 
 type FuncionarioItemProps = {
   funcionario: Funcionario;
 };
 
-export default function FuncionarioItem({ funcionario }: FuncionarioItemProps) {
+const FuncionarioItem = ({ funcionario }: FuncionarioItemProps) => {
   function confirmHandler() {
     Alert.alert(
       "Você tem certeza?",
@@ -39,7 +40,7 @@ export default function FuncionarioItem({ funcionario }: FuncionarioItemProps) {
       </View>
     </Pressable>
   );
-}
+};
 
 const styles = StyleSheet.create({
   rootContainer: {
@@ -63,3 +64,5 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
 });
+
+export default memo(FuncionarioItem);
