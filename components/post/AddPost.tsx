@@ -63,13 +63,6 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
     }, [navigation])
   );
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitleStyle: {},
-      title: "Postar",
-    });
-  }, [navigation]);
-
   function inputHandler(field: keyof PostContent, text: string) {
     setPostContent((prev) => ({ ...prev, [field]: text }));
   }
