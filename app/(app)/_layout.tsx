@@ -50,6 +50,7 @@ export default function Layout() {
         options={{
           title: "Mural",
           drawerLabel: "Mural",
+          unmountOnBlur: false,
         }}
       />
       <Drawer.Screen

@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { useState } from "react";
 import Input from "../general/Input";
@@ -12,7 +12,11 @@ type LoginContent = {
   senha: string;
 };
 
-export default function LoginForm() {
+type LoginFormType = {
+  onShowModal: () => void;
+};
+
+export default function LoginForm({ onShowModal }: LoginFormType) {
   const [inputs, setInputs] = useState<LoginContent>({ email: "", senha: "" });
   const { login } = useAuth();
 
@@ -42,12 +46,12 @@ export default function LoginForm() {
             mode="password"
           />
 
-          <View style={styles.recoverContainer}>
+          <Pressable style={styles.recoverContainer} onPress={onShowModal}>
             <StyledText color="icon">Esqueci minha senha</StyledText>
-          </View>
+          </Pressable>
         </View>
       </View>
-      <View>
+      <View style={{ marginTop: "4%" }}>
         <Button onPress={onSubmitHandler}>Entrar</Button>
       </View>
     </View>

@@ -1,15 +1,27 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useState } from "react";
 
 import { Colors } from "@/constants/Colors";
 import LoginForm from "@/components/form/LoginForm";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
+import StyledText from "@/components/general/StyledText";
+import Icon from "@/components/general/Icon";
+import Input from "@/components/general/Input";
+import RecoverForm from "@/components/form/RecoverForm";
 
 export default function Login() {
-  const [isvalid, setIsValid] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
-  function handleInput() {
-    setIsValid(true);
+  function toggleModalHandler() {
+    setIsVisible((p) => !p);
   }
 
   return (
@@ -24,8 +36,9 @@ export default function Login() {
           source={require("@/assets/images/logo.png")}
         />
 
-        <LoginForm />
+        <LoginForm onShowModal={toggleModalHandler} />
       </ScrollView>
+      <RecoverForm isVisible={isVisible} toggleModal={toggleModalHandler} />
     </MainPageLayout>
   );
 }
