@@ -3,15 +3,18 @@ import { type ReactNode } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import Icon from "../general/Icon";
 import { router } from "expo-router";
+import Loading from "../general/Loading";
 
 type StackPageLayoutProps = {
   children: ReactNode;
   HeadRight?: ReactNode;
+  isLoading?: boolean;
 };
 
 export default function StackPageLayout({
   children,
   HeadRight,
+  isLoading = false,
 }: StackPageLayoutProps) {
   function goBackHandler() {
     router.navigate("(app)");
@@ -27,16 +30,19 @@ export default function StackPageLayout({
     ]);
   }
   return (
-    <View style={styles.rootContainer}>
-      <View style={styles.contentContainer}>
-        <View style={styles.headerIcons}>
-          <Icon name="chevron-left" size={32} onPress={goBackHandler} />
+    <>
+      {isLoading && <Loading />}
+      <View style={styles.rootContainer}>
+        <View style={styles.contentContainer}>
+          <View style={styles.headerIcons}>
+            <Icon name="chevron-left" size={32} onPress={goBackHandler} />
 
-          {HeadRight}
+            {HeadRight}
+          </View>
+          {children}
         </View>
-        {children}
       </View>
-    </View>
+    </>
   );
 }
 
@@ -58,6 +64,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingLeft: "2%",
     paddingRight: "2%",
+    justifyContent: "space-between",
   },
   headerIcons: {
     flexDirection: "row",

@@ -9,9 +9,15 @@ import NavbarItem from "./NavbarItem";
 import useAuth from "@/hooks/useAuth";
 import UserAvatar from "../UI/UserAvatar";
 import { Colors } from "@/constants/Colors";
+import { useQuery } from "@tanstack/react-query";
+import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 
 export default function Navbar({ ...props }: DrawerContentComponentProps) {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const { data: funcionarioData } = useQuery({
+    queryKey: ["funcionarios", user!.id],
+    queryFn: () => getFuncionarioById(user!.id),
+  });
 
   function handleNavigation(destinyPage: string) {
     props.navigation.navigate(destinyPage);
@@ -38,10 +44,14 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
       <DrawerContentScrollView {...props}>
         <View>
           <View style={styles.avatar}>
-            <UserAvatar size={144} />
+            <UserAvatar size={144} imageURL={funcionarioData?.imagemURL} />
             <View style={styles.userInfoSection}>
-              <Title style={styles.userInfoText}>Usuário</Title>
-              <Caption>Cargo/função</Caption>
+              <Title
+                style={styles.userInfoText}
+              >{`${funcionarioData?.nome} ${funcionarioData?.sobrenome}`}</Title>
+              <Caption>
+                Cargo: {funcionarioData?.isTecnico ? "Técnico" : "Estagiário"}
+              </Caption>
             </View>
           </View>
           <Drawer.Section>

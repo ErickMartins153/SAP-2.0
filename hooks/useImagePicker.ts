@@ -11,6 +11,10 @@ export default function useImagePicker() {
     setAspect(newAspect);
   }
 
+  function clearImage() {
+    setImageURI(undefined);
+  }
+
   async function openLibrary() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -53,5 +57,6 @@ export default function useImagePicker() {
     imageURI,
     aspect: aspect[0] / aspect[1],
     changeAspect,
+    clearImage,
   };
 }

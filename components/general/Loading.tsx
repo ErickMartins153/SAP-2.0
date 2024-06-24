@@ -10,6 +10,8 @@ export default function Loading() {
         width: "100%",
         justifyContent: "center",
         alignContent: "center",
+        zIndex: 100,
+        backgroundColor: Colors.backdrop,
       }}
     >
       <ActivityIndicator color={Colors.background} size="large" />
