@@ -10,6 +10,7 @@ export const FUNCIONARIOS: Funcionario[] = [
     sobrenome: "Silva",
     email: "carlos.silva@upe.br",
     isTecnico: true,
+    ativo: true,
   },
   {
     id: "2",
@@ -20,6 +21,7 @@ export const FUNCIONARIOS: Funcionario[] = [
     sobrenome: "Oliveira",
     email: "ana.oliveira@upe.br",
     isTecnico: false,
+    ativo: true,
   },
   {
     id: "3",
@@ -30,6 +32,7 @@ export const FUNCIONARIOS: Funcionario[] = [
     sobrenome: "Souza",
     email: "marcos.souza@upe.br",
     isTecnico: true,
+    ativo: true,
   },
   {
     id: "4",
@@ -40,6 +43,7 @@ export const FUNCIONARIOS: Funcionario[] = [
     sobrenome: "Ferreira",
     email: "julia.ferreira@upe.br",
     isTecnico: false,
+    ativo: true,
   },
   {
     id: "5",
@@ -50,6 +54,7 @@ export const FUNCIONARIOS: Funcionario[] = [
     sobrenome: "Costa",
     email: "roberto.costa@upe.br",
     isTecnico: true,
+    ativo: true,
   },
   {
     id: "6",
@@ -60,6 +65,7 @@ export const FUNCIONARIOS: Funcionario[] = [
     sobrenome: "Ribeiro",
     email: "fernanda.ribeiro@upe.br",
     isTecnico: false,
+    ativo: true,
   },
   {
     id: "7",
@@ -70,6 +76,7 @@ export const FUNCIONARIOS: Funcionario[] = [
     sobrenome: "Almeida",
     email: "ricardo.almeida@upe.br",
     isTecnico: true,
+    ativo: true,
   },
   {
     id: "8",
@@ -80,11 +87,14 @@ export const FUNCIONARIOS: Funcionario[] = [
     sobrenome: "Lima",
     email: "patricia.lima@upe.br",
     isTecnico: false,
+    ativo: true,
   },
 ];
 
-export function getFuncionarios() {
-  return FUNCIONARIOS as Funcionario[];
+export function getFuncionariosAtivos() {
+  return FUNCIONARIOS.filter(
+    (funcionarios) => funcionarios.ativo
+  ) as Funcionario[];
 }
 
 export async function getFuncionarioById(funcionarioId: string) {
@@ -95,15 +105,20 @@ export async function getFuncionarioById(funcionarioId: string) {
 }
 
 export async function deleteFuncionario(funcionarioId: string) {
-  const updatedFuncionarios = FUNCIONARIOS.filter(
-    (funcionario) => funcionario.id !== funcionarioId
+  const funcionarioIndex = FUNCIONARIOS.findIndex(
+    (funcionario) => funcionario.id === funcionarioId
   );
-  FUNCIONARIOS.length = 0;
-  FUNCIONARIOS.push(...updatedFuncionarios);
+  FUNCIONARIOS[funcionarioIndex].ativo = false;
 }
 
 export async function addFuncionario(funcionarioData: Omit<Funcionario, "id">) {
   const fakeId = FUNCIONARIOS.length.toString();
   FUNCIONARIOS.push({ id: fakeId, ...funcionarioData });
   return FUNCIONARIOS.length - 1;
+}
+
+export async function getTecnicos() {
+  return FUNCIONARIOS.filter(
+    (funcionario) => funcionario.isTecnico === true && funcionario.ativo
+  );
 }

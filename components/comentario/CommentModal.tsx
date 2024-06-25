@@ -21,8 +21,8 @@ export default function CommentModal({
   postId,
 }: CommentModalType) {
   const { user } = useAuth();
-  const { mutate: addComment } = useMutation<void, Error, newComentario>({
-    mutationFn: (comentatioData) => addComentario(comentatioData),
+  const { mutate: addComment } = useMutation({
+    mutationFn: addComentario,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["comentarios", postId],
@@ -46,7 +46,7 @@ export default function CommentModal({
   return (
     <BottomSheetFlatList
       ListHeaderComponent={
-        <CommentHeader onComment={submitComentarioHandler} />
+        <CommentHeader onComment={submitComentarioHandler} key={postId} />
       }
       ListEmptyComponent={
         <StyledText textAlign="center">

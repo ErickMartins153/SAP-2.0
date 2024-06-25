@@ -12,10 +12,16 @@ export default function useUpdates() {
 
       if (update.isAvailable) {
         await Updates.fetchUpdateAsync();
-        await Updates.reloadAsync();
+
         Alert.alert(
           "Uma atualização foi encontrada",
-          "Para aplicar a atualização, o aplicativo será reiniciado."
+          "Para aplicar a atualização, o aplicativo será reiniciado.",
+          [
+            {
+              text: "Confirmar",
+              onPress: async () => await Updates.reloadAsync(),
+            },
+          ]
         );
         return true;
       }

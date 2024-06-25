@@ -123,13 +123,18 @@ export default function detalhesPost() {
     >
       <View style={styles.postContent}>
         <View style={styles.userContainer}>
-          <UserAvatar
-            size={64}
-            alignSelf="flex-start"
-            imageURL={selectedFuncionario?.imagemURL}
-          />
-          <StyledText mode="title" style={{ marginHorizontal: "4%", flex: 1 }}>
-            {`${selectedFuncionario?.nome} ${selectedFuncionario?.sobrenome}`}
+          <View style={styles.avatarAndTitle}>
+            <UserAvatar
+              size={64}
+              alignSelf="flex-start"
+              imageURL={selectedFuncionario?.imagemURL}
+            />
+            <StyledText mode="title" style={{ marginHorizontal: "4%" }}>
+              {`${selectedFuncionario?.nome} ${selectedFuncionario?.sobrenome}`}
+            </StyledText>
+          </View>
+          <StyledText>
+            Publicado em: {selectedPost?.horario.toLocaleDateString()}
           </StyledText>
         </View>
       </View>
@@ -174,8 +179,6 @@ const styles = StyleSheet.create({
     marginTop: "8%",
   },
   userContainer: {
-    flexDirection: "row",
-    alignItems: "center",
     paddingBottom: "2%",
     borderBottomWidth: 1,
   },
@@ -185,7 +188,10 @@ const styles = StyleSheet.create({
     paddingVertical: "2%",
     paddingHorizontal: "16%",
   },
-  content: {},
+  avatarAndTitle: {
+    alignItems: "center",
+    flexDirection: "row",
+  },
   imageContainer: {
     aspectRatio: 1,
     width: "90%",

@@ -6,22 +6,48 @@ import FuncionariosModal from "@/components/gerenciar/FuncionariosModal";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
 import { Colors } from "@/constants/Colors";
 import useModal from "@/hooks/useModal";
+import { newFuncionario } from "@/interfaces/Funcionario";
+import { queryClient } from "@/util/queries";
+import { addFuncionario, getTecnicos } from "@/util/requests/funcionarioHTTP";
+import { notBlank } from "@/util/validate";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { BackHandler, StyleSheet, View } from "react-native";
 
-const test = [
-  { text: "Luan Vilaça" },
-  { text: "Pedin doido" },
-  { text: "Ana Oliveira" },
-];
+const defaultFuncionario: newFuncionario = {
+  email: "",
+  isTecnico: false,
+  nome: "",
+  sobrenome: "",
+  ativo: true,
+};
 
 export default function Gerenciar() {
-  const [email, setEmail] = useState("");
+  const [funcionarioData, setFuncionarioData] =
+    useState<newFuncionario>(defaultFuncionario);
   const [supervisor, setSupervisor] = useState("");
   const { changeModalContent, openModal, isVisible, closeModal, clear } =
     useModal();
   const navigation = useNavigation();
+  const {
+    data: tecnicos,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["funcionarios"],
+    queryFn: getTecnicos,
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: addFuncionario,
+    onSuccess: () => {
+      setFuncionarioData(defaultFuncionario);
+      queryClient.invalidateQueries({
+        queryKey: ["funcionarios"],
+      });
+    },
+  });
 
   useLayoutEffect(() => {
     changeModalContent(<FuncionariosModal />);
@@ -54,29 +80,64 @@ export default function Gerenciar() {
     }, [isVisible, closeModal])
   );
 
-  function changeEmailHandler(text: string) {
-    setEmail(text);
+  function updateFuncionarioHandler(field: keyof newFuncionario, text: string) {
+    setFuncionarioData((funcionario) => ({ ...funcionario, [field]: text }));
   }
 
   function selectSupervisorHandler(selectedSupervisor: string) {
     setSupervisor(selectedSupervisor);
   }
 
+  function registerFuncionarioHandler() {
+    if (notBlank(funcionarioData)) {
+      mutate(funcionarioData);
+    }
+  }
+
   return (
-    <MainPageLayout>
-      <View style={styles.mainContainer}>
+    <MainPageLayout isLoading={isLoading}>
+      <View style={styles.gap}>
         <View style={styles.wrapper}>
           <StyledText mode="big" textAlign="center" fontWeight="bold">
-            Cadastrar
+            Cadastrar funcionário
           </StyledText>
           <Input
             placeholder="email@upe.br"
-            onChangeText={changeEmailHandler}
-            value={email}
+            onChangeText={updateFuncionarioHandler.bind(null, "email")}
+            value={funcionarioData.email}
+            key="email"
           />
-          <Select data={test} onSelect={selectSupervisorHandler} search />
-          <View style={styles.buttonContainer}>
-            <Button>Confirmar</Button>
+          <View style={styles.gap}>
+            <Select
+              data={tecnicos!}
+              onSelect={selectSupervisorHandler}
+              search
+              placeholder="Escolha o Supervisor"
+              key="supervisor"
+            />
+
+            <Select
+              data={[{ nome: "Sim" }, { nome: "Não" }]}
+              placeholder="O funcionário é técnico?"
+              onSelect={updateFuncionarioHandler.bind(null, "isTecnico")}
+              key="isTecnico"
+            />
+          </View>
+          <Input
+            placeholder="Nome do funcionário"
+            onChangeText={updateFuncionarioHandler.bind(null, "nome")}
+            value={funcionarioData.nome}
+            key="nome"
+          />
+          <Input
+            placeholder="Sobrenome do funcionário"
+            onChangeText={updateFuncionarioHandler.bind(null, "sobrenome")}
+            value={funcionarioData.sobrenome}
+            style={{ marginTop: 0 }}
+            key="sobrenome"
+          />
+          <View style={styles.marginVertical}>
+            <Button onPress={registerFuncionarioHandler}>Confirmar</Button>
           </View>
         </View>
 
@@ -89,7 +150,7 @@ export default function Gerenciar() {
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
+  gap: {
     gap: 24,
   },
   wrapper: {
@@ -98,7 +159,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderRadius: 4,
   },
-  buttonContainer: {
+  marginVertical: {
     marginVertical: "4%",
   },
 });

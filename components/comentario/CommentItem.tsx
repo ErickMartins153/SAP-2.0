@@ -25,8 +25,8 @@ const CommentItem = ({ comentario }: CommentItemProps) => {
     queryFn: () => getFuncionarioById(comentario?.idAutor!),
   });
 
-  const { mutate: deleteComment } = useMutation<void, Error, string>({
-    mutationFn: (id) => deleteComentario(id),
+  const { mutate: deleteComment } = useMutation({
+    mutationFn: deleteComentario,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["comentarios", comentario.idPost],

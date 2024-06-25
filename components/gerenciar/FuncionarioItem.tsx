@@ -4,12 +4,23 @@ import UserAvatar from "../UI/UserAvatar";
 import { Colors } from "@/constants/Colors";
 import Funcionario from "@/interfaces/Funcionario";
 import { memo } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { deleteFuncionario } from "@/util/requests/funcionarioHTTP";
+import { queryClient } from "@/util/queries";
 
 type FuncionarioItemProps = {
   funcionario: Funcionario;
 };
 
 const FuncionarioItem = ({ funcionario }: FuncionarioItemProps) => {
+  const { mutate } = useMutation({
+    mutationFn: deleteFuncionario,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["funcionarios"],
+      }),
+  });
+
   function confirmHandler() {
     Alert.alert(
       "Você tem certeza?",
@@ -22,7 +33,7 @@ const FuncionarioItem = ({ funcionario }: FuncionarioItemProps) => {
   }
 
   function deleteHandler() {
-    console.log("deletou funcionário");
+    mutate(funcionario.id);
   }
 
   return (
@@ -31,7 +42,7 @@ const FuncionarioItem = ({ funcionario }: FuncionarioItemProps) => {
       android_ripple={{ color: Colors.lightRipple }}
       onPress={confirmHandler}
     >
-      <UserAvatar size={64} />
+      <UserAvatar size={64} imageURL={funcionario.imagemURL} />
       <View style={styles.mainContainer}>
         <StyledText mode="small" fontWeight="bold">
           {`${funcionario?.nome} ${funcionario.sobrenome}`}
