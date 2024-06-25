@@ -4,7 +4,7 @@ import {
 } from "@react-navigation/drawer";
 import { Caption, Drawer, Title } from "react-native-paper";
 
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, View } from "react-native";
 import NavbarItem from "./NavbarItem";
 import useAuth from "@/hooks/useAuth";
 import UserAvatar from "../UI/UserAvatar";
@@ -44,7 +44,9 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
       <DrawerContentScrollView {...props}>
         <View>
           <View style={styles.avatar}>
-            <UserAvatar size={144} imageURL={funcionarioData?.imagemURL} />
+            <Pressable onPress={handleNavigation.bind(null, "perfil")}>
+              <UserAvatar size={144} imageURL={funcionarioData?.imagemURL} />
+            </Pressable>
             <View style={styles.userInfoSection}>
               <Title
                 style={styles.userInfoText}
@@ -55,13 +57,6 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
             </View>
           </View>
           <Drawer.Section>
-            <NavbarItem
-              label="Meu Perfil"
-              icon="user"
-              size={50}
-              onPress={handleNavigation}
-              page="perfil"
-            />
             <NavbarItem
               label="Mural"
               icon="message-square"

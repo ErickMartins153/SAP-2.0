@@ -79,7 +79,10 @@ export default function AddPost({ toggleModal, ...props }: AddPostProps) {
 
   return (
     <Modal animationType="slide" onRequestClose={toggleModal} {...props}>
-      <ScrollView contentContainerStyle={{ paddingBottom: "4%" }}>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: "4%" }}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.header}>
           <Pressable
             style={{ flexDirection: "row", alignItems: "center" }}

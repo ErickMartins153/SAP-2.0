@@ -1,28 +1,34 @@
 import { type StyleProp, StyleSheet, View, type ViewProps } from "react-native";
-import { Avatar } from "react-native-paper";
+import { Image } from "expo-image";
+
 import { Colors } from "@/constants/Colors";
+import blurhash from "@/util/blurhash";
 
 type UserAvatarProps = {
   size: number;
   style?: StyleProp<ViewProps>;
   alignSelf?: "flex-start" | "center";
   imageURL?: string;
+  blurHash?: boolean;
 };
-
-const placeholder = require("@/assets/images/avatar.png");
 
 export default function UserAvatar({
   size,
   style,
   alignSelf = "center",
   imageURL,
+  blurHash,
 }: UserAvatarProps) {
   return (
     <View style={[styles.avatarContainer, style, { alignSelf }]}>
-      <Avatar.Image
-        style={styles.avatar}
-        source={imageURL ? { uri: imageURL } : placeholder}
-        size={size}
+      <Image
+        style={{ width: size, height: size, borderRadius: size / 2 }}
+        source={
+          imageURL ? { uri: imageURL } : require("@/assets/images/avatar.png")
+        }
+        placeholder={
+          blurHash ? { blurhash } : require("@/assets/images/avatar.png")
+        }
       />
     </View>
   );
@@ -36,7 +42,5 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignSelf: "flex-start",
   },
-  avatar: {
-    borderRadius: 500,
-  },
+  avatar: {},
 });

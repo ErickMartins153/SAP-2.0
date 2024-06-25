@@ -15,7 +15,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView
       style={{ flex: 1 }}
-      onLayout={async () => checkUpdate()}
+      onLayout={async () => await checkUpdate()}
     >
       <StatusBar style="auto" backgroundColor="transparent" translucent />
       <QueryClientProvider client={queryClient}>

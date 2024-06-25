@@ -3,7 +3,7 @@ import BottomSheet, {
   BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { StyleSheet } from "react-native";
 import useModal from "@/hooks/useModal";
 
@@ -33,10 +33,10 @@ export default function Modal() {
     bottomSheetRef.current?.close(animationConfig);
   }
 
-  function closeBackdropHandler() {
+  const closeBackdropHandler = useCallback(() => {
     bottomSheetRef.current?.close(animationConfig);
     closeModal();
-  }
+  }, [closeModal]);
 
   return (
     <BottomSheet

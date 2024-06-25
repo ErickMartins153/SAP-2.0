@@ -41,7 +41,6 @@ export default function LoginForm({ onShowModal }: LoginFormType) {
           <Input
             onChangeText={InputChangeHandler.bind(null, "senha")}
             placeholder="Digite sua senha"
-            style={{}}
             value={inputs.senha}
             mode="password"
           />

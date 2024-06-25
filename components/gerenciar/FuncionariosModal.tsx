@@ -9,7 +9,7 @@ import Icon from "../general/Icon";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import StyledText from "../general/StyledText";
 import { useQuery } from "@tanstack/react-query";
-import { getFuncionarios } from "@/util/requests/funcionarioHTTP";
+import { getFuncionariosAtivos } from "@/util/requests/funcionarioHTTP";
 
 export default function FuncionariosModal() {
   const {
@@ -18,7 +18,7 @@ export default function FuncionariosModal() {
     isError,
   } = useQuery({
     queryKey: ["funcionarios"],
-    queryFn: getFuncionarios,
+    queryFn: getFuncionariosAtivos,
   });
 
   const [search, setSearch] = useState("");

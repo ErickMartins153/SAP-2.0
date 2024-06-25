@@ -20,6 +20,7 @@ export default function Input({
   maxLength = 32,
   mode,
   leftIcon,
+  style: customStyle,
   ...rest
 }: InputProps) {
   const [hide, setHide] = useState(false);
@@ -33,7 +34,7 @@ export default function Input({
   }
 
   return (
-    <View style={[styles.container, rest.style]}>
+    <View style={[styles.container, customStyle]}>
       {leftIcon && <View style={{ paddingRight: "4%" }}>{leftIcon}</View>}
       <TextInput
         style={styles.input}
@@ -68,13 +69,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  icon: {
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "2%",
-  },
   input: {
-    width: "100%",
+    width: "90%",
     textAlign: "justify",
     fontSize: 16,
   },

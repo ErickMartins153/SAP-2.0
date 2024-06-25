@@ -5,12 +5,17 @@ import { StyleSheet, View } from "react-native";
 import { useNavigation } from "expo-router";
 import Icon from "../general/Icon";
 import useModal from "@/hooks/useModal";
+import Loading from "../general/Loading";
 
 type PageLayoutProps = {
   children: ReactNode;
+  isLoading?: boolean;
 };
 
-export default function MainPageLayout({ children }: PageLayoutProps) {
+export default function MainPageLayout({
+  children,
+  isLoading = false,
+}: PageLayoutProps) {
   const { isVisible } = useModal();
   const navigation = useNavigation();
 
@@ -38,7 +43,11 @@ export default function MainPageLayout({ children }: PageLayoutProps) {
   return (
     <>
       <View style={styles.rootLayout}>
-        <View style={styles.contentStyle}>{children}</View>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <View style={styles.contentStyle}>{children}</View>
+        )}
       </View>
     </>
   );
