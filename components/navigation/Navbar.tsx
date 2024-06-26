@@ -72,13 +72,15 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               page="horarios"
             />
 
-            <NavbarItem
-              label="Gerenciar"
-              icon="users"
-              size={50}
-              onPress={handleNavigation}
-              page="gerenciar"
-            />
+            {user?.isTecnico && (
+              <NavbarItem
+                label="Gerenciar"
+                icon="users"
+                size={50}
+                onPress={handleNavigation}
+                page="gerenciar"
+              />
+            )}
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>

@@ -21,9 +21,10 @@ import { getPostById } from "@/util/requests/postHTTP";
 import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 import blurhash from "@/util/blurhash";
 import { getComentariosByPost } from "@/util/requests/comentarioHTTP";
-import Loading from "@/components/general/Loading";
+import useAuth from "@/hooks/useAuth";
 
 export default function detalhesPost() {
+  const { user } = useAuth();
   const { postId } = useLocalSearchParams<{ postId: string }>();
   const {
     data: selectedPost,
@@ -118,7 +119,9 @@ export default function detalhesPost() {
     <StackPageLayout
       isLoading={isLoadingFuncionario}
       HeadRight={
-        <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
+        (user?.isTecnico || user?.id === selectedFuncionario?.id) && (
+          <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
+        )
       }
     >
       <View style={styles.postContent}>
@@ -134,7 +137,8 @@ export default function detalhesPost() {
             </StyledText>
           </View>
           <StyledText>
-            Publicado em: {selectedPost?.horario.toLocaleDateString()}
+            Publicado em: {selectedPost?.horario.toLocaleDateString()} às{" "}
+            {selectedPost?.horario.toLocaleTimeString()}
           </StyledText>
         </View>
       </View>
@@ -160,16 +164,13 @@ export default function detalhesPost() {
       <View
         style={{
           borderTopWidth: 1,
-          paddingTop: "8%",
-          flexGrow: 1,
-          justifyContent: "center",
+          paddingVertical: "8%",
         }}
       >
         <Button onPress={openModal} disabled={isLoadingComentarios}>
           Ver comentários
         </Button>
       </View>
-      <View style={styles.submitContainer}></View>
     </StackPageLayout>
   );
 }

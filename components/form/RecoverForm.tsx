@@ -13,7 +13,6 @@ import Input from "../general/Input";
 import { Colors } from "@/constants/Colors";
 import { useState } from "react";
 import Button from "../general/Button";
-import { router } from "expo-router";
 
 type RecoverForm = {
   isVisible: boolean;
@@ -42,7 +41,13 @@ export default function RecoverForm({ isVisible, toggleModal }: RecoverForm) {
       animationType="slide"
       onRequestClose={toggleModal}
     >
-      <ScrollView contentContainerStyle={{ paddingBottom: "4%" }}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingBottom: "4%",
+          backgroundColor: Colors.background,
+          flexGrow: 1,
+        }}
+      >
         <View style={styles.header}>
           <Pressable
             style={{ flexDirection: "row", alignItems: "center" }}
@@ -56,8 +61,8 @@ export default function RecoverForm({ isVisible, toggleModal }: RecoverForm) {
         </View>
         <View style={styles.rootContainer}>
           <Image
-            style={styles.image}
-            source={require("@/assets/images/logo.png")}
+            source={require("@/assets/images/logoSAP.png")}
+            resizeMode="center"
           />
           <View style={styles.input}>
             <Input
@@ -78,12 +83,9 @@ const styles = StyleSheet.create({
   rootContainer: {
     alignItems: "center",
   },
-  image: {
-    marginTop: "34%",
-  },
   header: {
     flexDirection: "row",
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.background,
     elevation: 4,
     paddingVertical: "4%",
     paddingRight: "2%",
@@ -93,6 +95,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
+    gap: 16,
     paddingHorizontal: "4%",
   },
 });

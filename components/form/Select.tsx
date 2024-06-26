@@ -22,6 +22,7 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
   ({ placeholder, onSelect: onSelection, ...props }, ref) => {
     return (
       <SelectDropdown
+        ref={ref}
         key={placeholder}
         searchInputStyle={styles.dropdownSearchInputStyle}
         searchInputTxtColor={Colors.text}

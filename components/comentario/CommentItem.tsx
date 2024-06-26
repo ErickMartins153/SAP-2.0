@@ -9,12 +9,14 @@ import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 import { deleteComentario } from "@/util/requests/comentarioHTTP";
 import { queryClient } from "@/util/queries";
 import { memo } from "react";
+import useAuth from "@/hooks/useAuth";
 
 type CommentItemProps = {
   comentario: Comentario;
 };
 
 const CommentItem = ({ comentario }: CommentItemProps) => {
+  const { user } = useAuth();
   const {
     data: selectedFuncionario,
     isLoading,
@@ -35,14 +37,16 @@ const CommentItem = ({ comentario }: CommentItemProps) => {
   });
 
   function confirmDeleteHandler() {
-    Alert.alert(
-      "Tem certeza?",
-      "Você tem certeza que deseja remover este comentário?",
-      [
-        { text: "Cancelar" },
-        { text: "Confirmar", onPress: () => deleteComment(comentario.id) },
-      ]
-    );
+    if (user!.isTecnico || user?.id === comentario.idAutor) {
+      Alert.alert(
+        "Tem certeza?",
+        "Você tem certeza que deseja remover este comentário?",
+        [
+          { text: "Cancelar" },
+          { text: "Confirmar", onPress: () => deleteComment(comentario.id) },
+        ]
+      );
+    }
   }
 
   return (

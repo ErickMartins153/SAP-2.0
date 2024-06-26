@@ -12,8 +12,15 @@ import { addFuncionario, getTecnicos } from "@/util/requests/funcionarioHTTP";
 import { notBlank } from "@/util/validate";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { router, useFocusEffect, useNavigation } from "expo-router";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { BackHandler, StyleSheet, View } from "react-native";
+import SelectDropdown from "react-native-select-dropdown";
 
 const defaultFuncionario: newFuncionario = {
   email: "",
@@ -26,7 +33,8 @@ const defaultFuncionario: newFuncionario = {
 export default function Gerenciar() {
   const [funcionarioData, setFuncionarioData] =
     useState<newFuncionario>(defaultFuncionario);
-  const [supervisor, setSupervisor] = useState("");
+  const supervisoresRef = useRef<SelectDropdown>(null);
+  const isTecnicoRef = useRef<SelectDropdown>(null);
   const { changeModalContent, openModal, isVisible, closeModal, clear } =
     useModal();
   const navigation = useNavigation();
@@ -43,6 +51,8 @@ export default function Gerenciar() {
     mutationFn: addFuncionario,
     onSuccess: () => {
       setFuncionarioData(defaultFuncionario);
+      supervisoresRef.current!.reset();
+      isTecnicoRef.current!.reset();
       queryClient.invalidateQueries({
         queryKey: ["funcionarios"],
       });
@@ -84,10 +94,6 @@ export default function Gerenciar() {
     setFuncionarioData((funcionario) => ({ ...funcionario, [field]: text }));
   }
 
-  function selectSupervisorHandler(selectedSupervisor: string) {
-    setSupervisor(selectedSupervisor);
-  }
-
   function registerFuncionarioHandler() {
     if (notBlank(funcionarioData)) {
       mutate(funcionarioData);
@@ -109,14 +115,16 @@ export default function Gerenciar() {
           />
           <View style={styles.gap}>
             <Select
+              ref={supervisoresRef}
               data={tecnicos!}
-              onSelect={selectSupervisorHandler}
+              onSelect={updateFuncionarioHandler.bind(null, "supervisor")}
               search
               placeholder="Escolha o Supervisor"
               key="supervisor"
             />
 
             <Select
+              ref={isTecnicoRef}
               data={[{ nome: "Sim" }, { nome: "Não" }]}
               placeholder="O funcionário é técnico?"
               onSelect={updateFuncionarioHandler.bind(null, "isTecnico")}
@@ -154,6 +162,7 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   wrapper: {
+    marginTop: "4%",
     padding: "4%",
     backgroundColor: Colors.white,
     elevation: 4,

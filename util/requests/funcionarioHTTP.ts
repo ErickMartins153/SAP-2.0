@@ -6,9 +6,9 @@ export const FUNCIONARIOS: Funcionario[] = [
     imagemURL: `https://avatar.iran.liara.run/public/${Math.floor(
       Math.random() * 100
     )}`,
-    nome: "Carlos",
-    sobrenome: "Silva",
-    email: "carlos.silva@upe.br",
+    nome: "Erick",
+    sobrenome: "Martins",
+    email: "",
     isTecnico: true,
     ativo: true,
   },
@@ -19,7 +19,7 @@ export const FUNCIONARIOS: Funcionario[] = [
     )}`,
     nome: "Ana",
     sobrenome: "Oliveira",
-    email: "ana.oliveira@upe.br",
+    email: "ana",
     isTecnico: false,
     ativo: true,
   },
