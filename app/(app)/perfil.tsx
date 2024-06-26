@@ -31,14 +31,14 @@ export default function ProfileScreen() {
           {funcionarioData?.isTecnico ? "Técnico" : "Estagiário"}
         </StyledText>
         <View style={styles.buttonsContainer}>
-          <Button style={styles.button} onPress={() => {}}>
+          {/* <Button style={styles.button} onPress={() => {}}>
             Dados pessoais
+          </Button> */}
+          <Button style={styles.button} onPress={() => {}}>
+            Estatísticas
           </Button>
           <Button style={styles.button} onPress={() => {}}>
             Meus supervisionados
-          </Button>
-          <Button style={styles.button} onPress={() => {}}>
-            Estatísticas
           </Button>
         </View>
       </View>
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     marginTop: 100,
   },
   userContainer: {
+    marginTop: "4%",
     alignItems: "center",
   },
   userText: {
@@ -64,8 +65,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   buttonsContainer: {
+    marginTop: "12%",
     height: "54%",
-    justifyContent: "space-evenly",
+    gap: 24,
   },
   button: {
     paddingHorizontal: "18%",

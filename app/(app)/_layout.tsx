@@ -23,6 +23,7 @@ export default function Layout() {
         },
         headerBackgroundContainerStyle: {
           elevation: 2,
+          backgroundColor: Colors.background,
         },
         drawerStyle: {
           maxWidth: Dimensions.get("window").width / 1.5,

@@ -9,7 +9,6 @@ type UserAvatarProps = {
   style?: StyleProp<ViewProps>;
   alignSelf?: "flex-start" | "center";
   imageURL?: string;
-  blurHash?: boolean;
 };
 
 export default function UserAvatar({
@@ -17,7 +16,6 @@ export default function UserAvatar({
   style,
   alignSelf = "center",
   imageURL,
-  blurHash,
 }: UserAvatarProps) {
   return (
     <View style={[styles.avatarContainer, style, { alignSelf }]}>
@@ -26,9 +24,7 @@ export default function UserAvatar({
         source={
           imageURL ? { uri: imageURL } : require("@/assets/images/avatar.png")
         }
-        placeholder={
-          blurHash ? { blurhash } : require("@/assets/images/avatar.png")
-        }
+        placeholder={{ blurhash }}
       />
     </View>
   );
