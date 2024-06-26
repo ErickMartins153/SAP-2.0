@@ -33,9 +33,9 @@ export default function Login() {
       >
         <Image
           style={styles.image}
-          source={require("@/assets/images/logo.png")}
+          source={require("@/assets/images/logoSAP.png")}
+          resizeMode="center"
         />
-
         <LoginForm onShowModal={toggleModalHandler} />
       </ScrollView>
       <RecoverForm isVisible={isVisible} toggleModal={toggleModalHandler} />
@@ -60,5 +60,6 @@ const styles = StyleSheet.create({
   },
   image: {
     marginTop: "34%",
+    maxHeight: 200,
   },
 });

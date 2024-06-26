@@ -1,33 +1,34 @@
 import { Pressable, StyleSheet, View } from "react-native";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../general/Input";
 import Button from "../general/Button";
 import useAuth from "@/hooks/useAuth";
 import { router } from "expo-router";
 import StyledText from "../general/StyledText";
-
-type LoginContent = {
-  email: string;
-  senha: string;
-};
+import { Credentials } from "@/util/requests/authHTTP";
 
 type LoginFormType = {
   onShowModal: () => void;
 };
 
 export default function LoginForm({ onShowModal }: LoginFormType) {
-  const [inputs, setInputs] = useState<LoginContent>({ email: "", senha: "" });
-  const { login } = useAuth();
+  const [inputs, setInputs] = useState<Credentials>({ email: "", senha: "" });
+  const { login, user } = useAuth();
 
-  function InputChangeHandler(field: keyof LoginContent, text: string) {
+  function InputChangeHandler(field: keyof Credentials, text: string) {
     setInputs((prevInput) => ({ ...prevInput, [field]: text }));
   }
 
   function onSubmitHandler() {
-    login(inputs.email);
-    router.replace("/");
+    login(inputs);
   }
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/");
+    }
+  }, [user]);
 
   return (
     <View>
