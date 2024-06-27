@@ -1,20 +1,10 @@
-import {
-  Image,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, ScrollView, StyleSheet } from "react-native";
 import { useState } from "react";
 
 import { Colors } from "@/constants/Colors";
 import LoginForm from "@/components/form/LoginForm";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
-import StyledText from "@/components/general/StyledText";
-import Icon from "@/components/general/Icon";
-import Input from "@/components/general/Input";
+
 import RecoverForm from "@/components/form/RecoverForm";
 
 export default function Login() {

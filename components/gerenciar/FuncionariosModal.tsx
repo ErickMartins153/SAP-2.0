@@ -1,5 +1,5 @@
 import Funcionario from "@/interfaces/Funcionario";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import Input from "../general/Input";
 
 import FuncionarioItem from "./FuncionarioItem";
@@ -8,8 +8,12 @@ import { useState } from "react";
 import Icon from "../general/Icon";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import StyledText from "../general/StyledText";
-import { useQuery } from "@tanstack/react-query";
-import { getFuncionariosAtivos } from "@/util/requests/funcionarioHTTP";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  deleteFuncionario,
+  getFuncionariosAtivos,
+} from "@/util/requests/funcionarioHTTP";
+import { queryClient } from "@/util/queries";
 
 export default function FuncionariosModal() {
   const {
@@ -20,6 +24,28 @@ export default function FuncionariosModal() {
     queryKey: ["funcionarios"],
     queryFn: getFuncionariosAtivos,
   });
+  const { mutate } = useMutation({
+    mutationFn: deleteFuncionario,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["funcionarios"],
+      }),
+  });
+
+  function confirmHandler(funcionario: Funcionario) {
+    Alert.alert(
+      "Você tem certeza?",
+      `Uma vez deletado, ${funcionario.nome} ${funcionario.sobrenome} precisará ser registrado novamente`,
+      [
+        { text: "Cancelar", isPreferred: true },
+        { text: "Confirmar", onPress: () => deleteHandler(funcionario.id) },
+      ]
+    );
+  }
+
+  function deleteHandler(funcionarioId: string) {
+    mutate(funcionarioId);
+  }
 
   const [search, setSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<Funcionario[]>([]);
@@ -37,7 +63,9 @@ export default function FuncionariosModal() {
   }
 
   function renderFuncionariosHandler(funcionario: Funcionario) {
-    return <FuncionarioItem funcionario={funcionario} />;
+    return (
+      <FuncionarioItem funcionario={funcionario} onSelect={confirmHandler} />
+    );
   }
 
   return (

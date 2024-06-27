@@ -1,46 +1,21 @@
-import { Alert, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import StyledText from "../general/StyledText";
 import UserAvatar from "../UI/UserAvatar";
 import { Colors } from "@/constants/Colors";
 import Funcionario from "@/interfaces/Funcionario";
 import { memo } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { deleteFuncionario } from "@/util/requests/funcionarioHTTP";
-import { queryClient } from "@/util/queries";
 
 type FuncionarioItemProps = {
   funcionario: Funcionario;
+  onSelect: (funcionario: Funcionario) => void;
 };
 
-const FuncionarioItem = ({ funcionario }: FuncionarioItemProps) => {
-  const { mutate } = useMutation({
-    mutationFn: deleteFuncionario,
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["funcionarios"],
-      }),
-  });
-
-  function confirmHandler() {
-    Alert.alert(
-      "Você tem certeza?",
-      `Uma vez deletado, ${funcionario.nome} ${funcionario.sobrenome} precisará ser registrado novamente`,
-      [
-        { text: "Cancelar", isPreferred: true },
-        { text: "Confirmar", onPress: deleteHandler },
-      ]
-    );
-  }
-
-  function deleteHandler() {
-    mutate(funcionario.id);
-  }
-
+const FuncionarioItem = ({ funcionario, onSelect }: FuncionarioItemProps) => {
   return (
     <Pressable
       style={({ pressed }) => [styles.rootContainer, pressed && styles.pressed]}
       android_ripple={{ color: Colors.lightRipple }}
-      onPress={confirmHandler}
+      onPress={() => onSelect(funcionario)}
     >
       <UserAvatar size={64} imageURL={funcionario.imagemURL} />
       <View style={styles.mainContainer}>

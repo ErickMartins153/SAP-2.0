@@ -1,7 +1,7 @@
 import Calendar from "@/components/horario/Calendar";
 
 import MainPageLayout from "@/components/layouts/MainPageLayout";
-import useModal from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useModal";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useEffect, useLayoutEffect } from "react";
 import { BackHandler } from "react-native";
@@ -9,7 +9,7 @@ import RoomModal from "@/components/horario/RoomModal";
 
 export default function Horarios() {
   const navigation = useNavigation();
-  const { clear, isVisible, closeModal, changeModalContent } = useModal();
+  const { clear, isVisible, closeModal, changeModalContent } = useBottomSheet();
 
   useLayoutEffect(() => {
     changeModalContent(<RoomModal />);

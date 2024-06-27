@@ -5,7 +5,7 @@ import StyledText from "@/components/general/StyledText";
 import FuncionariosModal from "@/components/gerenciar/FuncionariosModal";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
 import { Colors } from "@/constants/Colors";
-import useModal from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useModal";
 import { newFuncionario } from "@/interfaces/Funcionario";
 import { queryClient } from "@/util/queries";
 import { addFuncionario, getTecnicos } from "@/util/requests/funcionarioHTTP";
@@ -36,7 +36,7 @@ export default function Gerenciar() {
   const supervisoresRef = useRef<SelectDropdown>(null);
   const isTecnicoRef = useRef<SelectDropdown>(null);
   const { changeModalContent, openModal, isVisible, closeModal, clear } =
-    useModal();
+    useBottomSheet();
   const navigation = useNavigation();
   const {
     data: tecnicos,
