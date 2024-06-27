@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import Comentario, { newComentario } from "@/interfaces/Comentario";
+import Comentario from "@/interfaces/Comentario";
 
 import CommentItem from "./CommentItem";
 import CommentHeader from "./CommentHeader";

@@ -5,19 +5,20 @@ import BottomSheet, {
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { StyleSheet } from "react-native";
-import useModal from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useModal";
 
 import { Easing } from "react-native-reanimated";
 import { Colors } from "@/constants/Colors";
 
 const animationConfig = {
-  duration: 500,
+  duration: 300,
   easing: Easing.out(Easing.quad),
 };
 
-export default function Modal() {
+export default function Bottom() {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { isVisible, closeModal, onSelectValue, modalContent } = useModal();
+  const { isVisible, closeModal, onSelectValue, modalContent } =
+    useBottomSheet();
   const snapPoints = useMemo(() => ["50%", "80%"], []);
 
   useEffect(() => {

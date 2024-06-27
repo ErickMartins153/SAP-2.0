@@ -3,11 +3,11 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { QueryClientProvider } from "@tanstack/react-query";
 
-import Modal from "@/components/general/Modal";
+import Bottom from "@/components/general/Bottom";
 import AuthContextProvider from "@/context/auth";
-import ModalContextProvider from "@/context/modal";
 import { queryClient } from "@/util/queries";
 import useUpdates from "@/hooks/useUpdates";
+import BottomContextProvider from "@/context/modal";
 
 export default function RootLayout() {
   const { isChecking, checkUpdate } = useUpdates();
@@ -20,10 +20,10 @@ export default function RootLayout() {
       <StatusBar style="auto" backgroundColor="transparent" translucent />
       <QueryClientProvider client={queryClient}>
         <AuthContextProvider>
-          <ModalContextProvider>
+          <BottomContextProvider>
             <Slot />
-            <Modal />
-          </ModalContextProvider>
+            <Bottom />
+          </BottomContextProvider>
         </AuthContextProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>

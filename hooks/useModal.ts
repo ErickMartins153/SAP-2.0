@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { ModalContext } from "@/context/modal";
+import { BottomSheetContext } from "@/context/modal";
 
-export default function useModal() {
-  return useContext(ModalContext);
+export default function useBottomSheet() {
+  return useContext(BottomSheetContext);
 }

@@ -1,20 +1,16 @@
-import { FlatList, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import StyledText from "../general/StyledText";
 import Sala, { SALAS, TipoSala } from "@/interfaces/Sala";
 import Button from "../general/Button";
-import useModal from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useModal";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
 export default function RoomModal() {
-  const { onSelectValue } = useModal();
+  const { onSelectValue } = useBottomSheet();
   function renderSalaHandler(sala: Sala) {
-    let content: string;
+    let content = `Sala ${sala.idSala}`;
     if (sala.tipoSala === TipoSala.GRUPO) {
-      content = "Sala de Grupo";
-    } else if (sala.tipoSala === TipoSala.INDIVIDUAL) {
-      content = `Sala ${sala.idSala}`;
-    } else {
-      content = "Sala Infantil";
+      content += " (grupo)";
     }
     return <Button onPress={() => onSelectValue(content)}>{content}</Button>;
   }

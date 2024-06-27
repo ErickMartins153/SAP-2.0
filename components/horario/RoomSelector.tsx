@@ -3,10 +3,10 @@ import { Pressable, StyleSheet } from "react-native";
 import StyledText from "../general/StyledText";
 import Icon from "../general/Icon";
 import { Colors } from "@/constants/Colors";
-import useModal from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useModal";
 
 export default function RoomSelector() {
-  const { openModal, selectedValue } = useModal();
+  const { openModal, selectedValue } = useBottomSheet();
 
   return (
     <Pressable

@@ -11,7 +11,7 @@ interface ModalContextType {
   clear: () => void;
 }
 
-export const ModalContext = createContext<ModalContextType>({
+export const BottomSheetContext = createContext<ModalContextType>({
   isVisible: false,
   openModal: () => {},
   closeModal: () => {},
@@ -21,7 +21,7 @@ export const ModalContext = createContext<ModalContextType>({
   clear: () => {},
 });
 
-export default function ModalContextProvider({
+export default function BottomContextProvider({
   children,
 }: {
   children: ReactNode;
@@ -65,6 +65,8 @@ export default function ModalContextProvider({
   };
 
   return (
-    <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
+    <BottomSheetContext.Provider value={value}>
+      {children}
+    </BottomSheetContext.Provider>
   );
 }
