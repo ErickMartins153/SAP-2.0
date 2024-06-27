@@ -14,7 +14,10 @@ export const SALAS: Sala[] = [
     idSala: "1",
     tipoSala: TipoSala.INDIVIDUAL,
   },
-
+  {
+    idSala: "2",
+    tipoSala: TipoSala.INFANTIL,
+  },
   {
     idSala: "3",
     tipoSala: TipoSala.INDIVIDUAL,
@@ -28,15 +31,11 @@ export const SALAS: Sala[] = [
     tipoSala: TipoSala.INDIVIDUAL,
   },
   {
-    idSala: "7",
-    tipoSala: TipoSala.INDIVIDUAL,
-  },
-  {
-    idSala: "2",
-    tipoSala: TipoSala.INFANTIL,
-  },
-  {
     idSala: "6",
     tipoSala: TipoSala.GRUPO,
+  },
+  {
+    idSala: "7",
+    tipoSala: TipoSala.INDIVIDUAL,
   },
 ];

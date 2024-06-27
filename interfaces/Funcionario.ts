@@ -6,7 +6,7 @@ export default interface Funcionario {
   email: string;
   isTecnico: boolean;
   ativo: boolean;
-  supervisor?: { nome: string; imagemURL?: string };
+  supervisor?: { id: string; nome: string; imagemURL?: string };
 }
 
 export type newFuncionario = Omit<Funcionario, "id">;

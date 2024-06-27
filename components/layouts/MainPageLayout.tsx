@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 
 import { useNavigation } from "expo-router";
 import Icon from "../general/Icon";
-import useModal from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useModal";
 import Loading from "../general/Loading";
 
 type PageLayoutProps = {
@@ -16,7 +16,7 @@ export default function MainPageLayout({
   children,
   isLoading = false,
 }: PageLayoutProps) {
-  const { isVisible } = useModal();
+  const { isVisible } = useBottomSheet();
   const navigation = useNavigation();
 
   useEffect(() => {

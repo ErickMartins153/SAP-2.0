@@ -13,7 +13,7 @@ import { Colors } from "@/constants/Colors";
 import Icon from "@/components/general/Icon";
 import StyledText from "@/components/general/StyledText";
 import UserAvatar from "@/components/UI/UserAvatar";
-import useModal from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useModal";
 import CommentModal from "@/components/comentario/CommentModal";
 import Button from "@/components/general/Button";
 import StackPageLayout from "@/components/layouts/StackPageLayout";
@@ -63,7 +63,7 @@ export default function detalhesPost() {
 
   const navigation = useNavigation();
   const { changeModalContent, openModal, isVisible, closeModal, clear } =
-    useModal();
+    useBottomSheet();
 
   useLayoutEffect(() => {
     if (!isLoadingComentarios && postId) {
@@ -117,7 +117,9 @@ export default function detalhesPost() {
 
   return (
     <StackPageLayout
-      isLoading={isLoadingFuncionario}
+      isLoading={
+        isLoadingFuncionario || isLoadingComentarios || isLoadingFuncionario
+      }
       HeadRight={
         (user?.isTecnico || user?.id === selectedFuncionario?.id) && (
           <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
@@ -142,7 +144,10 @@ export default function detalhesPost() {
           </StyledText>
         </View>
       </View>
-      <ScrollView contentContainerStyle={styles.description}>
+      <ScrollView
+        contentContainerStyle={styles.description}
+        showsVerticalScrollIndicator={false}
+      >
         <StyledText mode="title" fontWeight="bold">
           {selectedPost?.titulo}
         </StyledText>

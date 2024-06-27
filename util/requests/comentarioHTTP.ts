@@ -107,13 +107,6 @@ export function getComentariosByPost(postId: string) {
   return filteredComentarios;
 }
 
-export async function getComentarioById(comentarioId: string) {
-  const selectedComentario = COMENTARIOS.find(
-    (comentario) => comentario.id === comentarioId
-  );
-  return selectedComentario as Comentario;
-}
-
 export async function deleteComentario(ComentarioId: string) {
   const updatedComentario = COMENTARIOS.filter(
     (comentario) => comentario.id !== ComentarioId

@@ -19,23 +19,23 @@ export default function useUpdates() {
           [
             {
               text: "Confirmar",
-              onPress: async () => await Updates.reloadAsync(),
+              onPress: triggerReload,
             },
           ]
         );
         return true;
       }
+
+      async function triggerReload() {
+        await Updates.reloadAsync();
+      }
     } catch (error) {
       console.log(error);
-
-      // Alert.alert(
-      //   "Não foi possivel atualizar o aplicativo",
-      //   "Por favor, tente novamente."
-      // );
     } finally {
       setIsChecking(false);
       return false;
     }
   }
+
   return { isChecking, checkUpdate };
 }
