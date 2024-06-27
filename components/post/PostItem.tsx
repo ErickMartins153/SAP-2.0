@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import Post from "@/interfaces/Post";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import Badge from "../UI/Badge";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";

@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import Sala, { SALAS, TipoSala } from "@/interfaces/Sala";
 import Button from "../general/Button";
 import useBottomSheet from "@/hooks/useModal";

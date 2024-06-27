@@ -1,7 +1,7 @@
 import Select from "@/components/form/Select";
 import Button from "@/components/general/Button";
 import Input from "@/components/general/Input";
-import StyledText from "@/components/general/StyledText";
+import StyledText from "@/components/UI/StyledText";
 import FuncionariosModal from "@/components/gerenciar/FuncionariosModal";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
 import { Colors } from "@/constants/Colors";

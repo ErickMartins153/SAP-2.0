@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View, Text, Alert } from "react-native";
 import { Colors } from "@/constants/Colors";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 
 type CalendarItemProps = {
   id: string | number;

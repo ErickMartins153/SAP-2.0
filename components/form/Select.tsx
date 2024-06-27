@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import SelectDropdown, {
   type SelectDropdownProps,
 } from "react-native-select-dropdown";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import Icon from "../general/Icon";
 import { Colors } from "@/constants/Colors";
 

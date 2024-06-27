@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import Icon from "../general/Icon";
 import { router } from "expo-router";
-import Loading from "../general/Loading";
+import Loading from "../UI/Loading";
 
 type StackPageLayoutProps = {
   children: ReactNode;

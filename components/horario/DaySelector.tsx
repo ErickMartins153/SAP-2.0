@@ -4,7 +4,7 @@ import ptBR from "date-fns/locale/pt-BR";
 import { addDays, format, getDate, startOfWeek } from "date-fns";
 
 import { Colors } from "@/constants/Colors";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import { type Day } from "./Calendar";
 
 const todayDate = new Date();

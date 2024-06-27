@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import Icon from "../general/Icon";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import Input from "../general/Input";
 import { Colors } from "@/constants/Colors";
 import { useState } from "react";

@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { type PropsWithoutRef, type ReactNode } from "react";
 import { PressableProps, Pressable, StyleSheet, View } from "react-native";
-import StyledText from "./StyledText";
+import StyledText from "../UI/StyledText";
 
 type ButtonProps = {
   children: ReactNode;

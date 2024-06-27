@@ -5,7 +5,7 @@ import Input from "../general/Input";
 import Button from "../general/Button";
 import useAuth from "@/hooks/useAuth";
 import { router } from "expo-router";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import { Credentials } from "@/util/requests/authHTTP";
 
 type LoginFormType = {

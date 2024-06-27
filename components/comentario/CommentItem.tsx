@@ -2,7 +2,7 @@ import { Alert, Pressable, StyleSheet, View } from "react-native";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import Comentario from "@/interfaces/Comentario";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import UserAvatar from "../UI/UserAvatar";
 import { Colors } from "@/constants/Colors";
 import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";

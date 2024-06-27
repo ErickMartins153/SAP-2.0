@@ -11,7 +11,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { Colors } from "@/constants/Colors";
 import Icon from "@/components/general/Icon";
-import StyledText from "@/components/general/StyledText";
+import StyledText from "@/components/UI/StyledText";
 import UserAvatar from "@/components/UI/UserAvatar";
 import useBottomSheet from "@/hooks/useModal";
 import CommentModal from "@/components/comentario/CommentModal";

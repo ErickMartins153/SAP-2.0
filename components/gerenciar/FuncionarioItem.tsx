@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, View } from "react-native";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import UserAvatar from "../UI/UserAvatar";
 import { Colors } from "@/constants/Colors";
 import Funcionario from "@/interfaces/Funcionario";

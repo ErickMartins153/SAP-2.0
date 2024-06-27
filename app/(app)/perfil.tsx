@@ -1,9 +1,8 @@
 import { BackHandler, StyleSheet, View } from "react-native";
-
 import { Colors } from "@/constants/Colors";
 import UserAvatar from "@/components/UI/UserAvatar";
 import Button from "@/components/general/Button";
-import StyledText from "@/components/general/StyledText";
+import StyledText from "@/components/UI/StyledText";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "@/hooks/useAuth";
@@ -17,6 +16,7 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import useBottomSheet from "@/hooks/useModal";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import Funcionario from "@/interfaces/Funcionario";
+import PerfilSupervisionado from "@/components/perfil/PerfilSupervisionado";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
@@ -24,6 +24,10 @@ export default function ProfileScreen() {
   const { changeModalContent, openModal, isVisible, closeModal, clear } =
     useBottomSheet();
 
+  const [supervisionado, setSupervisionado] = useState<
+    Funcionario | undefined
+  >();
+  const [showSupervisionado, setShowSupervisionado] = useState(false);
   const {
     data: supervisionados,
     isLoading,
@@ -33,8 +37,19 @@ export default function ProfileScreen() {
     queryKey: ["funcionarios", "supervisionados", user!.id],
   });
 
-  function supervisionadoProfile(funcionario: Funcionario) {
-    console.log(funcionario.id, funcionario.nome);
+  const { data: funcionarioData } = useQuery({
+    queryKey: ["funcionarios", user!.id],
+    queryFn: () => getFuncionarioById(user!.id),
+  });
+
+  function showSupervisionadoHandler(funcionario: Funcionario) {
+    setSupervisionado(funcionario);
+    setShowSupervisionado(true);
+  }
+
+  function closeSupervisionadoModal() {
+    setSupervisionado(undefined);
+    setShowSupervisionado(false);
   }
 
   useLayoutEffect(() => {
@@ -42,15 +57,16 @@ export default function ProfileScreen() {
       changeModalContent(
         <Supervisionados
           supervisionados={supervisionados}
-          onSelect={supervisionadoProfile}
+          onSelect={showSupervisionadoHandler}
         />
       );
     }
   }, [supervisionados, isLoading]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("blur", (e) => {
+    const unsubscribe = navigation.addListener("blur", () => {
       clear();
+      closeSupervisionadoModal();
     });
 
     return unsubscribe;
@@ -75,11 +91,6 @@ export default function ProfileScreen() {
     }, [isVisible, closeModal])
   );
 
-  const { data: funcionarioData } = useQuery({
-    queryKey: ["funcionarios", user!.id],
-    queryFn: () => getFuncionarioById(user!.id),
-  });
-
   return (
     <MainPageLayout>
       <View style={styles.userContainer}>
@@ -95,16 +106,20 @@ export default function ProfileScreen() {
           {funcionarioData?.isTecnico ? "Técnico" : "Estagiário"}
         </StyledText>
         <View style={styles.buttonsContainer}>
-          <Button style={styles.button} onPress={() => {}}>
-            Estatísticas
-          </Button>
+          <Button onPress={() => {}}>Estatísticas</Button>
           {funcionarioData?.isTecnico && (
-            <Button style={styles.button} onPress={openModal}>
-              Meus supervisionados
-            </Button>
+            <Button onPress={openModal}>Meus supervisionados</Button>
           )}
         </View>
       </View>
+
+      {supervisionado && (
+        <PerfilSupervisionado
+          funcionario={supervisionado}
+          toggleModal={closeSupervisionadoModal}
+          visible={showSupervisionado}
+        />
+      )}
     </MainPageLayout>
   );
 }
@@ -114,10 +129,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
     alignItems: "center",
-  },
-  contentContainer: {
-    flex: 1,
-    marginTop: 100,
   },
   userContainer: {
     marginTop: "4%",
@@ -129,12 +140,6 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     marginTop: "12%",
-    height: "54%",
     gap: 24,
-  },
-  button: {
-    paddingHorizontal: "18%",
-    paddingVertical: "6%",
-    alignItems: "center",
   },
 });

@@ -2,8 +2,8 @@ import {
   type StyleProp,
   StyleSheet,
   View,
-  type ViewProps,
   TextStyle,
+  ViewStyle,
 } from "react-native";
 import { Image } from "expo-image";
 import { type ReactNode } from "react";
@@ -12,8 +12,8 @@ import { Colors } from "@/constants/Colors";
 import blurhash from "@/util/blurhash";
 
 type UserAvatarProps = {
-  size: number;
-  style?: StyleProp<ViewProps>;
+  size?: number;
+  style?: StyleProp<ViewStyle>;
   alignSelf?: "flex-start" | "center";
   imageURL?: string;
   icon?: (props: {
@@ -24,7 +24,7 @@ type UserAvatarProps = {
 };
 
 export default function UserAvatar({
-  size = 32,
+  size = 144,
   style,
   alignSelf = "center",
   imageURL,

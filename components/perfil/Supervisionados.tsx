@@ -4,7 +4,7 @@ import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import Funcionario from "@/interfaces/Funcionario";
 import FuncionarioItem from "../gerenciar/FuncionarioItem";
 
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 
 type SupervisionadosProps = {
   supervisionados: Funcionario[];

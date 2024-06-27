@@ -5,7 +5,7 @@ import Comentario from "@/interfaces/Comentario";
 import CommentItem from "./CommentItem";
 import CommentHeader from "./CommentHeader";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import { useMutation } from "@tanstack/react-query";
 import { addComentario } from "@/util/requests/comentarioHTTP";
 import { queryClient } from "@/util/queries";

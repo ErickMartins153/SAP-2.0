@@ -7,7 +7,7 @@ import { Colors } from "@/constants/Colors";
 import { useState } from "react";
 import Icon from "../general/Icon";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   deleteFuncionario,

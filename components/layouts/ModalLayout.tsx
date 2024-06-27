@@ -9,8 +9,8 @@ import {
   View,
 } from "react-native";
 import Icon from "../general/Icon";
-import StyledText from "../general/StyledText";
-import Loading from "../general/Loading";
+import StyledText from "../UI/StyledText";
+import Loading from "../UI/Loading";
 
 type ModalLayoutProps = {
   children: ReactNode;

@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { useNavigation } from "expo-router";
 import Icon from "../general/Icon";
 import useBottomSheet from "@/hooks/useModal";
-import Loading from "../general/Loading";
+import Loading from "../UI/Loading";
 
 type PageLayoutProps = {
   children: ReactNode;

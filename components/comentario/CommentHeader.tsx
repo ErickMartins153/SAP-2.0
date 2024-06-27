@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import StyledText from "../general/StyledText";
+import StyledText from "../UI/StyledText";
 
 import Input from "../general/Input";
 import { useState } from "react";
