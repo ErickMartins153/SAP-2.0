@@ -6,7 +6,7 @@ export default {
     slug: "SAP",
     version: "1.0.0",
     orientation: "portrait",
-    icon: `./assets/images/${IS_DEV ? "icon-dev" : "icon"}.png`,
+    icon: `./assets/images/logoSAP.png`,
     scheme: "sap",
     userInterfaceStyle: "automatic",
     splash: {
