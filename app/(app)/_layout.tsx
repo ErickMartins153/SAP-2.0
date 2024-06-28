@@ -1,3 +1,4 @@
+import Header from "@/components/general/Header";
 import Icon from "@/components/general/Icon";
 import Navbar from "@/components/navigation/Navbar";
 import { Colors } from "@/constants/Colors";
@@ -72,6 +73,18 @@ export default function Layout() {
         name="horarios"
         options={{
           title: "Horários",
+        }}
+      />
+      <Drawer.Screen
+        name="[supervisionadoId]"
+        options={{
+          header: (props) => <Header {...props} />,
+        }}
+      />
+      <Drawer.Screen
+        name="estatisticas"
+        options={{
+          header: (props) => <Header {...props} />,
         }}
       />
     </Drawer>

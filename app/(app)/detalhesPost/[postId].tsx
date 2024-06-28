@@ -1,4 +1,11 @@
-import { Alert, BackHandler, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  BackHandler,
+  Keyboard,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { Image } from "expo-image";
 import {
   router,
@@ -145,6 +152,7 @@ export default function detalhesPost() {
         </View>
       </View>
       <ScrollView
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.description}
         showsVerticalScrollIndicator={false}
       >

@@ -16,7 +16,6 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import useBottomSheet from "@/hooks/useModal";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import Funcionario from "@/interfaces/Funcionario";
-import PerfilSupervisionado from "@/components/perfil/PerfilSupervisionado";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
@@ -43,8 +42,8 @@ export default function ProfileScreen() {
   });
 
   function showSupervisionadoHandler(funcionario: Funcionario) {
-    setSupervisionado(funcionario);
-    setShowSupervisionado(true);
+    closeModal();
+    router.navigate(funcionario.id);
   }
 
   function closeSupervisionadoModal() {
@@ -106,20 +105,14 @@ export default function ProfileScreen() {
           {funcionarioData?.isTecnico ? "Técnico" : "Estagiário"}
         </StyledText>
         <View style={styles.buttonsContainer}>
-          <Button onPress={() => {}}>Estatísticas</Button>
+          <Button onPress={() => router.navigate("estatisticas")}>
+            Estatísticas
+          </Button>
           {funcionarioData?.isTecnico && (
             <Button onPress={openModal}>Meus supervisionados</Button>
           )}
         </View>
       </View>
-
-      {supervisionado && (
-        <PerfilSupervisionado
-          funcionario={supervisionado}
-          toggleModal={closeSupervisionadoModal}
-          visible={showSupervisionado}
-        />
-      )}
     </MainPageLayout>
   );
 }
@@ -133,10 +126,6 @@ const styles = StyleSheet.create({
   userContainer: {
     marginTop: "4%",
     alignItems: "center",
-  },
-  userText: {
-    fontWeight: "bold",
-    marginTop: 16,
   },
   buttonsContainer: {
     marginTop: "12%",
