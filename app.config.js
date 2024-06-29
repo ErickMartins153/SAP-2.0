@@ -20,9 +20,10 @@ export default {
     android: {
       package: IS_DEV ? "br.upe.sap.dev" : "br.upe.sap",
       adaptiveIcon: {
-        foregroundImage: "./assets/images/adaptive-icon.png",
+        foregroundImage: `./assets/images/logoSAP.png`,
         backgroundColor: "#ffffff",
       },
+      softwareKeyboardLayoutMode: "pan",
       permissions: ["android.permission.RECORD_AUDIO"],
     },
     web: {
