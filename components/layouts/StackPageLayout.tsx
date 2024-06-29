@@ -9,15 +9,17 @@ type StackPageLayoutProps = {
   children: ReactNode;
   HeadRight?: ReactNode;
   isLoading?: boolean;
+  route?: string;
 };
 
 export default function StackPageLayout({
   children,
   HeadRight,
   isLoading = false,
+  route = "(app)",
 }: StackPageLayoutProps) {
   function goBackHandler() {
-    router.navigate("(app)");
+    router.navigate(route);
   }
 
   function reportHandler() {

@@ -60,38 +60,40 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
             <NavbarItem
               label="Mural"
               icon="message-square"
-              size={50}
               onPress={handleNavigation}
               page="index"
             />
             <NavbarItem
               label="Horários"
               icon="calendar"
-              size={50}
               onPress={handleNavigation}
               page="horarios"
             />
-
-            {user?.isTecnico && (
-              <NavbarItem
-                label="Gerenciar"
-                icon="users"
-                size={50}
-                onPress={handleNavigation}
-                page="gerenciar"
-              />
-            )}
+            <NavbarItem
+              label="Atendimentos"
+              icon="book"
+              onPress={handleNavigation}
+              page="gerenciar"
+            />
+            <NavbarItem
+              label="Meus Grupos"
+              icon="users"
+              onPress={handleNavigation}
+              page="grupos"
+            />
           </Drawer.Section>
+          {user?.isTecnico && (
+            <NavbarItem
+              label="Gerenciar"
+              icon="user-plus"
+              onPress={handleNavigation}
+              page="gerenciar"
+            />
+          )}
         </View>
       </DrawerContentScrollView>
 
-      <NavbarItem
-        label="Sair"
-        icon="power"
-        size={50}
-        onPress={handleLogout}
-        page=""
-      />
+      <NavbarItem label="Sair" icon="power" onPress={handleLogout} page="" />
     </View>
   );
 }

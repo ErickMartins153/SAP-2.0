@@ -102,10 +102,10 @@ export function getFuncionariosAtivos() {
 }
 
 export async function getFuncionarioById(funcionarioId: string) {
-  const selectedPost = FUNCIONARIOS.find(
+  const selectedFuncionario = FUNCIONARIOS.find(
     (funcionario) => funcionario.id === funcionarioId
   );
-  return selectedPost as Funcionario;
+  return selectedFuncionario as Funcionario;
 }
 
 export async function deleteFuncionario(funcionarioId: string) {
@@ -131,4 +131,10 @@ export async function getSupervisionados(supervisorId: string) {
   return FUNCIONARIOS.filter(
     (funcionario) => funcionario.supervisor?.id === supervisorId
   );
+}
+
+export function getFuncionariosByIds(ids: string[]): Funcionario[] {
+  return ids
+    .map((id) => FUNCIONARIOS.find((funcionario) => funcionario.id === id))
+    .filter((funcionario) => funcionario !== undefined) as Funcionario[];
 }

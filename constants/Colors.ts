@@ -8,7 +8,7 @@ export const Colors = {
   icon: "#43322D",
   placeholder: "#847779",
   button: "#3F2C23",
-  lightRipple: "#FAEED8",
+  lightRipple: "#ccc",
   darkRipple: "#6B4C3D",
   red: "#E95151",
   green: "#87AB69",

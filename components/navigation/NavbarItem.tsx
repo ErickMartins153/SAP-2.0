@@ -6,7 +6,7 @@ import { Colors } from "@/constants/Colors";
 type NavBarItemProps = {
   label: string;
   icon: keyof typeof Feather.glyphMap;
-  size: number;
+  size?: number;
   onPress: (page: string) => void;
   page: string;
 };
@@ -16,7 +16,7 @@ export default function NavbarItem({
   label,
   onPress,
   page,
-  size,
+  size = 42,
 }: NavBarItemProps) {
   return (
     <DrawerItem
