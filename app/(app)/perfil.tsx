@@ -13,15 +13,20 @@ import {
 import Icon from "@/components/general/Icon";
 import Supervisionados from "@/components/perfil/Supervisionados";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import useBottomSheet from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useBottom";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import Funcionario from "@/interfaces/Funcionario";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
   const navigation = useNavigation();
-  const { changeModalContent, openModal, isVisible, closeModal, clear } =
-    useBottomSheet();
+  const {
+    changeBottomContent: changeModalContent,
+    openBottom,
+    isVisible,
+    closeBottom,
+    clear,
+  } = useBottomSheet();
 
   const [supervisionado, setSupervisionado] = useState<
     Funcionario | undefined
@@ -42,7 +47,7 @@ export default function ProfileScreen() {
   });
 
   function showSupervisionadoHandler(funcionario: Funcionario) {
-    closeModal();
+    closeBottom();
     router.navigate(funcionario.id);
   }
 
@@ -75,7 +80,7 @@ export default function ProfileScreen() {
     useCallback(() => {
       function onBackPress() {
         if (isVisible) {
-          closeModal();
+          closeBottom();
           return true;
         } else {
           router.navigate("(app)");
@@ -87,7 +92,7 @@ export default function ProfileScreen() {
 
       return () =>
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    }, [isVisible, closeModal])
+    }, [isVisible, closeBottom])
   );
 
   return (
@@ -109,7 +114,7 @@ export default function ProfileScreen() {
             Estatísticas
           </Button>
           {funcionarioData?.isTecnico && (
-            <Button onPress={openModal}>Meus supervisionados</Button>
+            <Button onPress={openBottom}>Meus supervisionados</Button>
           )}
         </View>
       </View>

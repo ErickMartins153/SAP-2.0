@@ -1,5 +1,3 @@
-import Funcionario from "@/interfaces/Funcionario";
-
 import UserAvatar from "../../components/UI/UserAvatar";
 import { ScrollView, StyleSheet, View } from "react-native";
 import StyledText from "../../components/UI/StyledText";

@@ -2,10 +2,10 @@ import Select from "@/components/form/Select";
 import Button from "@/components/general/Button";
 import Input from "@/components/general/Input";
 import StyledText from "@/components/UI/StyledText";
-import FuncionariosModal from "@/components/gerenciar/FuncionariosModal";
+import FuncionariosBottom from "@/components/gerenciar/FuncionariosBottom";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
 import { Colors } from "@/constants/Colors";
-import useBottomSheet from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useBottom";
 import { newFuncionario } from "@/interfaces/Funcionario";
 import { queryClient } from "@/util/queries";
 import { addFuncionario, getTecnicos } from "@/util/requests/funcionarioHTTP";
@@ -35,8 +35,13 @@ export default function Gerenciar() {
     useState<newFuncionario>(defaultFuncionario);
   const supervisoresRef = useRef<SelectDropdown>(null);
   const isTecnicoRef = useRef<SelectDropdown>(null);
-  const { changeModalContent, openModal, isVisible, closeModal, clear } =
-    useBottomSheet();
+  const {
+    changeBottomContent: changeModalContent,
+    openBottom,
+    isVisible,
+    closeBottom,
+    clear,
+  } = useBottomSheet();
   const navigation = useNavigation();
   const {
     data: tecnicos,
@@ -60,7 +65,7 @@ export default function Gerenciar() {
   });
 
   useLayoutEffect(() => {
-    changeModalContent(<FuncionariosModal />);
+    changeModalContent(<FuncionariosBottom />);
   }, []);
 
   useEffect(() => {
@@ -75,7 +80,7 @@ export default function Gerenciar() {
     useCallback(() => {
       function onBackPress() {
         if (isVisible) {
-          closeModal();
+          closeBottom();
           return true;
         } else {
           router.navigate("(app)");
@@ -87,7 +92,7 @@ export default function Gerenciar() {
 
       return () =>
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    }, [isVisible, closeModal])
+    }, [isVisible, closeBottom])
   );
 
   function updateFuncionarioHandler(field: keyof newFuncionario, text: string) {
@@ -149,7 +154,7 @@ export default function Gerenciar() {
           </View>
         </View>
 
-        <Button color="red" onPress={openModal}>
+        <Button color="red" onPress={openBottom}>
           Remover usuário
         </Button>
       </View>

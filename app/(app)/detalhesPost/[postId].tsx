@@ -20,8 +20,8 @@ import { Colors } from "@/constants/Colors";
 import Icon from "@/components/general/Icon";
 import StyledText from "@/components/UI/StyledText";
 import UserAvatar from "@/components/UI/UserAvatar";
-import useBottomSheet from "@/hooks/useModal";
-import CommentModal from "@/components/comentario/CommentModal";
+import useBottomSheet from "@/hooks/useBottom";
+import CommentBottom from "@/components/comentario/CommentBottom";
 import Button from "@/components/general/Button";
 import StackPageLayout from "@/components/layouts/StackPageLayout";
 import { getPostById } from "@/util/requests/postHTTP";
@@ -69,13 +69,18 @@ export default function detalhesPost() {
   });
 
   const navigation = useNavigation();
-  const { changeModalContent, openModal, isVisible, closeModal, clear } =
-    useBottomSheet();
+  const {
+    changeBottomContent: changeModalContent,
+    openBottom,
+    isVisible,
+    closeBottom,
+    clear,
+  } = useBottomSheet();
 
   useLayoutEffect(() => {
     if (!isLoadingComentarios && postId) {
       changeModalContent(
-        <CommentModal comentarios={comentarios!} postId={postId} />
+        <CommentBottom comentarios={comentarios!} postId={postId} />
       );
     }
   }, [comentarios, isLoadingComentarios]);
@@ -92,7 +97,7 @@ export default function detalhesPost() {
     useCallback(() => {
       function onBackPress() {
         if (isVisible) {
-          closeModal();
+          closeBottom();
           return true;
         } else {
           router.navigate("(app)");
@@ -104,7 +109,7 @@ export default function detalhesPost() {
 
       return () =>
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    }, [isVisible, closeModal])
+    }, [isVisible, closeBottom])
   );
 
   function deleteHandler() {
@@ -180,7 +185,7 @@ export default function detalhesPost() {
           paddingVertical: "8%",
         }}
       >
-        <Button onPress={openModal} disabled={isLoadingComentarios}>
+        <Button onPress={openBottom} disabled={isLoadingComentarios}>
           Ver comentários
         </Button>
       </View>

@@ -3,9 +3,9 @@ import BottomSheet, {
   BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { StyleSheet } from "react-native";
-import useBottomSheet from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useBottom";
 
 import { Easing } from "react-native-reanimated";
 import { Colors } from "@/constants/Colors";
@@ -15,10 +15,14 @@ const animationConfig = {
   easing: Easing.out(Easing.quad),
 };
 
-export default function Bottom() {
+const Bottom = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { isVisible, closeModal, onSelectValue, modalContent } =
-    useBottomSheet();
+  const {
+    isVisible,
+    closeBottom,
+    onSelectValue,
+    bottomContent: modalContent,
+  } = useBottomSheet();
   const snapPoints = useMemo(() => ["50%", "80%"], []);
 
   useEffect(() => {
@@ -29,18 +33,14 @@ export default function Bottom() {
     }
   }, [isVisible]);
 
-  function onSelectHandler(value: string) {
-    onSelectValue(value);
-    bottomSheetRef.current?.close(animationConfig);
-  }
-
   const closeBackdropHandler = useCallback(() => {
     bottomSheetRef.current?.close(animationConfig);
-    closeModal();
-  }, [closeModal]);
+    closeBottom();
+  }, [closeBottom]);
 
   return (
     <BottomSheet
+      keyboardBlurBehavior="restore"
       backgroundStyle={{ backgroundColor: Colors.background }}
       ref={bottomSheetRef}
       snapPoints={snapPoints}
@@ -50,12 +50,12 @@ export default function Bottom() {
         renderBackdrop({ props, onClose: closeBackdropHandler })
       }
       enablePanDownToClose
-      onClose={closeModal}
+      onClose={closeBottom}
     >
       {modalContent}
     </BottomSheet>
   );
-}
+};
 
 function renderBackdrop({
   props,
@@ -85,3 +85,5 @@ const styles = StyleSheet.create({
     gap: 12,
   },
 });
+
+export default memo(Bottom);

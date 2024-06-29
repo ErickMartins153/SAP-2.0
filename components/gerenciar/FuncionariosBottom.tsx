@@ -15,7 +15,7 @@ import {
 } from "@/util/requests/funcionarioHTTP";
 import { queryClient } from "@/util/queries";
 
-export default function FuncionariosModal() {
+export default function FuncionariosBottom() {
   const {
     data: funcionarios,
     isLoading,

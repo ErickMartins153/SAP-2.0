@@ -3,15 +3,15 @@ import { Pressable, StyleSheet } from "react-native";
 import StyledText from "../UI/StyledText";
 import Icon from "../general/Icon";
 import { Colors } from "@/constants/Colors";
-import useBottomSheet from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useBottom";
 
 export default function RoomSelector() {
-  const { openModal, selectedValue } = useBottomSheet();
+  const { openBottom, selectedValue } = useBottomSheet();
 
   return (
     <Pressable
       style={({ pressed }) => [styles.mainContainer, pressed && styles.pressed]}
-      onPress={openModal}
+      onPress={openBottom}
     >
       <StyledText mode="big" color="white">
         {selectedValue ?? "Selecione a sala desejada"}

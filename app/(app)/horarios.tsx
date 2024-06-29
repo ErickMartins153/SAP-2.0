@@ -1,15 +1,20 @@
 import Calendar from "@/components/horario/Calendar";
 
 import MainPageLayout from "@/components/layouts/MainPageLayout";
-import useBottomSheet from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useBottom";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useEffect, useLayoutEffect } from "react";
 import { BackHandler } from "react-native";
-import RoomModal from "@/components/horario/RoomModal";
+import RoomModal from "@/components/horario/RoomBottom";
 
 export default function Horarios() {
   const navigation = useNavigation();
-  const { clear, isVisible, closeModal, changeModalContent } = useBottomSheet();
+  const {
+    clear,
+    isVisible,
+    closeBottom,
+    changeBottomContent: changeModalContent,
+  } = useBottomSheet();
 
   useLayoutEffect(() => {
     changeModalContent(<RoomModal />);
@@ -27,7 +32,7 @@ export default function Horarios() {
     useCallback(() => {
       function onBackPress() {
         if (isVisible) {
-          closeModal();
+          closeBottom();
           return true;
         } else {
           router.navigate("(app)");
@@ -39,7 +44,7 @@ export default function Horarios() {
 
       return () =>
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    }, [isVisible, closeModal])
+    }, [isVisible, closeBottom])
   );
 
   return (

@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 
 import { useNavigation } from "expo-router";
 import Icon from "../general/Icon";
-import useBottomSheet from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useBottom";
 import Loading from "../UI/Loading";
 
 type PageLayoutProps = {

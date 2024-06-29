@@ -1,21 +1,21 @@
 import { ReactNode, createContext, useState } from "react";
 
-interface ModalContextType {
+interface BottomContextType {
   isVisible: boolean;
-  openModal: () => void;
-  closeModal: () => void;
-  modalContent?: ReactNode;
-  changeModalContent: (content: ReactNode) => void;
+  openBottom: () => void;
+  closeBottom: () => void;
+  bottomContent?: ReactNode;
+  changeBottomContent: (content: ReactNode) => void;
   selectedValue: undefined | string;
   onSelectValue: (value: string) => void;
   clear: () => void;
 }
 
-export const BottomSheetContext = createContext<ModalContextType>({
+export const BottomSheetContext = createContext<BottomContextType>({
   isVisible: false,
-  openModal: () => {},
-  closeModal: () => {},
-  changeModalContent: (content: ReactNode) => {},
+  openBottom: () => {},
+  closeBottom: () => {},
+  changeBottomContent: (content: ReactNode) => {},
   selectedValue: undefined,
   onSelectValue: (value: string) => {},
   clear: () => {},
@@ -28,37 +28,37 @@ export default function BottomContextProvider({
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>();
-  const [modalContent, setModalContent] = useState<ReactNode>();
+  const [bottomContent, setBottomContent] = useState<ReactNode>();
 
-  function openModal() {
+  function openBottom() {
     setIsVisible(true);
   }
 
-  function closeModal() {
+  function closeBottom() {
     setIsVisible(false);
   }
 
   function onSelectValue(value: string) {
-    closeModal();
+    closeBottom();
     setSelectedValue(value);
   }
 
-  function changeModalContent(content: ReactNode) {
-    setModalContent(content);
+  function changeBottomContent(content: ReactNode) {
+    setBottomContent(content);
   }
 
   function clear() {
     setIsVisible(false);
     setSelectedValue(undefined);
-    setModalContent(null);
+    setBottomContent(null);
   }
 
-  const value: ModalContextType = {
+  const value: BottomContextType = {
     isVisible,
-    openModal,
-    closeModal,
-    modalContent,
-    changeModalContent,
+    openBottom,
+    closeBottom,
+    bottomContent,
+    changeBottomContent,
     selectedValue,
     onSelectValue,
     clear,

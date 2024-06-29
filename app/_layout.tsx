@@ -7,7 +7,7 @@ import Bottom from "@/components/general/Bottom";
 import AuthContextProvider from "@/context/auth";
 import { queryClient } from "@/util/queries";
 import useUpdates from "@/hooks/useUpdates";
-import BottomContextProvider from "@/context/modal";
+import BottomContextProvider from "@/context/bottom";
 
 export default function RootLayout() {
   const { isChecking, checkUpdate } = useUpdates();

@@ -11,15 +11,15 @@ import { addComentario } from "@/util/requests/comentarioHTTP";
 import { queryClient } from "@/util/queries";
 import useAuth from "@/hooks/useAuth";
 
-type CommentModalType = {
+type CommentBottomProps = {
   comentarios: Comentario[];
   postId: string;
 };
 
-export default function CommentModal({
+export default function CommentBottom({
   comentarios,
   postId,
-}: CommentModalType) {
+}: CommentBottomProps) {
   const { user } = useAuth();
   const { mutate: addComment } = useMutation({
     mutationFn: addComentario,

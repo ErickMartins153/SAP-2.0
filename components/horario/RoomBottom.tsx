@@ -2,10 +2,10 @@ import { StyleSheet } from "react-native";
 import StyledText from "../UI/StyledText";
 import Sala, { SALAS, TipoSala } from "@/interfaces/Sala";
 import Button from "../general/Button";
-import useBottomSheet from "@/hooks/useModal";
+import useBottomSheet from "@/hooks/useBottom";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
-export default function RoomModal() {
+export default function RoomBottom() {
   const { onSelectValue } = useBottomSheet();
   function renderSalaHandler(sala: Sala) {
     let content = `Sala ${sala.idSala}`;
