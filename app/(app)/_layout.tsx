@@ -91,9 +91,6 @@ export default function Layout() {
         name="grupos"
         options={{
           title: "Meus Grupos",
-          headerRight: (props) => (
-            <Icon name="plus" style={{ paddingHorizontal: "8%" }} {...props} />
-          ),
         }}
       />
       <Drawer.Screen

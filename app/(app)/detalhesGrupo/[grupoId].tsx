@@ -9,7 +9,7 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import StackPageLayout from "@/components/layouts/StackPageLayout";
 import StyledText from "@/components/UI/StyledText";
 import { useCallback } from "react";
-import { Alert, BackHandler, FlatList, View } from "react-native";
+import { Alert, BackHandler, FlatList, StyleSheet, View } from "react-native";
 import InfoBox from "@/components/UI/InfoBox";
 import { getFuncionariosByIds } from "@/util/requests/funcionarioHTTP";
 import Funcionario from "@/interfaces/Funcionario";
@@ -163,10 +163,8 @@ export default function detalhesGrupo() {
         <FlatList
           data={ministrantes}
           renderItem={({ item }) => renderFuncionariosHandler(item)}
-          contentContainerStyle={{
-            gap: 12,
-            paddingVertical: "6%",
-          }}
+          style={styles.flatlist}
+          contentContainerStyle={styles.flatListContent}
         />
         <StyledText
           textAlign="center"
@@ -178,7 +176,8 @@ export default function detalhesGrupo() {
         <FlatList
           data={participantes}
           renderItem={({ item }) => renderFuncionariosHandler(item)}
-          contentContainerStyle={{ gap: 16, paddingVertical: "2%" }}
+          contentContainerStyle={styles.flatListContent}
+          style={styles.flatlist}
           ListEmptyComponent={
             <StyledText mode="big" textAlign="center">
               Esse grupo ainda não possui nenhum participante
@@ -198,12 +197,17 @@ export default function detalhesGrupo() {
               Entrar no Grupo
             </Button>
           )}
-        {/* {ministra(user.id, grupoData!.ministrantesId) && (
-          <Button onPress={}>
-            Adicionar participante
-          </Button>
-        )} */}
       </View>
     </StackPageLayout>
   );
 }
+
+const styles = StyleSheet.create({
+  flatlist: {
+    minHeight: 120,
+  },
+  flatListContent: {
+    gap: 12,
+    paddingVertical: "6%",
+  },
+});

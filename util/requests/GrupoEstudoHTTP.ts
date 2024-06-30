@@ -1,3 +1,4 @@
+import { NewGrupo } from "@/components/grupos/AddGrupoModal";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
 
 export const GRUPOS_ESTUDO: GrupoEstudo[] = [
@@ -41,11 +42,33 @@ export const GRUPOS_ESTUDO: GrupoEstudo[] = [
       horario: { data: "04/07/2023", hora: "11:00" },
     },
   },
+  {
+    id: "105",
+    temaEstudo: "Psicologia Cognitiva",
+    ministrantesId: ["3", "7"],
+    participantesId: ["2", "4", "6"],
+    encontro: {
+      salaId: "3",
+      horario: { data: "05/07/2023", hora: "15:00" },
+    },
+  },
+  {
+    id: "106",
+    temaEstudo: "Neurociência",
+    ministrantesId: ["5"],
+    participantesId: ["2", "3", "4", "6", "7", "8"],
+    encontro: {
+      salaId: "4",
+      horario: { data: "06/07/2023", hora: "09:00" },
+    },
+  },
 ];
 
 export function getGruposByFuncionario(funcionarioId: string) {
-  return GRUPOS_ESTUDO.filter((grupo) =>
-    grupo.participantesId.includes(funcionarioId)
+  return GRUPOS_ESTUDO.filter(
+    (grupo) =>
+      grupo.participantesId.includes(funcionarioId) ||
+      grupo.ministrantesId.includes(funcionarioId)
   );
 }
 
@@ -72,4 +95,36 @@ export async function addParticipante(participanteId: string, grupoId: string) {
       grupo.participantesId.push(participanteId);
     }
   }
+}
+
+export async function getGruposDisponiveis(funcionarioId: string) {
+  return GRUPOS_ESTUDO.filter(
+    (grupo) =>
+      !(
+        grupo.participantesId.includes(funcionarioId) ||
+        grupo.ministrantesId.includes(funcionarioId)
+      )
+  );
+}
+
+export async function createGrupo(newGrupo: NewGrupo) {
+  const id = (GRUPOS_ESTUDO.length + 101).toString();
+  const encontro = {
+    salaId: newGrupo.sala?.split("")[1]!,
+    horario: {
+      data: newGrupo.dia!,
+      hora: newGrupo.horario!,
+    },
+  };
+
+  const grupoEstudo: GrupoEstudo = {
+    id,
+    temaEstudo: newGrupo.temaEstudo,
+    ministrantesId: newGrupo.ministrantesId,
+    participantesId: [],
+    encontro,
+  };
+  console.log(grupoEstudo);
+
+  GRUPOS_ESTUDO.push(grupoEstudo);
 }

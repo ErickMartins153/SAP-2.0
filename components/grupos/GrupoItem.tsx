@@ -5,9 +5,17 @@ import { Colors } from "@/constants/Colors";
 import { memo } from "react";
 import { router } from "expo-router";
 
-const GrupoItem = (grupoData: GrupoEstudo) => {
+type GrupoItemProps = {
+  grupo: GrupoEstudo;
+  onPress?: () => void;
+};
+
+const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
   function onPressHandler() {
-    router.navigate(`detalhesGrupo/${grupoData.id}`);
+    if (onPress) {
+      onPress();
+    }
+    router.navigate(`detalhesGrupo/${grupo.id}`);
   }
 
   return (
@@ -17,15 +25,15 @@ const GrupoItem = (grupoData: GrupoEstudo) => {
       onPress={onPressHandler}
     >
       <StyledText textAlign="center" fontWeight="bold" mode="big">
-        {grupoData.temaEstudo}
+        {grupo.temaEstudo}
       </StyledText>
       <View style={{ flexDirection: "row", gap: 12 }}>
         <StyledText fontWeight="bold">Data:</StyledText>
-        <StyledText>{grupoData.encontro.horario.data}</StyledText>
+        <StyledText>{grupo.encontro.horario.data}</StyledText>
       </View>
       <View style={{ flexDirection: "row", gap: 12 }}>
         <StyledText fontWeight="bold">Horário:</StyledText>
-        <StyledText>{grupoData.encontro.horario.hora}</StyledText>
+        <StyledText>{grupo.encontro.horario.hora}</StyledText>
       </View>
       <StyledText textAlign="center" fontWeight="bold">
         Clique para ver mais informações

@@ -73,7 +73,7 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               label="Atendimentos"
               icon="book"
               onPress={handleNavigation}
-              page="gerenciar"
+              page="atendimentos"
             />
             <NavbarItem
               label="Meus Grupos"

@@ -12,7 +12,7 @@ export default function InfoBox({ label, content }: InfoBoxProps) {
       <StyledText fontWeight="bold" mode="big">
         {label}:
       </StyledText>
-      <StyledText> {content}</StyledText>
+      <StyledText textTransform="capitalize"> {content}</StyledText>
     </StyledText>
   );
 }
