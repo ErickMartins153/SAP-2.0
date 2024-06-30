@@ -1,4 +1,4 @@
-import { PropsWithoutRef, useCallback, useState } from "react";
+import { PropsWithoutRef, useCallback, useEffect, useState } from "react";
 import { BackHandler, ModalProps, View } from "react-native";
 import { Image } from "expo-image";
 import { router, useFocusEffect, useNavigation } from "expo-router";
@@ -50,6 +50,14 @@ export default function AddPost({
 
   const [postContent, setPostContent] = useState(defaultValues);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("blur", (e) => {
+      setPostContent(defaultValues);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   useFocusEffect(
     useCallback(() => {
       function onBackPress() {
@@ -79,13 +87,18 @@ export default function AddPost({
     });
   }
 
+  function closeHandler() {
+    setPostContent(defaultValues);
+    toggleModal();
+  }
+
   return (
     <ModalLayout
       submitButton={{
         button: ({ onSubmit }) => <Button onPress={onSubmit}>Postar</Button>,
         onSubmit: createPostHandler,
       }}
-      toggleModal={toggleModal}
+      toggleModal={closeHandler}
       visible={visible}
       {...props}
     >

@@ -1,24 +1,44 @@
-import { Pressable, StyleSheet, View, Text, Alert } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  View,
+  Text,
+  Alert,
+  PressableProps,
+} from "react-native";
 import { Colors } from "@/constants/Colors";
 import StyledText from "../UI/StyledText";
+import { PropsWithoutRef } from "react";
 
 type CalendarItemProps = {
   id: string | number;
   lastIndex: boolean;
   timeInterval: string;
   available: boolean;
-};
+  onPress: () => void;
+} & PropsWithoutRef<PressableProps>;
+
 export default function CalendarItem({
   id,
   lastIndex,
   timeInterval,
   available,
+  disabled,
+  onPress,
 }: CalendarItemProps) {
   let appliedStyle = [styles.rootContainer, styles.borderBottom];
   let availableText = available ? "Disponivel" : "Ocupado";
   if (lastIndex) {
     appliedStyle.pop();
   }
+
+  function unavailableHandler() {
+    Alert.alert(
+      "Sala ocupada ",
+      "Por favor, escolha outro horário ou outra sala"
+    );
+  }
+
   return (
     <View style={appliedStyle}>
       <View style={styles.timeContainer}>
@@ -30,9 +50,8 @@ export default function CalendarItem({
           styles.appointmentContainer,
           pressed && styles.pressed,
         ]}
-        onPress={() => {
-          Alert.alert("Em breve!");
-        }}
+        disabled={disabled}
+        onPress={available ? onPress : unavailableHandler}
       >
         <Text style={[styles.text]}>{availableText}</Text>
       </Pressable>

@@ -1,64 +1,36 @@
 import { ScrollView, StyleSheet } from "react-native";
 import CalendarItem from "./CalendarItem";
+import { getTimeIntervals } from "@/util/dateUtils";
 
-export default function CalendarList() {
+type CalendarListProps = {
+  onSelection: (horario: string) => void;
+  toggleModal?: () => void;
+};
+
+const intervals = getTimeIntervals();
+
+export default function CalendarList({
+  onSelection,
+  toggleModal,
+}: CalendarListProps) {
+  function selectDayHandler(interval: string) {
+    onSelection(interval);
+    if (toggleModal) {
+      toggleModal();
+    }
+  }
   return (
     <ScrollView style={styles.rootContainer}>
-      <CalendarItem
-        lastIndex={false}
-        id={1}
-        timeInterval="10:20 - 11:10"
-        available={false}
-      />
-      <CalendarItem
-        lastIndex={false}
-        id={2}
-        timeInterval="11:10 - 12:00"
-        available={false}
-      />
-      <CalendarItem
-        lastIndex={false}
-        id={3}
-        timeInterval="12:00 - 12:50"
-        available={false}
-      />
-      <CalendarItem
-        lastIndex={false}
-        id={4}
-        timeInterval="12:50 - 13:40"
-        available={false}
-      />
-      {/* Pausa de 2 horas */}
-      <CalendarItem
-        lastIndex={false}
-        id={5}
-        timeInterval="15:30 - 16:20"
-        available
-      />
-      <CalendarItem
-        lastIndex={false}
-        id={6}
-        timeInterval="16:20 - 17:10"
-        available={false}
-      />
-      <CalendarItem
-        lastIndex={false}
-        id={7}
-        timeInterval="17:10 - 18:00"
-        available={false}
-      />
-      <CalendarItem
-        lastIndex={false}
-        id={8}
-        timeInterval="18:00 - 18:50"
-        available
-      />
-      <CalendarItem
-        lastIndex={false}
-        id={9}
-        timeInterval="18:50 - 19:40"
-        available
-      />
+      {intervals.map((interval, index) => (
+        <CalendarItem
+          lastIndex={false}
+          id={index.toString()}
+          timeInterval={interval}
+          available={index % 2 === 0}
+          key={interval}
+          onPress={selectDayHandler.bind(null, interval)}
+        />
+      ))}
     </ScrollView>
   );
 }

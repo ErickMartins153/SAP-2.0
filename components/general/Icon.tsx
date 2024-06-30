@@ -1,6 +1,12 @@
 import { Colors } from "@/constants/Colors";
 import Feather from "@expo/vector-icons/Feather";
-import { StyleSheet, View, type StyleProp, type TextStyle } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  View,
+  type StyleProp,
+  type TextStyle,
+} from "react-native";
 
 export type IconProps = {
   name: keyof typeof Feather.glyphMap;
@@ -20,16 +26,15 @@ export default function Icon({
   showBg = false,
 }: IconProps) {
   return (
-    <View style={[style, { overflow: "hidden" }]}>
+    <Pressable style={[style, { overflow: "hidden" }]} onPress={onPress}>
       <Feather
         name={name}
         size={size}
         color={Colors[color]}
-        onPress={onPress}
         style={{ zIndex: 10 }}
       />
       {showBg && <View style={styles.iconBackground} />}
-    </View>
+    </Pressable>
   );
 }
 

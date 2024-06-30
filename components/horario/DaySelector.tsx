@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import ptBR from "date-fns/locale/pt-BR";
 import { addDays, format, getDate, startOfWeek } from "date-fns";
@@ -9,9 +9,13 @@ import { type Day } from "./Calendar";
 
 const todayDate = new Date();
 
-export default function DaySelector() {
-  const today = todayDate.getDate();
+type DaySelectorProps = {
+  onSelection: (day: string) => void;
+  format: "name" | "day";
+};
 
+export default function DaySelector({ onSelection, format }: DaySelectorProps) {
+  const today = todayDate.getDate();
   const [week, setWeek] = useState<Day[]>([]);
   const [selectedDay, setSelectedDay] = useState(today);
 
@@ -20,8 +24,23 @@ export default function DaySelector() {
     setWeek(weekDays);
   }, [todayDate]);
 
-  function handleSelectedDay(day: number) {
-    setSelectedDay(day);
+  useEffect(() => {
+    if (week[0]) {
+      if (format === "day") {
+        onSelection(week[0].day.toString());
+      } else {
+        onSelection(week[0].formatted);
+      }
+    }
+  }, [week]);
+
+  function handleSelectedDay(day: Day) {
+    setSelectedDay(day.day);
+    if (format === "day") {
+      onSelection(day.day.toString());
+    } else {
+      onSelection(day.formatted);
+    }
   }
 
   return (
@@ -37,7 +56,7 @@ export default function DaySelector() {
                 selectedDay === weekDay.day && styles.selectedDayContainer,
                 pressed && styles.pressed,
               ]}
-              onPress={() => handleSelectedDay(weekDay.day)}
+              onPress={() => handleSelectedDay(weekDay)}
             >
               <StyledText
                 style={[
