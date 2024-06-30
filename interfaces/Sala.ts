@@ -1,6 +1,7 @@
 export default interface Sala {
-  idSala: string;
+  id: string;
   tipoSala: TipoSala;
+  nome: string;
 }
 
 export enum TipoSala {
@@ -11,31 +12,38 @@ export enum TipoSala {
 
 export const SALAS: Sala[] = [
   {
-    idSala: "1",
+    id: "1",
+    nome: "Sala 1",
     tipoSala: TipoSala.INDIVIDUAL,
   },
   {
-    idSala: "2",
+    id: "2",
+    nome: "Sala 2",
     tipoSala: TipoSala.INFANTIL,
   },
   {
-    idSala: "3",
+    id: "3",
+    nome: "Sala 3",
     tipoSala: TipoSala.INDIVIDUAL,
   },
   {
-    idSala: "4",
+    id: "4",
+    nome: "Sala 4",
     tipoSala: TipoSala.INDIVIDUAL,
   },
   {
-    idSala: "5",
+    id: "5",
+    nome: "Sala 5",
     tipoSala: TipoSala.INDIVIDUAL,
   },
   {
-    idSala: "6",
+    id: "6",
+    nome: "Sala 6 (grupo)",
     tipoSala: TipoSala.GRUPO,
   },
   {
-    idSala: "7",
+    id: "7",
+    nome: "Sala 7",
     tipoSala: TipoSala.INDIVIDUAL,
   },
 ];

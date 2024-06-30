@@ -1,4 +1,4 @@
-import { PropsWithoutRef, forwardRef, useRef } from "react";
+import { PropsWithoutRef, forwardRef } from "react";
 import { StyleSheet, View } from "react-native";
 import SelectDropdown, {
   type SelectDropdownProps,
@@ -9,6 +9,7 @@ import { Colors } from "@/constants/Colors";
 
 type DataItem = {
   [key: string]: any;
+  id?: string;
   nome: string;
   sobrenome?: string;
 };
@@ -26,7 +27,7 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
         key={placeholder}
         searchInputStyle={styles.dropdownSearchInputStyle}
         searchInputTxtColor={Colors.text}
-        searchPlaceHolder="Nome do supervisor"
+        searchPlaceHolder={placeholder}
         searchPlaceHolderColor={Colors.placeholder}
         renderSearchInputLeftIcon={() => {
           return <Icon name="search" />;
@@ -36,8 +37,11 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
             return onSelection(true, index);
           } else if (item.nome.toLowerCase() === "não") {
             return onSelection(false, index);
+          } else if (item.id) {
+            return onSelection(item.id, index);
+          } else {
+            return onSelection(item.nome, index);
           }
-          return onSelection(item.nome, index);
         }}
         {...props}
         renderButton={(selectedItem: DataItem, isOpened: boolean) => {
@@ -99,6 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: "bold",
     color: Colors.text,
+    textTransform: "capitalize",
   },
 
   dropdownButtonIconStyle: {
@@ -123,6 +128,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: "bold",
     color: Colors.text,
+    textTransform: "capitalize",
   },
   dropdownItemIconStyle: {
     marginRight: "2%",
