@@ -9,9 +9,13 @@ import GrupoHorario from "./GrupoHorario";
 import { Agendamento } from "@/interfaces/Agendamento";
 import Dialog from "../layouts/Dialog";
 import InfoBox from "../UI/InfoBox";
-import { createGrupo } from "@/util/requests/GrupoEstudoHTTP";
+import {
+  createGrupo,
+  getGruposDisponiveis,
+} from "@/util/requests/GrupoEstudoHTTP";
 import { queryClient } from "@/util/queries";
 import useBottomSheet from "@/hooks/useBottom";
+import useAuth from "@/hooks/useAuth";
 
 type AddGrupoProps = {
   toggleModal: () => void;
@@ -30,6 +34,7 @@ export type NewGrupo = GrupoInfo & (Agendamento | Partial<Agendamento>);
 const defaultValues: NewGrupo = {
   ministrantesId: [],
   temaEstudo: "",
+  data: new Date().toLocaleDateString(),
 };
 
 export default function AddGrupoModal({
@@ -38,6 +43,7 @@ export default function AddGrupoModal({
   ...props
 }: AddGrupoProps) {
   const [grupoInfo, setGrupoInfo] = useState(defaultValues);
+  const { responsavelId, sala, data, horario, recorrente } = grupoInfo;
   const [step, setStep] = useState<0 | 1>(0);
   const [showDialog, setShowDialog] = useState(false);
   const { closeBottom } = useBottomSheet();
@@ -49,6 +55,12 @@ export default function AddGrupoModal({
     queryKey: ["funcionarios"],
     queryFn: getTecnicos,
   });
+  const { user } = useAuth();
+  const { refetch: refetchGrupos } = useQuery({
+    queryKey: ["grupos", "disponiveis", user?.id],
+    enabled: !!user?.id,
+    queryFn: () => getGruposDisponiveis(user!.id),
+  });
 
   const navigation = useNavigation();
 
@@ -57,7 +69,10 @@ export default function AddGrupoModal({
     onSuccess: () => {
       toggleDialog();
       toggleModal();
-      queryClient.invalidateQueries({ queryKey: ["grupos", "estudo"] });
+      queryClient.invalidateQueries({
+        exact: false,
+        queryKey: ["grupos", "estudo", "agendamentos"],
+      });
       closeBottom();
       router.navigate("grupos");
     },
@@ -92,7 +107,7 @@ export default function AddGrupoModal({
   }
 
   function toggleDialog() {
-    if (grupoInfo.dia && grupoInfo.sala) {
+    if (grupoInfo.data && grupoInfo.sala) {
       setShowDialog((p) => !p);
     } else {
       errorHandler();
@@ -125,6 +140,9 @@ export default function AddGrupoModal({
 
   function createGroupHandler() {
     addGrupo(grupoInfo);
+    setGrupoInfo(defaultValues);
+    setStep(0);
+    refetchGrupos();
   }
 
   return (
@@ -145,7 +163,13 @@ export default function AddGrupoModal({
         <GrupoHorario
           inputHandler={inputHandler}
           toggleDialog={toggleDialog}
-          format="name"
+          selected={{
+            responsavelId: responsavelId!,
+            sala: sala!,
+            data,
+            horario,
+            recorrente,
+          }}
         />
       )}
       <Dialog
@@ -154,7 +178,7 @@ export default function AddGrupoModal({
         title="Confirmar criação grupo"
         onSubmit={createGroupHandler}
       >
-        <InfoBox content={grupoInfo.dia!} label="Dia" />
+        <InfoBox content={grupoInfo.data!} label="Dia" />
         <InfoBox content={grupoInfo.horario!} label="Horário" />
         <InfoBox content={grupoInfo.sala!} label="Sala" />
       </Dialog>

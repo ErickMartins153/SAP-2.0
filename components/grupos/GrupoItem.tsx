@@ -4,6 +4,7 @@ import GrupoEstudo from "@/interfaces/GrupoEstudo";
 import { Colors } from "@/constants/Colors";
 import { memo } from "react";
 import { router } from "expo-router";
+import InfoBox from "../UI/InfoBox";
 
 type GrupoItemProps = {
   grupo: GrupoEstudo;
@@ -27,14 +28,9 @@ const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
       <StyledText textAlign="center" fontWeight="bold" mode="big">
         {grupo.temaEstudo}
       </StyledText>
-      <View style={{ flexDirection: "row", gap: 12 }}>
-        <StyledText fontWeight="bold">Data:</StyledText>
-        <StyledText>{grupo.encontro.horario.data}</StyledText>
-      </View>
-      <View style={{ flexDirection: "row", gap: 12 }}>
-        <StyledText fontWeight="bold">Horário:</StyledText>
-        <StyledText>{grupo.encontro.horario.hora}</StyledText>
-      </View>
+      <InfoBox label="Data" content={grupo.encontro.horario.data} />
+      <InfoBox label="Horário" content={grupo.encontro.horario.hora} />
+      <InfoBox label="Sala" content={grupo.encontro.salaId} />
       <StyledText textAlign="center" fontWeight="bold">
         Clique para ver mais informações
       </StyledText>

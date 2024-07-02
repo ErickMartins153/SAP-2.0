@@ -7,7 +7,7 @@ interface BottomContextType {
   bottomContent?: ReactNode;
   changeBottomContent: (content: ReactNode) => void;
   selectedValue: undefined | string;
-  onSelectValue: (value: string) => void;
+  onSelectValue: (value: string | undefined) => void;
   clear: () => void;
 }
 
@@ -17,7 +17,7 @@ export const BottomSheetContext = createContext<BottomContextType>({
   closeBottom: () => {},
   changeBottomContent: (content: ReactNode) => {},
   selectedValue: undefined,
-  onSelectValue: (value: string) => {},
+  onSelectValue: (value: string | undefined) => {},
   clear: () => {},
 });
 
@@ -38,7 +38,7 @@ export default function BottomContextProvider({
     setIsVisible(false);
   }
 
-  function onSelectValue(value: string) {
+  function onSelectValue(value: string | undefined) {
     closeBottom();
     setSelectedValue(value);
   }

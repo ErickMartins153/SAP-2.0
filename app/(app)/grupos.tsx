@@ -12,7 +12,8 @@ import { getGruposByFuncionario } from "@/util/requests/GrupoEstudoHTTP";
 import { useQuery } from "@tanstack/react-query";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { BackHandler, FlatList, StyleSheet } from "react-native";
+import { BackHandler, FlatList, StyleSheet, View } from "react-native";
+import Button from "@/components/general/Button";
 
 export default function MeusGrupos() {
   const { user } = useAuth();
@@ -94,18 +95,26 @@ export default function MeusGrupos() {
 
   return (
     <MainPageLayout>
-      {gruposEstudo && (
-        <FlatList
-          ListHeaderComponent={
-            <StyledText mode="title" fontWeight="bold" textAlign="center">
-              Grupos de estudo
+      <FlatList
+        ListHeaderComponent={
+          <StyledText mode="title" fontWeight="bold" textAlign="center">
+            Grupos de estudo
+          </StyledText>
+        }
+        contentContainerStyle={styles.list}
+        data={gruposEstudo}
+        renderItem={({ item }) => renderGrupoHandler(item)}
+        ListEmptyComponent={
+          <View style={{ marginVertical: "2%", gap: 12 }}>
+            <StyledText mode="big" textAlign="center">
+              Você ainda não participa de nenhum grupo de estudo, clique aqui
+              para ver os grupos disponíveis!
             </StyledText>
-          }
-          contentContainerStyle={styles.list}
-          data={gruposEstudo}
-          renderItem={({ item }) => renderGrupoHandler(item)}
-        />
-      )}
+            <Button onPress={openBottom}>Encontrar grupos</Button>
+          </View>
+        }
+      />
+
       <AddGrupoModal toggleModal={toggleModalHandler} visible={showModal} />
     </MainPageLayout>
   );
