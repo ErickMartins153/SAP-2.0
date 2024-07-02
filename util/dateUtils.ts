@@ -23,15 +23,3 @@ export function getTimeIntervals(): string[] {
     "18:50 - 19:40",
   ];
 }
-
-export const timeIntervals = [
-  { nome: "10:20 - 11:10" },
-  { nome: "11:10 - 12:00" },
-  { nome: "12:00 - 12:50" },
-  { nome: "12:50 - 13:40" },
-  { nome: "15:30 - 16:20" },
-  { nome: "16:20 - 17:10" },
-  { nome: "17:10 - 18:00" },
-  { nome: "18:00 - 18:50" },
-  { nome: "18:50 - 19:40" },
-];

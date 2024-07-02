@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { memo, useEffect, useLayoutEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import ptBR from "date-fns/locale/pt-BR";
 import { addDays, format, getDate, startOfWeek } from "date-fns";
@@ -10,11 +10,10 @@ import { type Day } from "./Calendar";
 const todayDate = new Date();
 
 type DaySelectorProps = {
-  onSelection: (day: string) => void;
-  format: "name" | "day";
+  onSelection: (date: string) => void;
 };
 
-export default function DaySelector({ onSelection, format }: DaySelectorProps) {
+const DaySelector = ({ onSelection }: DaySelectorProps) => {
   const today = todayDate.getDate();
   const [week, setWeek] = useState<Day[]>([]);
   const [selectedDay, setSelectedDay] = useState(today);
@@ -26,21 +25,14 @@ export default function DaySelector({ onSelection, format }: DaySelectorProps) {
 
   useEffect(() => {
     if (week[0]) {
-      if (format === "day") {
-        onSelection(week[0].day.toString());
-      } else {
-        onSelection(week[0].formatted);
-      }
+      onSelection(week[0].date.toLocaleDateString());
     }
-  }, [week]);
+  }, []);
 
   function handleSelectedDay(day: Day) {
     setSelectedDay(day.day);
-    if (format === "day") {
-      onSelection(day.day.toString());
-    } else {
-      onSelection(day.formatted);
-    }
+
+    onSelection(day.date.toLocaleDateString());
   }
 
   return (
@@ -85,19 +77,18 @@ export default function DaySelector({ onSelection, format }: DaySelectorProps) {
       })}
     </View>
   );
-}
+};
 
 export function getWeekDays(date: Date) {
-  const start = startOfWeek(date, { weekStartsOn: 0 });
   const final = [];
 
   for (let i = 0; i < 7; i++) {
-    const date = addDays(start, i);
+    const currentDate = addDays(date, i);
     final.push({
       // @ts-expect-error
-      formatted: format(date, "EEE", { locale: ptBR }),
-      date,
-      day: getDate(date),
+      formatted: format(currentDate, "EEE", { locale: ptBR }),
+      date: currentDate,
+      day: getDate(currentDate),
     });
   }
   return final;
@@ -143,3 +134,5 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.white,
   },
 });
+
+export default memo(DaySelector);

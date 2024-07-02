@@ -1,15 +1,19 @@
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { PropsWithoutRef, useCallback, useState } from "react";
-import { BackHandler, ModalProps } from "react-native";
+import { Alert, BackHandler, ModalProps } from "react-native";
 
 import { Agendamento } from "@/interfaces/Agendamento";
 import InfoBox from "../UI/InfoBox";
 import Dialog from "../layouts/Dialog";
 import Switch from "../general/Switch";
+import { useMutation } from "@tanstack/react-query";
+import { agendarHorario } from "@/util/requests/agendamentoHTTP";
+import useAuth from "@/hooks/useAuth";
+import { queryClient } from "@/util/queries";
 
 type HorarioModalProps = {
   toggleDialog: () => void;
-  agendamento: Agendamento;
+  agendamento: Omit<Agendamento, "id">;
 } & PropsWithoutRef<ModalProps>;
 
 export default function HorarioModal({
@@ -18,9 +22,32 @@ export default function HorarioModal({
   visible = false,
   ...props
 }: HorarioModalProps) {
+  const { user } = useAuth();
   const navigation = useNavigation();
   const [step, setStep] = useState<0 | 1>(0);
   const [recorrente, setRecorrente] = useState(false);
+
+  const { mutate: agendar } = useMutation({
+    mutationFn: agendarHorario,
+    onSuccess: () => {
+      toggleDialog();
+      queryClient.invalidateQueries({
+        queryKey: ["agendamentos", agendamento.data, agendamento.sala],
+      });
+      Alert.alert(
+        "Horário agendado com sucesso",
+        "Gostaria de ver seus agendamentos?",
+        [
+          { text: "Não" },
+          {
+            isPreferred: true,
+            text: "Sim",
+            onPress: () => router.navigate("atendimentos"),
+          },
+        ]
+      );
+    },
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -42,8 +69,7 @@ export default function HorarioModal({
   );
 
   function agendarHandler() {
-    console.log({ ...agendamento, recorrente });
-    toggleDialog();
+    agendar({ ...agendamento, recorrente, responsavelId: user!.id });
   }
 
   function toggleRecorrencia() {
@@ -58,7 +84,7 @@ export default function HorarioModal({
       onSubmit={agendarHandler}
       {...props}
     >
-      <InfoBox content={agendamento.dia!} label="Dia" />
+      {agendamento.data && <InfoBox content={agendamento.data} label="Dia" />}
       <InfoBox content={agendamento.horario!} label="Horário" />
       <InfoBox content={agendamento.sala!} label="Sala" />
       <Switch

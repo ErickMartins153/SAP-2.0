@@ -8,9 +8,7 @@ import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 export default function RoomBottom() {
   const { onSelectValue } = useBottomSheet();
   function renderSalaHandler(sala: Sala) {
-    return (
-      <Button onPress={() => onSelectValue(sala.nome)}>{sala.nome}</Button>
-    );
+    return <Button onPress={() => onSelectValue(sala.id)}>{sala.nome}</Button>;
   }
 
   return (

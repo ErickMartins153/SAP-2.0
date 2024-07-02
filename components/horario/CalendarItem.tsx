@@ -15,7 +15,6 @@ type CalendarItemProps = {
   lastIndex: boolean;
   timeInterval: string;
   available: boolean;
-  onPress: () => void;
 } & PropsWithoutRef<PressableProps>;
 
 export default function CalendarItem({
@@ -23,11 +22,12 @@ export default function CalendarItem({
   lastIndex,
   timeInterval,
   available,
-  disabled,
   onPress,
+  disabled,
+  ...props
 }: CalendarItemProps) {
   let appliedStyle = [styles.rootContainer, styles.borderBottom];
-  let availableText = available ? "Disponivel" : "Ocupado";
+  let availableText = available ? "Disponível" : "Ocupado";
   if (lastIndex) {
     appliedStyle.pop();
   }
@@ -48,12 +48,15 @@ export default function CalendarItem({
         style={({ pressed }) => [
           available ? styles.available : styles.occupied,
           styles.appointmentContainer,
+          disabled && styles.disabled,
           pressed && styles.pressed,
         ]}
-        disabled={disabled}
         onPress={available ? onPress : unavailableHandler}
+        {...props}
       >
-        <Text style={[styles.text]}>{availableText}</Text>
+        <Text style={[styles.text, disabled && { color: Colors.text }]}>
+          {disabled ? "Escolha uma sala" : availableText}
+        </Text>
       </Pressable>
     </View>
   );
@@ -64,6 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: Colors.white,
     elevation: 4,
+    flex: 1,
   },
   borderBottom: {
     borderBottomWidth: 1,
@@ -84,6 +88,9 @@ const styles = StyleSheet.create({
   },
   available: {
     backgroundColor: Colors.green,
+  },
+  disabled: {
+    backgroundColor: Colors.lightRipple,
   },
   text: {
     color: Colors.white,

@@ -102,7 +102,6 @@ export function getComentariosByPost(postId: string) {
   const filteredComentarios = COMENTARIOS.filter(
     (comentario) => comentario.idPost === postId
   );
-  // console.log(filteredComentarios);
 
   return filteredComentarios;
 }

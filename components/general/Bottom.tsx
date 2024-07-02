@@ -27,7 +27,7 @@ const Bottom = () => {
 
   useEffect(() => {
     if (isVisible) {
-      bottomSheetRef.current?.snapToIndex(0, animationConfig);
+      bottomSheetRef.current?.snapToIndex(1, animationConfig);
     } else {
       bottomSheetRef.current?.close(animationConfig);
     }

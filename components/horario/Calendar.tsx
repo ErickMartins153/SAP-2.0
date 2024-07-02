@@ -15,15 +15,22 @@ export type Day = {
 type CalendarProps = {
   onSelection: (field: keyof Agendamento, text: string) => void;
   toggleModal: () => void;
+
+  selected: Omit<Agendamento, "id">;
 };
-export default function Calendar({ onSelection, toggleModal }: CalendarProps) {
+export default function Calendar({
+  onSelection,
+  toggleModal,
+  selected,
+}: CalendarProps) {
   return (
     <View style={{ flex: 1, marginTop: "4%" }}>
-      <DaySelector onSelection={onSelection.bind(null, "dia")} format="day" />
+      <DaySelector onSelection={onSelection.bind(null, "data")} />
       <RoomSelector />
       <CalendarList
         onSelection={onSelection.bind(null, "horario")}
         toggleModal={toggleModal}
+        selected={selected}
       />
     </View>
   );

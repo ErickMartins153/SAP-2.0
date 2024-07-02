@@ -110,9 +110,9 @@ export async function getGruposDisponiveis(funcionarioId: string) {
 export async function createGrupo(newGrupo: NewGrupo) {
   const id = (GRUPOS_ESTUDO.length + 101).toString();
   const encontro = {
-    salaId: newGrupo.sala?.split("")[1]!,
+    salaId: newGrupo.sala!,
     horario: {
-      data: newGrupo.dia!,
+      data: newGrupo.data!,
       hora: newGrupo.horario!,
     },
   };
@@ -124,7 +124,6 @@ export async function createGrupo(newGrupo: NewGrupo) {
     participantesId: [],
     encontro,
   };
-  console.log(grupoEstudo);
 
   GRUPOS_ESTUDO.push(grupoEstudo);
 }
