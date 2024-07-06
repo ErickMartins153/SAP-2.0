@@ -30,7 +30,11 @@ export default function GrupoHorario({
         placeholder="Sala"
         key="salas"
       />
-      <CalendarList onSelection={confirmHandler} selected={selected} />
+      <CalendarList
+        onSelection={confirmHandler}
+        selected={selected}
+        scrollEnabled={false}
+      />
     </View>
   );
 }

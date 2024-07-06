@@ -17,6 +17,7 @@ import FuncionarioItem from "@/components/gerenciar/FuncionarioItem";
 import Button from "@/components/general/Button";
 import { queryClient } from "@/util/queries";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
+import Icon from "@/components/general/Icon";
 
 type mutateProps = {
   participanteId: string;
@@ -138,12 +139,23 @@ export default function detalhesGrupo() {
     }
   }
 
+  function deleteHandler() {}
+
   if (!grupoData) {
     return;
   }
 
   return (
-    <StackPageLayout isLoading={isLoading} route="grupos">
+    <StackPageLayout
+      isLoading={isLoading}
+      route="grupos"
+      HeadRight={
+        (user?.isTecnico ||
+          grupoData.ministrantesId.find((id) => id === user?.id)) && (
+          <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
+        )
+      }
+    >
       <View style={{ flex: 1, marginBottom: "2%" }}>
         <StyledText mode="title" fontWeight="bold" textAlign="center">
           {grupoData?.temaEstudo}

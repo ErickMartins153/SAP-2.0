@@ -1,11 +1,10 @@
 import { memo, useEffect, useLayoutEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import ptBR from "date-fns/locale/pt-BR";
-import { addDays, format, getDate, startOfWeek } from "date-fns";
 
 import { Colors } from "@/constants/Colors";
 import StyledText from "../UI/StyledText";
 import { type Day } from "./Calendar";
+import { getWeekDays } from "@/util/dateUtils";
 
 const todayDate = new Date();
 
@@ -78,21 +77,6 @@ const DaySelector = ({ onSelection }: DaySelectorProps) => {
     </View>
   );
 };
-
-export function getWeekDays(date: Date) {
-  const final = [];
-
-  for (let i = 0; i < 7; i++) {
-    const currentDate = addDays(date, i);
-    final.push({
-      // @ts-expect-error
-      formatted: format(currentDate, "EEE", { locale: ptBR }),
-      date: currentDate,
-      day: getDate(currentDate),
-    });
-  }
-  return final;
-}
 
 const styles = StyleSheet.create({
   safeView: {

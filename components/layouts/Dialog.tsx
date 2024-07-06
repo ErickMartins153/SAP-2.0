@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/Colors";
-import { ReactNode } from "react";
-import { Modal, StyleSheet, View } from "react-native";
+import { PropsWithoutRef, ReactNode } from "react";
+import { Modal, Pressable, StyleSheet, View, ViewProps } from "react-native";
 import Animated, {
   FadeInDown,
   FadeInUp,
@@ -14,8 +14,9 @@ type DialogProps = {
   visible: boolean;
   closeDialog: () => void;
   title: string;
-  onSubmit: () => void;
-};
+  onSubmit?: () => void;
+  backdropBehavior?: "none" | "dismiss";
+} & PropsWithoutRef<ViewProps>;
 
 export default function Dialog({
   children,
@@ -23,21 +24,33 @@ export default function Dialog({
   title,
   closeDialog,
   onSubmit,
+  style,
+  backdropBehavior = "none",
+  ...props
 }: DialogProps) {
   return (
     <Modal visible={visible} transparent={true} animationType="none">
-      <View style={styles.backdrop}>
-        <Animated.View style={[styles.dialog]} entering={FadeInDown}>
+      <Pressable
+        style={styles.backdrop}
+        onPress={backdropBehavior === "dismiss" ? closeDialog : undefined}
+      >
+        <Animated.View
+          style={[styles.dialog, style]}
+          entering={FadeInDown}
+          {...props}
+        >
           <StyledText mode="title" fontWeight="bold" textAlign="center">
             {title}
           </StyledText>
           {children}
-          <View style={{ flexDirection: "row", gap: 12 }}>
-            <Button onPress={closeDialog}>Cancelar</Button>
-            <Button onPress={onSubmit}>Confirmar</Button>
-          </View>
+          {onSubmit && (
+            <View style={{ flexDirection: "row", gap: 12 }}>
+              <Button onPress={closeDialog}>Cancelar</Button>
+              <Button onPress={onSubmit}>Confirmar</Button>
+            </View>
+          )}
         </Animated.View>
-      </View>
+      </Pressable>
     </Modal>
   );
 }
@@ -51,7 +64,7 @@ const styles = StyleSheet.create({
     borderWidth: 10,
   },
   dialog: {
-    paddingHorizontal: "2%",
+    paddingHorizontal: "1%",
     paddingVertical: "4%",
     justifyContent: "center",
     backgroundColor: Colors.white,

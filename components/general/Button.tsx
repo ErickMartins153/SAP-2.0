@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 
   internalContainer: {
     paddingVertical: "4%",
-    paddingHorizontal: "12%",
+    paddingHorizontal: "10%",
     justifyContent: "center",
     alignItems: "center",
   },

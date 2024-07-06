@@ -16,6 +16,8 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import useBottomSheet from "@/hooks/useBottom";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import Funcionario from "@/interfaces/Funcionario";
+import Dialog from "@/components/layouts/Dialog";
+import useImagePicker from "@/hooks/useImagePicker";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
@@ -27,11 +29,16 @@ export default function ProfileScreen() {
     closeBottom,
     clear,
   } = useBottomSheet();
+  const { openLibrary, openCamera, imageURI, aspect, clearImage } =
+    useImagePicker();
 
   const [supervisionado, setSupervisionado] = useState<
     Funcionario | undefined
   >();
+
   const [showSupervisionado, setShowSupervisionado] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+
   const {
     data: supervisionados,
     isLoading,
@@ -95,13 +102,19 @@ export default function ProfileScreen() {
     }, [isVisible, closeBottom])
   );
 
+  function toggleDialog() {
+    setShowDialog((p) => !p);
+  }
+
   return (
     <MainPageLayout>
       <View style={styles.userContainer}>
         <UserAvatar
           size={144}
           imageURL={funcionarioData?.imagemURL}
-          icon={(props) => <Icon name="edit" {...props} />}
+          icon={(props) => (
+            <Icon name="edit" {...props} onPress={toggleDialog} />
+          )}
         />
         <StyledText fontWeight="bold" textTransform="capitalize">
           {`${funcionarioData?.nome} ${funcionarioData?.sobrenome}`}
@@ -118,6 +131,26 @@ export default function ProfileScreen() {
           )}
         </View>
       </View>
+      <Dialog
+        closeDialog={toggleDialog}
+        visible={showDialog}
+        title="Escolha o modo"
+        backdropBehavior="dismiss"
+      >
+        <View style={{ flexDirection: "row", gap: 12 }}>
+          <Button
+            leftIcon={<Icon name="camera" color="white" />}
+            onPress={openCamera}
+          >
+            Câmera
+          </Button>
+          <Button
+            leftIcon={<Icon name="image" color="white" onPress={openLibrary} />}
+          >
+            Galeria
+          </Button>
+        </View>
+      </Dialog>
     </MainPageLayout>
   );
 }

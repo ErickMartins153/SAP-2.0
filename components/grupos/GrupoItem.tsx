@@ -1,10 +1,11 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import StyledText from "../UI/StyledText";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
 import { Colors } from "@/constants/Colors";
 import { memo } from "react";
 import { router } from "expo-router";
 import InfoBox from "../UI/InfoBox";
+import { getDayName } from "@/util/dateUtils";
 
 type GrupoItemProps = {
   grupo: GrupoEstudo;
@@ -12,6 +13,7 @@ type GrupoItemProps = {
 };
 
 const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
+  const dayName = getDayName(grupo.encontro.horario.data);
   function onPressHandler() {
     if (onPress) {
       onPress();
@@ -28,7 +30,7 @@ const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
       <StyledText textAlign="center" fontWeight="bold" mode="big">
         {grupo.temaEstudo}
       </StyledText>
-      <InfoBox label="Data" content={grupo.encontro.horario.data} />
+      <InfoBox label="Data" content={`${dayName}s`} />
       <InfoBox label="Horário" content={grupo.encontro.horario.hora} />
       <InfoBox label="Sala" content={grupo.encontro.salaId} />
       <StyledText textAlign="center" fontWeight="bold">

@@ -66,7 +66,7 @@ export default function AddGrupoModal({
 
   const { mutate: addGrupo } = useMutation({
     mutationFn: createGrupo,
-    onSuccess: () => {
+    onSuccess: async () => {
       toggleDialog();
       toggleModal();
       queryClient.invalidateQueries({
@@ -74,6 +74,7 @@ export default function AddGrupoModal({
         queryKey: ["grupos", "estudo", "agendamentos"],
       });
       closeBottom();
+      await refetchGrupos();
       router.navigate("grupos");
     },
   });
@@ -142,7 +143,6 @@ export default function AddGrupoModal({
     addGrupo(grupoInfo);
     setGrupoInfo(defaultValues);
     setStep(0);
-    refetchGrupos();
   }
 
   return (

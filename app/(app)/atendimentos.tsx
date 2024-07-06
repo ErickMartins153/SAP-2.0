@@ -1,6 +1,5 @@
 import StyledText from "@/components/UI/StyledText";
 import AgendamentoItem from "@/components/atendimento/AtendimentoItem";
-
 import MainPageLayout from "@/components/layouts/MainPageLayout";
 import useAuth from "@/hooks/useAuth";
 import { Agendamento } from "@/interfaces/Agendamento";
