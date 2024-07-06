@@ -8,7 +8,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import StackPageLayout from "@/components/layouts/StackPageLayout";
 import StyledText from "@/components/UI/StyledText";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Alert, BackHandler, FlatList, StyleSheet, View } from "react-native";
 import InfoBox from "@/components/UI/InfoBox";
 import { getFuncionariosByIds } from "@/util/requests/funcionarioHTTP";
@@ -36,6 +36,10 @@ export default function detalhesGrupo() {
   const { user } = useAuth();
   const { grupoId } = useLocalSearchParams<{ grupoId: string }>();
 
+  const [showFuncionarios, setShowFuncionarios] = useState<
+    "ministrantes" | "participantes"
+  >("ministrantes");
+
   const {
     data: grupoData,
     isLoading,
@@ -50,12 +54,14 @@ export default function detalhesGrupo() {
     queryKey: ["ministrantes", grupoId],
     enabled: !!grupoId && !!grupoData,
     queryFn: () => getFuncionariosByIds(grupoData!.ministrantesId),
+    initialData: [],
   });
 
   const { data: participantes, refetch: refetchParticipantes } = useQuery({
     queryKey: ["participantes", grupoId],
     enabled: !!grupoId && !!grupoData,
     queryFn: () => getFuncionariosByIds(grupoData!.participantesId),
+    initialData: [],
   });
 
   const { mutate: removerGrupo } = useMutation({
@@ -141,6 +147,10 @@ export default function detalhesGrupo() {
 
   function deleteHandler() {}
 
+  function toggleFuncionarioView(v: typeof showFuncionarios) {
+    setShowFuncionarios(v);
+  }
+
   if (!grupoData) {
     return;
   }
@@ -165,31 +175,59 @@ export default function detalhesGrupo() {
           <InfoBox label="Horário" content={grupoData!.encontro.horario.hora} />
           <InfoBox label="Sala" content={grupoData!.encontro.salaId} />
         </View>
-        <StyledText
-          textAlign="center"
-          mode="title"
-          style={{ borderBottomWidth: 1 }}
-        >
-          Ministrantes
-        </StyledText>
+
         <FlatList
-          data={ministrantes}
-          renderItem={({ item }) => renderFuncionariosHandler(item)}
-          style={styles.flatlist}
-          contentContainerStyle={styles.flatListContent}
-        />
-        <StyledText
-          textAlign="center"
-          mode="title"
-          style={{ borderBottomWidth: 1, borderTopWidth: 1, paddingTop: "2%" }}
-        >
-          Participantes
-        </StyledText>
-        <FlatList
-          data={participantes}
+          data={
+            showFuncionarios === "participantes" ? participantes : ministrantes
+          }
           renderItem={({ item }) => renderFuncionariosHandler(item)}
           contentContainerStyle={styles.flatListContent}
           style={styles.flatlist}
+          ListHeaderComponent={
+            <>
+              <View
+                style={{
+                  justifyContent: "center",
+                  marginVertical: "4%",
+                  gap: 6,
+                }}
+              >
+                <Button
+                  color={
+                    showFuncionarios === "participantes"
+                      ? "selectedButton"
+                      : "button"
+                  }
+                  onPress={() => toggleFuncionarioView("participantes")}
+                >
+                  Participantes
+                </Button>
+                <Button
+                  color={
+                    showFuncionarios === "ministrantes"
+                      ? "selectedButton"
+                      : "button"
+                  }
+                  onPress={() => toggleFuncionarioView("ministrantes")}
+                >
+                  Ministrantes
+                </Button>
+              </View>
+              <StyledText
+                textAlign="center"
+                mode="title"
+                style={{
+                  borderBottomWidth: 1,
+                  borderTopWidth: 1,
+                  paddingTop: "2%",
+                }}
+              >
+                {showFuncionarios === "participantes"
+                  ? "Participantes"
+                  : "Ministrantes"}
+              </StyledText>
+            </>
+          }
           ListEmptyComponent={
             <StyledText mode="big" textAlign="center">
               Esse grupo ainda não possui nenhum participante

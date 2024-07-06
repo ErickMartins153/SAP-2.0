@@ -1,7 +1,7 @@
 import { FlatList, FlatListProps, StyleSheet } from "react-native";
 import CalendarItem from "./CalendarItem";
 import { getTimeIntervals } from "@/util/dateUtils";
-import { Agendamento } from "@/interfaces/Agendamento";
+import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
 import { useQuery } from "@tanstack/react-query";
 import { getAgendamentos } from "@/util/requests/agendamentoHTTP";
 import { PropsWithoutRef, useEffect } from "react";
@@ -9,7 +9,7 @@ import { PropsWithoutRef, useEffect } from "react";
 type CalendarListProps = {
   onSelection: (horario: string) => void;
   toggleModal?: () => void;
-  selected: Omit<Agendamento, "id">;
+  selected: NewAgendamento;
 } & PropsWithoutRef<Partial<FlatListProps<Agendamento>>>;
 
 const intervals = getTimeIntervals();

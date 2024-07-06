@@ -14,14 +14,18 @@ import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { BackHandler, FlatList, StyleSheet, View } from "react-native";
 import Button from "@/components/general/Button";
+import { getGruposTerapeuticosByFuncionario } from "@/util/requests/GrupoTerapeuticoHTTP";
+import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
 
 export default function MeusGrupos() {
   const { user } = useAuth();
   const navigation = useNavigation();
-
   const { clear, isVisible, closeBottom, changeBottomContent, openBottom } =
     useBottomSheet();
   const [showModal, setShowModal] = useState(false);
+  const [showGrupo, setShowGrupo] = useState<"estudo" | "terapeutico">(
+    "estudo"
+  );
 
   function toggleModalHandler() {
     setShowModal((p) => !p);
@@ -29,12 +33,25 @@ export default function MeusGrupos() {
 
   const {
     data: gruposEstudo,
-    isLoading,
+    isLoading: loadingEstudo,
     isError,
+    refetch: refetchGrupo,
   } = useQuery({
     queryKey: ["grupos", "estudo", user!.id],
     enabled: !!user?.id,
     queryFn: () => getGruposByFuncionario(user!.id),
+    initialData: [],
+  });
+
+  const {
+    data: gruposTerapeuticos,
+    refetch: refetchTerapeutico,
+    isLoading: loadingTerapeutico,
+  } = useQuery({
+    queryKey: ["grupos", "terapeutico", user!.id],
+    enabled: !!user?.id,
+    queryFn: () => getGruposTerapeuticosByFuncionario(user!.id),
+    initialData: [],
   });
 
   useLayoutEffect(() => {
@@ -85,11 +102,23 @@ export default function MeusGrupos() {
     }, [isVisible, closeBottom])
   );
 
-  function renderGrupoHandler(grupo: GrupoEstudo) {
+  function renderGrupoHandler(grupo: GrupoEstudo | GrupoTerapeutico) {
     return <GrupoItem grupo={grupo} onPress={closeBottom} key={grupo.id} />;
   }
 
-  if (isLoading || isError) {
+  function toggleGrupoView(v: typeof showGrupo) {
+    setShowGrupo(v);
+  }
+
+  function refreshHandler() {
+    if (showGrupo === "estudo") {
+      refetchGrupo();
+    } else {
+      refetchTerapeutico();
+    }
+  }
+
+  if (loadingEstudo || isError) {
     return;
   }
 
@@ -97,22 +126,42 @@ export default function MeusGrupos() {
     <MainPageLayout>
       <FlatList
         ListHeaderComponent={
-          <StyledText mode="title" fontWeight="bold" textAlign="center">
-            Grupos de estudo
-          </StyledText>
-        }
-        contentContainerStyle={styles.list}
-        data={gruposEstudo}
-        renderItem={({ item }) => renderGrupoHandler(item)}
-        ListEmptyComponent={
-          <View style={{ marginVertical: "2%", gap: 12 }}>
-            <StyledText mode="big" textAlign="center">
-              Você ainda não participa de nenhum grupo de estudo, clique aqui
-              para ver os grupos disponíveis!
+          <>
+            <View
+              style={{
+                justifyContent: "center",
+                marginVertical: "4%",
+                gap: 6,
+              }}
+            >
+              <Button
+                color={showGrupo === "estudo" ? "selectedButton" : "button"}
+                onPress={() => toggleGrupoView("estudo")}
+              >
+                Grupos de Estudo
+              </Button>
+              <Button
+                color={
+                  showGrupo === "terapeutico" ? "selectedButton" : "button"
+                }
+                onPress={() => toggleGrupoView("terapeutico")}
+              >
+                Grupos Terapêuticos
+              </Button>
+            </View>
+            <StyledText mode="title" fontWeight="bold" textAlign="center">
+              {showGrupo === "estudo"
+                ? "Grupos de estudo"
+                : "Grupos Terapêuticos"}
             </StyledText>
-            <Button onPress={openBottom}>Encontrar grupos</Button>
-          </View>
+          </>
         }
+        onRefresh={refreshHandler}
+        refreshing={loadingEstudo || loadingTerapeutico}
+        contentContainerStyle={styles.list}
+        // @ts-expect-error
+        data={showGrupo === "estudo" ? gruposEstudo : gruposTerapeuticos}
+        renderItem={({ item }) => renderGrupoHandler(item)}
       />
 
       <AddGrupoModal toggleModal={toggleModalHandler} visible={showModal} />

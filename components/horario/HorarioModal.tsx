@@ -2,7 +2,7 @@ import { router, useFocusEffect, useNavigation } from "expo-router";
 import { PropsWithoutRef, useCallback, useState } from "react";
 import { Alert, BackHandler, ModalProps } from "react-native";
 
-import { Agendamento } from "@/interfaces/Agendamento";
+import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
 import InfoBox from "../UI/InfoBox";
 import Dialog from "../layouts/Dialog";
 import Switch from "../general/Switch";
@@ -13,7 +13,7 @@ import { queryClient } from "@/util/queries";
 
 type HorarioModalProps = {
   toggleDialog: () => void;
-  agendamento: Omit<Agendamento, "id">;
+  agendamento: NewAgendamento;
 } & PropsWithoutRef<ModalProps>;
 
 export default function HorarioModal({

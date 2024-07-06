@@ -1,74 +1,63 @@
 import { NewGrupo } from "@/components/grupos/AddGrupoModal";
 import { NewAgendamento } from "@/interfaces/Agendamento";
-import GrupoEstudo from "@/interfaces/GrupoEstudo";
+import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
 import { agendarHorario } from "./agendamentoHTTP";
-import { GRUPOS_TERAPEUTICOS } from "./GrupoTerapeuticoHTTP";
 
-export const GRUPOS_ESTUDO: GrupoEstudo[] = [
+export const GRUPOS_TERAPEUTICOS: GrupoTerapeutico[] = [
   {
-    id: "101",
-    temaEstudo: "Psicologia Organizacional",
-    ministrantesId: ["1", "2"],
-    participantesId: ["3", "5", "4"],
-    encontro: {
-      salaId: "6",
-      horario: { data: "01/07/2023", hora: "10:00" },
-    },
-  },
-  {
-    id: "102",
-    temaEstudo: "Psicologia do Desenvolvimento",
-    ministrantesId: ["3"],
-    participantesId: ["2", "4", "6"],
+    id: "20",
+    tema: "Gerenciamento de Estresse",
+    participantesId: ["1", "2", "3"],
+    ministrantesId: ["4"],
     encontro: {
       salaId: "2",
-      horario: { data: "02/07/2023", hora: "14:00" },
+      horario: { data: "15/07/2024", hora: "14:00" },
     },
   },
   {
-    id: "103",
-    temaEstudo: "Psicologia Social",
+    id: "21",
+    tema: "Comunicação Eficaz",
+    participantesId: ["4", "5", "6"],
     ministrantesId: ["7"],
-    participantesId: ["8"],
-    encontro: {
-      salaId: "6",
-      horario: { data: "03/07/2023", hora: "16:00" },
-    },
-  },
-  {
-    id: "104",
-    temaEstudo: "Psicologia Clínica",
-    ministrantesId: ["5"],
-    participantesId: ["1", "6", "8"],
-    encontro: {
-      salaId: "1",
-      horario: { data: "04/07/2023", hora: "11:00" },
-    },
-  },
-  {
-    id: "105",
-    temaEstudo: "Psicologia Cognitiva",
-    ministrantesId: ["3", "7"],
-    participantesId: ["2", "4", "6"],
-    encontro: {
-      salaId: "3",
-      horario: { data: "05/07/2023", hora: "15:00" },
-    },
-  },
-  {
-    id: "106",
-    temaEstudo: "Neurociência",
-    ministrantesId: ["5"],
-    participantesId: ["2", "3", "4", "6", "7", "8"],
     encontro: {
       salaId: "4",
-      horario: { data: "06/07/2023", hora: "09:00" },
+      horario: { data: "16/07/2024", hora: "10:00" },
+    },
+  },
+  {
+    id: "22",
+    tema: "Trabalho em Equipe",
+    participantesId: ["7", "8", "1"],
+    ministrantesId: ["2"],
+    encontro: {
+      salaId: "1",
+      horario: { data: "17/07/2024", hora: "16:00" },
+    },
+  },
+  {
+    id: "23",
+    tema: "Gestão de Tempo",
+    participantesId: ["2", "3", "4"],
+    ministrantesId: ["5"],
+    encontro: {
+      salaId: "3",
+      horario: { data: "18/07/2024", hora: "09:00" },
+    },
+  },
+  {
+    id: "24",
+    tema: "Desenvolvimento de Liderança",
+    participantesId: ["5", "6", "7"],
+    ministrantesId: ["3"],
+    encontro: {
+      salaId: "5",
+      horario: { data: "19/07/2024", hora: "13:00" },
     },
   },
 ];
 
-export function getGruposByFuncionario(funcionarioId: string) {
-  return GRUPOS_ESTUDO.filter(
+export function getGruposTerapeuticosByFuncionario(funcionarioId: string) {
+  return GRUPOS_TERAPEUTICOS.filter(
     (grupo) =>
       grupo.participantesId.includes(funcionarioId) ||
       grupo.ministrantesId.includes(funcionarioId)
@@ -76,7 +65,7 @@ export function getGruposByFuncionario(funcionarioId: string) {
 }
 
 export function getGrupoById(grupoId: string) {
-  return GRUPOS_ESTUDO.find((grupo) => grupo.id === grupoId);
+  return GRUPOS_TERAPEUTICOS.find((grupo) => grupo.id === grupoId);
 }
 
 export async function removeParticipante(
@@ -101,7 +90,7 @@ export async function addParticipante(participanteId: string, grupoId: string) {
 }
 
 export async function getGruposDisponiveis(funcionarioId: string) {
-  return GRUPOS_ESTUDO.filter(
+  return GRUPOS_TERAPEUTICOS.filter(
     (grupo) =>
       !(
         grupo.participantesId.includes(funcionarioId) ||
@@ -111,7 +100,7 @@ export async function getGruposDisponiveis(funcionarioId: string) {
 }
 
 export async function createGrupo(newGrupo: NewGrupo) {
-  const id = (GRUPOS_ESTUDO.length + 101).toString();
+  const id = (GRUPOS_TERAPEUTICOS.length + 101).toString();
   const encontro: NewAgendamento = {
     sala: newGrupo.sala!,
     responsavelId: newGrupo.responsavelId!,
@@ -122,9 +111,9 @@ export async function createGrupo(newGrupo: NewGrupo) {
 
   await agendarHorario(encontro);
 
-  const grupoEstudo: GrupoEstudo = {
+  const grupoEstudo: GrupoTerapeutico = {
     id,
-    temaEstudo: newGrupo.temaEstudo,
+    tema: newGrupo.temaEstudo,
     ministrantesId: newGrupo.ministrantesId,
     participantesId: [],
     encontro: {
@@ -133,5 +122,5 @@ export async function createGrupo(newGrupo: NewGrupo) {
     },
   };
 
-  return GRUPOS_ESTUDO.push(grupoEstudo);
+  return GRUPOS_TERAPEUTICOS.push(grupoEstudo);
 }

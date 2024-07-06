@@ -145,7 +145,8 @@ export default function ProfileScreen() {
             Câmera
           </Button>
           <Button
-            leftIcon={<Icon name="image" color="white" onPress={openLibrary} />}
+            leftIcon={<Icon name="image" color="white" />}
+            onPress={openLibrary}
           >
             Galeria
           </Button>

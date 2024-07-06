@@ -40,7 +40,11 @@ export default function ModalLayout({
       >
         <View style={styles.header}>
           <Pressable
-            style={{ flexDirection: "row", alignItems: "center" }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: "2%",
+            }}
             onPress={toggleModal}
           >
             <Icon name="chevron-left" size={32} />

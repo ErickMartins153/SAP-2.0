@@ -4,12 +4,12 @@ import Select from "../form/Select";
 import { SALAS } from "@/interfaces/Sala";
 
 import CalendarList from "../horario/CalendarList";
-import { Agendamento } from "@/interfaces/Agendamento";
+import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
 
 type GrupoHorarioProps = {
   inputHandler: (field: keyof Agendamento, text: string) => void;
   toggleDialog: () => void;
-  selected: Omit<Agendamento, "id">;
+  selected: NewAgendamento;
 };
 export default function GrupoHorario({
   inputHandler,

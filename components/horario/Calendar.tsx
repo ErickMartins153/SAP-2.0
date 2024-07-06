@@ -4,7 +4,7 @@ import CalendarList from "./CalendarList";
 import DaySelector from "./DaySelector";
 import RoomSelector from "./RoomSelector";
 
-import { Agendamento } from "@/interfaces/Agendamento";
+import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
 
 export type Day = {
   formatted: string;
@@ -16,7 +16,7 @@ type CalendarProps = {
   onSelection: (field: keyof Agendamento, text: string) => void;
   toggleModal: () => void;
 
-  selected: Omit<Agendamento, "id">;
+  selected: NewAgendamento;
 };
 export default function Calendar({
   onSelection,

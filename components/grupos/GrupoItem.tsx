@@ -6,19 +6,29 @@ import { memo } from "react";
 import { router } from "expo-router";
 import InfoBox from "../UI/InfoBox";
 import { getDayName } from "@/util/dateUtils";
+import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
 
 type GrupoItemProps = {
-  grupo: GrupoEstudo;
+  grupo: GrupoEstudo | GrupoTerapeutico;
   onPress?: () => void;
 };
 
+function isGrupoEstudo(grupo: any): grupo is GrupoEstudo {
+  return typeof grupo === "object" && grupo !== null && "temaEstudo" in grupo;
+}
+
 const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
   const dayName = getDayName(grupo.encontro.horario.data);
+  const temaTitulo = isGrupoEstudo(grupo) ? grupo.temaEstudo : grupo.tema;
+
   function onPressHandler() {
     if (onPress) {
       onPress();
     }
-    router.navigate(`detalhesGrupo/${grupo.id}`);
+
+    if (isGrupoEstudo(grupo)) {
+      router.navigate(`detalhesGrupo/${grupo.id}`);
+    }
   }
 
   return (
@@ -28,7 +38,7 @@ const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
       onPress={onPressHandler}
     >
       <StyledText textAlign="center" fontWeight="bold" mode="big">
-        {grupo.temaEstudo}
+        {temaTitulo}
       </StyledText>
       <InfoBox label="Data" content={`${dayName}s`} />
       <InfoBox label="Horário" content={grupo.encontro.horario.hora} />

@@ -1,4 +1,4 @@
-import { Agendamento } from "@/interfaces/Agendamento";
+import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
 
 const today = new Date().toLocaleDateString();
 
@@ -69,7 +69,7 @@ export let AGENDAMENTOS: Agendamento[] = [
   },
 ];
 
-export async function agendarHorario(agendamento: Omit<Agendamento, "id">) {
+export async function agendarHorario(agendamento: NewAgendamento) {
   const exists = AGENDAMENTOS.find(
     (item) =>
       item.sala === agendamento.sala &&
