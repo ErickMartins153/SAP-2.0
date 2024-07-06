@@ -10,7 +10,7 @@ import useUpdates from "@/hooks/useUpdates";
 import BottomContextProvider from "@/context/bottom";
 
 export default function RootLayout() {
-  const { isChecking, checkUpdate } = useUpdates();
+  const { updateAvailable, checkUpdate } = useUpdates();
 
   return (
     <GestureHandlerRootView
@@ -21,7 +21,7 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AuthContextProvider>
           <BottomContextProvider>
-            <Slot />
+            {!updateAvailable && <Slot />}
             <Bottom />
           </BottomContextProvider>
         </AuthContextProvider>

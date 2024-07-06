@@ -4,6 +4,7 @@ import { Alert } from "react-native";
 
 export default function useUpdates() {
   const [isChecking, setIsChecking] = useState(false);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
 
   async function checkUpdate() {
     setIsChecking(true);
@@ -11,6 +12,7 @@ export default function useUpdates() {
       const update = await Updates.checkForUpdateAsync();
 
       if (update.isAvailable) {
+        setUpdateAvailable(true);
         await Updates.fetchUpdateAsync();
 
         Alert.alert(
@@ -37,5 +39,5 @@ export default function useUpdates() {
     }
   }
 
-  return { isChecking, checkUpdate };
+  return { isChecking, updateAvailable, checkUpdate };
 }
