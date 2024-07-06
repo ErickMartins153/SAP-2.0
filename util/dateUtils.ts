@@ -1,3 +1,21 @@
+import ptBR from "date-fns/locale/pt-BR";
+import { addDays, format, getDate } from "date-fns";
+
+export function getWeekDays(date: Date) {
+  const final = [];
+
+  for (let i = 0; i < 7; i++) {
+    const currentDate = addDays(date, i);
+    final.push({
+      // @ts-expect-error
+      formatted: format(currentDate, "EEE", { locale: ptBR }),
+      date: currentDate,
+      day: getDate(currentDate),
+    });
+  }
+  return final;
+}
+
 export function getWeekdayNames(
   locale: string = "pt-BR",
   type: "long" | "short" | "narrow" = "long"
@@ -22,4 +40,18 @@ export function getTimeIntervals(): string[] {
     "18:00 - 18:50",
     "18:50 - 19:40",
   ];
+}
+
+export function stringToDate(dataString: string) {
+  let partes = dataString.split("/");
+  let dia = parseInt(partes[0], 10);
+  let mes = parseInt(partes[1], 10) - 1;
+  let ano = parseInt(partes[2], 10);
+  return new Date(ano, mes, dia);
+}
+
+export function getDayName(dateString: string) {
+  const date = stringToDate(dateString);
+  // @ts-expect-error
+  return format(date, "EEE", { locale: ptBR });
 }

@@ -1,5 +1,7 @@
 import { NewGrupo } from "@/components/grupos/AddGrupoModal";
+import { Agendamento } from "@/interfaces/Agendamento";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
+import { agendarHorario } from "./agendamentoHTTP";
 
 export const GRUPOS_ESTUDO: GrupoEstudo[] = [
   {
@@ -109,21 +111,26 @@ export async function getGruposDisponiveis(funcionarioId: string) {
 
 export async function createGrupo(newGrupo: NewGrupo) {
   const id = (GRUPOS_ESTUDO.length + 101).toString();
-  const encontro = {
-    salaId: newGrupo.sala!,
-    horario: {
-      data: newGrupo.data!,
-      hora: newGrupo.horario!,
-    },
+  const encontro: Omit<Agendamento, "id"> = {
+    sala: newGrupo.sala!,
+    responsavelId: newGrupo.responsavelId!,
+    data: newGrupo.data,
+    horario: newGrupo.horario,
+    recorrente: true,
   };
+
+  await agendarHorario(encontro);
 
   const grupoEstudo: GrupoEstudo = {
     id,
     temaEstudo: newGrupo.temaEstudo,
     ministrantesId: newGrupo.ministrantesId,
     participantesId: [],
-    encontro,
+    encontro: {
+      horario: { data: encontro.data!, hora: encontro.horario! },
+      salaId: encontro.sala,
+    },
   };
 
-  GRUPOS_ESTUDO.push(grupoEstudo);
+  return GRUPOS_ESTUDO.push(grupoEstudo);
 }
