@@ -11,6 +11,9 @@ import { memo } from "react";
 
 type PostItemProps = {
   postData: Post;
+  onSelectPost?: (postId: string) => void;
+  isSelected?: boolean;
+  anySelected?: boolean;
 };
 
 function formatText(text: string, maxLength: number) {
@@ -24,7 +27,12 @@ function formatText(text: string, maxLength: number) {
   return truncated.substring(0, lastSpaceIndex) + "...";
 }
 
-const PostItem = ({ postData }: PostItemProps) => {
+const PostItem = ({
+  postData,
+  onSelectPost,
+  isSelected,
+  anySelected,
+}: PostItemProps) => {
   const {
     data: funcionario,
     isLoading,
@@ -33,11 +41,6 @@ const PostItem = ({ postData }: PostItemProps) => {
     queryKey: ["funcionarios", postData.idAutor],
     queryFn: () => getFuncionarioById(postData.idAutor),
   });
-  let imageUri: string;
-
-  if (postData.imagemURL) {
-    imageUri = postData.imagemURL;
-  }
 
   function showPostHandler() {
     router.navigate(`detalhesPost/${postData.id}`);
@@ -48,14 +51,19 @@ const PostItem = ({ postData }: PostItemProps) => {
   }
 
   return (
-    <View style={styles.rootContainer}>
+    <View style={[styles.rootContainer, isSelected && styles.selected]}>
       <Pressable
         style={({ pressed }) => [
           styles.postContainer,
           pressed && styles.pressed,
         ]}
         android_ripple={{ color: Colors.lightRipple }}
-        onPress={showPostHandler}
+        onPress={
+          !isSelected && !anySelected
+            ? showPostHandler
+            : onSelectPost?.bind(null, postData.id)
+        }
+        onLongPress={onSelectPost?.bind(null, postData.id)}
       >
         <View style={styles.postHeader}>
           <Badge label={funcionario!.nome} imagemURL={funcionario?.imagemURL} />
@@ -93,6 +101,10 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.95,
+  },
+  selected: {
+    opacity: 0.8,
+    backgroundColor: Colors.text,
   },
   postHeader: {
     flexDirection: "row",

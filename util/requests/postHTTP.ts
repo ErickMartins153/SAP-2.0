@@ -131,3 +131,7 @@ export async function addPost(postData: newPost) {
   POSTS.push({ id: fakeId, ...postData });
   return POSTS.length - 1;
 }
+
+export async function deleteMultiplePosts(postsId: string[]) {
+  postsId.map((id) => deletePost(id));
+}

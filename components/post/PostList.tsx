@@ -1,26 +1,50 @@
-import { useState } from "react";
 import { FlatList } from "react-native";
 
 import Post from "@/interfaces/Post";
 import PostItem from "./PostItem";
 import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "@/util/requests/postHTTP";
+import useAuth from "@/hooks/useAuth";
 
-export default function PostList() {
+function isSelected(postId: string, selectedPosts: string[]) {
+  return selectedPosts.includes(postId);
+}
+
+type PostListProps = {
+  onSelection: (isSelected: boolean, postId: string) => void;
+  selectedPosts: string[];
+};
+
+export default function PostList({
+  onSelection,
+  selectedPosts,
+}: PostListProps) {
+  const { user } = useAuth();
+
   const {
     data: posts,
     isLoading,
     isError,
+    refetch,
+    isRefetching,
   } = useQuery({
     queryKey: ["posts"],
     queryFn: getPosts,
   });
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  function handleRefresh() {}
 
   function renderPostHandler(post: Post) {
-    return <PostItem postData={post} />;
+    return (
+      <PostItem
+        postData={post}
+        isSelected={isSelected(post.id, selectedPosts)}
+        anySelected={selectedPosts.length > 0}
+        onSelectPost={
+          user?.isTecnico
+            ? onSelection.bind(null, isSelected(post.id, selectedPosts))
+            : undefined
+        }
+      />
+    );
   }
 
   return (
@@ -29,8 +53,8 @@ export default function PostList() {
         data={posts}
         renderItem={({ item }) => renderPostHandler(item)}
         keyExtractor={({ id }) => id}
-        onRefresh={handleRefresh}
-        refreshing={isRefreshing}
+        onRefresh={refetch}
+        refreshing={isRefetching}
         contentContainerStyle={{ paddingBottom: "8%" }}
         showsVerticalScrollIndicator={false}
       />
