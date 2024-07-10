@@ -194,16 +194,6 @@ export default function detalhesGrupo() {
               >
                 <Button
                   color={
-                    showFuncionarios === "participantes"
-                      ? "selectedButton"
-                      : "button"
-                  }
-                  onPress={() => toggleFuncionarioView("participantes")}
-                >
-                  Participantes
-                </Button>
-                <Button
-                  color={
                     showFuncionarios === "ministrantes"
                       ? "selectedButton"
                       : "button"
@@ -211,6 +201,16 @@ export default function detalhesGrupo() {
                   onPress={() => toggleFuncionarioView("ministrantes")}
                 >
                   Ministrantes
+                </Button>
+                <Button
+                  color={
+                    showFuncionarios === "participantes"
+                      ? "selectedButton"
+                      : "button"
+                  }
+                  onPress={() => toggleFuncionarioView("participantes")}
+                >
+                  Participantes
                 </Button>
               </View>
               <StyledText

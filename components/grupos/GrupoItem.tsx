@@ -43,9 +43,11 @@ const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
       <InfoBox label="Data" content={`${dayName}s`} />
       <InfoBox label="Horário" content={grupo.encontro.horario.hora} />
       <InfoBox label="Sala" content={grupo.encontro.salaId} />
-      <StyledText textAlign="center" fontWeight="bold">
-        Clique para ver mais informações
-      </StyledText>
+      {isGrupoEstudo(grupo) && (
+        <StyledText textAlign="center" fontWeight="bold">
+          Clique para ver mais informações
+        </StyledText>
+      )}
     </Pressable>
   );
 };

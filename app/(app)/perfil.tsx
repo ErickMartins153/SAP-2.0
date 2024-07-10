@@ -1,12 +1,13 @@
-import { BackHandler, StyleSheet, View } from "react-native";
+import { Alert, BackHandler, StyleSheet, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 import UserAvatar from "@/components/UI/UserAvatar";
 import Button from "@/components/general/Button";
 import StyledText from "@/components/UI/StyledText";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import useAuth from "@/hooks/useAuth";
 import {
+  changePictureFuncionario,
   getFuncionarioById,
   getSupervisionados,
 } from "@/util/requests/funcionarioHTTP";
@@ -18,25 +19,18 @@ import { router, useFocusEffect, useNavigation } from "expo-router";
 import Funcionario from "@/interfaces/Funcionario";
 import Dialog from "@/components/layouts/Dialog";
 import useImagePicker from "@/hooks/useImagePicker";
+import { queryClient } from "@/util/queries";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
   const navigation = useNavigation();
-  const {
-    changeBottomContent: changeModalContent,
-    openBottom,
-    isVisible,
-    closeBottom,
-    clear,
-  } = useBottomSheet();
-  const { openLibrary, openCamera, imageURI, aspect, clearImage } =
-    useImagePicker();
-
+  const { changeBottomContent, openBottom, isVisible, closeBottom, clear } =
+    useBottomSheet();
+  const { openLibrary, openCamera, imageURI, clearImage } = useImagePicker();
   const [supervisionado, setSupervisionado] = useState<
     Funcionario | undefined
   >();
 
-  const [showSupervisionado, setShowSupervisionado] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
   const {
@@ -53,6 +47,22 @@ export default function ProfileScreen() {
     queryFn: () => getFuncionarioById(user!.id),
   });
 
+  const { mutate: changePicture } = useMutation({
+    mutationFn: changePictureFuncionario.bind(null, funcionarioData!.id),
+    onMutate: () => {
+      toggleDialog();
+    },
+    onSuccess: () => {
+      clearImage();
+
+      queryClient.invalidateQueries({
+        queryKey: ["funcionarios", funcionarioData!.id],
+      });
+      toggleDialog();
+      Alert.alert("Imagem alterada", "Sua imagem foi alterada com sucesso!");
+    },
+  });
+
   function showSupervisionadoHandler(funcionario: Funcionario) {
     closeBottom();
     router.navigate(funcionario.id);
@@ -60,12 +70,11 @@ export default function ProfileScreen() {
 
   function closeSupervisionadoModal() {
     setSupervisionado(undefined);
-    setShowSupervisionado(false);
   }
 
   useLayoutEffect(() => {
     if (!isLoading && supervisionados) {
-      changeModalContent(
+      changeBottomContent(
         <Supervisionados
           supervisionados={supervisionados}
           onSelect={showSupervisionadoHandler}
@@ -90,6 +99,7 @@ export default function ProfileScreen() {
           closeBottom();
           return true;
         } else {
+          clearImage();
           router.navigate("(app)");
           return true;
         }
@@ -106,12 +116,39 @@ export default function ProfileScreen() {
     setShowDialog((p) => !p);
   }
 
+  function changePictureHandler() {
+    if (imageURI) {
+      changePicture(imageURI);
+    }
+  }
+
+  function openImagePicker(mode: "camera" | "library") {
+    if (mode === "camera") {
+      openCamera();
+    }
+    if (mode === "library") {
+      openLibrary();
+    }
+    toggleDialog();
+  }
+
+  function removeImageHandler() {
+    Alert.alert(
+      "Você tem certeza?",
+      "Uma vez removida você voltará a ter a imagem padrão.",
+      [
+        { text: "Cancelar", isPreferred: true },
+        { text: "Confirmar", onPress: () => changePicture("") },
+      ]
+    );
+  }
+
   return (
     <MainPageLayout>
       <View style={styles.userContainer}>
         <UserAvatar
           size={144}
-          imageURL={funcionarioData?.imagemURL}
+          imageURL={imageURI ?? funcionarioData?.imagemURL}
           icon={(props) => (
             <Icon name="edit" {...props} onPress={toggleDialog} />
           )}
@@ -123,11 +160,25 @@ export default function ProfileScreen() {
           {funcionarioData?.isTecnico ? "Técnico" : "Estagiário"}
         </StyledText>
         <View style={styles.buttonsContainer}>
-          <Button onPress={() => router.navigate("estatisticas")}>
-            Estatísticas
-          </Button>
-          {funcionarioData?.isTecnico && (
-            <Button onPress={openBottom}>Meus supervisionados</Button>
+          {!imageURI && (
+            <>
+              <Button onPress={() => router.navigate("estatisticas")}>
+                Estatísticas
+              </Button>
+              {funcionarioData?.isTecnico && (
+                <Button onPress={openBottom}>Meus supervisionados</Button>
+              )}
+            </>
+          )}
+          {imageURI && (
+            <>
+              <Button color="green" onPress={changePictureHandler}>
+                Confirmar alterações
+              </Button>
+              <Button color="red" onPress={clearImage}>
+                Remover alterações
+              </Button>
+            </>
           )}
         </View>
       </View>
@@ -140,17 +191,24 @@ export default function ProfileScreen() {
         <View style={{ flexDirection: "row", gap: 12 }}>
           <Button
             leftIcon={<Icon name="camera" color="white" />}
-            onPress={openCamera}
+            onPress={() => openImagePicker("camera")}
           >
             Câmera
           </Button>
           <Button
             leftIcon={<Icon name="image" color="white" />}
-            onPress={openLibrary}
+            onPress={() => openImagePicker("library")}
           >
             Galeria
           </Button>
         </View>
+        {funcionarioData?.imagemURL && (
+          <View style={{ marginTop: "4%", alignItems: "center" }}>
+            <Button onPress={removeImageHandler} color="red">
+              Remover imagem
+            </Button>
+          </View>
+        )}
       </Dialog>
     </MainPageLayout>
   );

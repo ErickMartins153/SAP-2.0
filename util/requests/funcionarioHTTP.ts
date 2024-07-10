@@ -3,7 +3,6 @@ import Funcionario from "@/interfaces/Funcionario";
 export const FUNCIONARIOS: Funcionario[] = [
   {
     id: "1",
-    imagemURL: `https://avatar.iran.liara.run/public/1`,
     nome: "Erick",
     sobrenome: "Martins",
     email: "",
@@ -137,4 +136,18 @@ export function getFuncionariosByIds(ids: string[]): Funcionario[] {
   return ids
     .map((id) => FUNCIONARIOS.find((funcionario) => funcionario.id === id))
     .filter((funcionario) => funcionario !== undefined) as Funcionario[];
+}
+
+export async function changePictureFuncionario(
+  funcionarioId: string,
+  imageURI: string
+) {
+  const funcionario = FUNCIONARIOS.find(
+    (funcionario) => funcionario.id === funcionarioId
+  );
+  if (funcionario) {
+    funcionario.imagemURL = imageURI;
+    return true;
+  }
+  return false;
 }

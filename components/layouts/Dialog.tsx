@@ -29,7 +29,12 @@ export default function Dialog({
   ...props
 }: DialogProps) {
   return (
-    <Modal visible={visible} transparent={true} animationType="none">
+    <Modal
+      visible={visible}
+      transparent={true}
+      animationType="none"
+      onRequestClose={closeDialog}
+    >
       <Pressable
         style={styles.backdrop}
         onPress={backdropBehavior === "dismiss" ? closeDialog : undefined}
