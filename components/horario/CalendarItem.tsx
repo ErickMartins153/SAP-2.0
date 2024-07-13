@@ -51,7 +51,7 @@ export default function CalendarItem({
           disabled && styles.disabled,
           pressed && styles.pressed,
         ]}
-        onPress={available ? onPress : unavailableHandler}
+        onPress={onPress}
         {...props}
       >
         <Text style={[styles.text, disabled && { color: Colors.text }]}>

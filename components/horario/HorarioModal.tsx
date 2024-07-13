@@ -83,6 +83,7 @@ export default function HorarioModal({
       closeDialog={toggleDialog}
       onSubmit={agendarHandler}
       {...props}
+      backdropBehavior="dismiss"
     >
       {agendamento.data && <InfoBox content={agendamento.data} label="Dia" />}
       <InfoBox content={agendamento.horario!} label="Horário" />

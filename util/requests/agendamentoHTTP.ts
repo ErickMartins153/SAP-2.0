@@ -106,3 +106,16 @@ export async function deleteAgendamento(agendamentoId: string) {
     (agendamento) => agendamento.id !== agendamentoId
   );
 }
+
+export async function getAgendamento(
+  searchedSala: string,
+  searchedData: string,
+  searchedhorario: string
+) {
+  return AGENDAMENTOS.find(
+    ({ sala, data, horario }) =>
+      sala === searchedSala &&
+      data === searchedData &&
+      horario === searchedhorario
+  );
+}
