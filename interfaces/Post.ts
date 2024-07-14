@@ -4,7 +4,7 @@ export default interface Post {
   horario: Date;
   titulo: string;
   imagemURL?: string;
-  conteudo: string;
+  conteudo?: string;
 }
 
 export type newPost = Omit<Post, "id">;

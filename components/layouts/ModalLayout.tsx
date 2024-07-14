@@ -47,8 +47,13 @@ export default function ModalLayout({
             }}
             onPress={toggleModal}
           >
-            <Icon name="chevron-left" size={32} />
-            <StyledText mode="big" fontWeight="bold" textAlign="center">
+            <Icon name="chevron-left" size={32} onPress={toggleModal} />
+            <StyledText
+              mode="big"
+              fontWeight="bold"
+              textAlign="center"
+              onPress={toggleModal}
+            >
               Voltar
             </StyledText>
           </Pressable>

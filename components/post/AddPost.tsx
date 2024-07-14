@@ -1,5 +1,5 @@
 import { PropsWithoutRef, useCallback, useEffect, useState } from "react";
-import { BackHandler, ModalProps, View } from "react-native";
+import { Alert, BackHandler, ModalProps, View } from "react-native";
 import { Image } from "expo-image";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ import useAuth from "@/hooks/useAuth";
 import { newPost } from "@/interfaces/Post";
 import blurhash from "@/util/blurhash";
 import ModalLayout from "../layouts/ModalLayout";
+import { notBlank } from "@/util/validate";
 
 type AddPostProps = {
   toggleModal: () => void;
@@ -78,13 +79,18 @@ export default function AddPost({
   }
 
   function createPostHandler() {
-    mutate({
-      conteudo: postContent.conteudo,
-      titulo: postContent.titulo,
-      imagemURL: imageURI,
-      horario: new Date(),
-      idAutor: user!.id,
-    });
+    const { titulo } = postContent;
+    if (notBlank({ titulo, idAutor: user!.id })) {
+      mutate({
+        conteudo: postContent.conteudo,
+        titulo: postContent.titulo,
+        imagemURL: imageURI,
+        horario: new Date(),
+        idAutor: user!.id,
+      });
+    } else {
+      Alert.alert("Erro", "Um post deve ter ao menos um título!");
+    }
   }
 
   function closeHandler() {

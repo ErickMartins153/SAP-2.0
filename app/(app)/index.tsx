@@ -6,9 +6,9 @@ import PostList from "@/components/post/PostList";
 import { queryClient } from "@/util/queries";
 import { deleteMultiplePosts } from "@/util/requests/postHTTP";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigation } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { Alert, View } from "react-native";
+import { Alert, BackHandler, View } from "react-native";
 
 export default function Mural() {
   const navigation = useNavigation();
@@ -36,6 +36,19 @@ export default function Mural() {
       ),
     });
   }, [navigation]);
+
+  useFocusEffect(() => {
+    const backAction = () => {
+      BackHandler.exitApp();
+      return true;
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    };
+  });
 
   useEffect(() => {
     if (selectedPosts.length > 0) {

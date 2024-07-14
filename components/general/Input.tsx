@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
 import { PropsWithoutRef, type ReactNode, useState } from "react";
 import { Colors } from "@/constants/Colors";
 import Icon from "./Icon";
+import { validators } from "@/util/validate";
 
 type InputProps = {
   placeholder: string;
@@ -11,6 +12,7 @@ type InputProps = {
   value: string;
   onChangeText: (text: string) => void;
   leftIcon?: ReactNode;
+  rule?: keyof typeof validators;
 } & PropsWithoutRef<TextInputProps>;
 
 export default function Input({
@@ -21,6 +23,7 @@ export default function Input({
   mode,
   leftIcon,
   style: customStyle,
+  rule,
   ...rest
 }: InputProps) {
   const [hide, setHide] = useState(false);
@@ -30,6 +33,7 @@ export default function Input({
   }
 
   function changeTextHandler(text: string) {
+    if (rule && !text.match(validators[rule])) return;
     onChangeText(text);
   }
 

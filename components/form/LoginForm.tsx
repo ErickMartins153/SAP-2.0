@@ -46,9 +46,9 @@ export default function LoginForm({ onShowModal }: LoginFormType) {
             mode="password"
           />
 
-          <Pressable style={styles.recoverContainer} onPress={onShowModal}>
+          {/* <Pressable style={styles.recoverContainer} onPress={onShowModal}>
             <StyledText color="icon">Esqueci minha senha</StyledText>
-          </Pressable>
+          </Pressable> */}
         </View>
       </View>
       <View style={{ marginTop: "4%" }}>

@@ -28,8 +28,17 @@ export default function Header({ navigation, ...props }: HeaderProps) {
         style={{ flexDirection: "row", alignItems: "center" }}
         onPress={() => navigation.navigate("perfil")}
       >
-        <Icon name="chevron-left" size={32} />
-        <StyledText mode="big" fontWeight="bold" textAlign="center">
+        <Icon
+          name="chevron-left"
+          size={32}
+          onPress={() => navigation.navigate("perfil")}
+        />
+        <StyledText
+          mode="big"
+          fontWeight="bold"
+          textAlign="center"
+          onPress={() => navigation.navigate("perfil")}
+        >
           Voltar
         </StyledText>
       </Pressable>

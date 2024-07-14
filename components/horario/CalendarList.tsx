@@ -176,9 +176,12 @@ export default function CalendarList({
             onPress: () => desmarcar(),
           },
           {
-            isPreferred: true,
             text: "Apenas esta ocorrência",
             onPress: () => desmarcar(),
+          },
+          {
+            isPreferred: true,
+            text: "Cancelar",
           },
         ]
       );

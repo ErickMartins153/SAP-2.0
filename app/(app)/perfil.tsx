@@ -40,6 +40,7 @@ export default function ProfileScreen() {
   } = useQuery({
     queryFn: () => getSupervisionados(user!.id),
     queryKey: ["funcionarios", "supervisionados", user!.id],
+    enabled: !!user?.id,
   });
 
   const { data: funcionarioData } = useQuery({

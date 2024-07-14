@@ -144,6 +144,7 @@ export default function Gerenciar() {
             onChangeText={updateFuncionarioHandler.bind(null, "nome")}
             value={funcionarioData.nome}
             key="nome"
+            rule="nameValidator"
           />
           <Input
             placeholder="Sobrenome do funcionário"
@@ -151,6 +152,7 @@ export default function Gerenciar() {
             value={funcionarioData.sobrenome}
             style={{ marginTop: 0 }}
             key="sobrenome"
+            rule="nameValidator"
           />
           <View style={styles.marginVertical}>
             <Button onPress={registerFuncionarioHandler}>Confirmar</Button>
