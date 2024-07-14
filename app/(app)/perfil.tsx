@@ -50,7 +50,7 @@ export default function ProfileScreen() {
   const { mutate: changePicture } = useMutation({
     mutationFn: changePictureFuncionario.bind(null, funcionarioData!.id),
     onMutate: () => {
-      toggleDialog();
+      closeDialog();
     },
     onSuccess: () => {
       clearImage();
@@ -58,7 +58,6 @@ export default function ProfileScreen() {
       queryClient.invalidateQueries({
         queryKey: ["funcionarios", funcionarioData!.id],
       });
-      toggleDialog();
       Alert.alert("Imagem alterada", "Sua imagem foi alterada com sucesso!");
     },
   });
@@ -114,6 +113,10 @@ export default function ProfileScreen() {
 
   function toggleDialog() {
     setShowDialog((p) => !p);
+  }
+
+  function closeDialog() {
+    setShowDialog(false);
   }
 
   function changePictureHandler() {
@@ -190,13 +193,25 @@ export default function ProfileScreen() {
       >
         <View style={{ flexDirection: "row", gap: 12 }}>
           <Button
-            leftIcon={<Icon name="camera" color="white" />}
+            leftIcon={
+              <Icon
+                name="camera"
+                color="white"
+                onPress={() => openImagePicker("camera")}
+              />
+            }
             onPress={() => openImagePicker("camera")}
           >
             Câmera
           </Button>
           <Button
-            leftIcon={<Icon name="image" color="white" />}
+            leftIcon={
+              <Icon
+                name="image"
+                color="white"
+                onPress={() => openImagePicker("library")}
+              />
+            }
             onPress={() => openImagePicker("library")}
           >
             Galeria

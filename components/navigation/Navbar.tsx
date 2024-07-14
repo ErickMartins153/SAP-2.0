@@ -9,15 +9,9 @@ import NavbarItem from "./NavbarItem";
 import useAuth from "@/hooks/useAuth";
 import UserAvatar from "../UI/UserAvatar";
 import { Colors } from "@/constants/Colors";
-import { useQuery } from "@tanstack/react-query";
-import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 
 export default function Navbar({ ...props }: DrawerContentComponentProps) {
   const { logout, user } = useAuth();
-  const { data: funcionarioData } = useQuery({
-    queryKey: ["funcionarios", user!.id],
-    queryFn: () => getFuncionarioById(user!.id),
-  });
 
   function handleNavigation(destinyPage: string) {
     props.navigation.navigate(destinyPage);
@@ -45,14 +39,14 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
         <View>
           <View style={styles.avatar}>
             <Pressable onPress={handleNavigation.bind(null, "perfil")}>
-              <UserAvatar size={144} imageURL={funcionarioData?.imagemURL} />
+              <UserAvatar size={144} imageURL={user?.imagemURL} />
             </Pressable>
             <View style={styles.userInfoSection}>
               <Title
                 style={styles.userInfoText}
-              >{`${funcionarioData?.nome} ${funcionarioData?.sobrenome}`}</Title>
+              >{`${user?.nome} ${user?.sobrenome}`}</Title>
               <Caption>
-                Cargo: {funcionarioData?.isTecnico ? "Técnico" : "Estagiário"}
+                Cargo: {user?.isTecnico ? "Técnico" : "Estagiário"}
               </Caption>
             </View>
           </View>

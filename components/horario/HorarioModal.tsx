@@ -69,6 +69,7 @@ export default function HorarioModal({
   );
 
   function agendarHandler() {
+    setRecorrente(false);
     agendar({ ...agendamento, recorrente, responsavelId: user!.id });
   }
 
@@ -76,11 +77,16 @@ export default function HorarioModal({
     setRecorrente((p) => !p);
   }
 
+  function closeDialog() {
+    setRecorrente(false);
+    toggleDialog();
+  }
+
   return (
     <Dialog
       visible={visible}
       title="Confirmar Agendamento"
-      closeDialog={toggleDialog}
+      closeDialog={closeDialog}
       onSubmit={agendarHandler}
       {...props}
       backdropBehavior="dismiss"

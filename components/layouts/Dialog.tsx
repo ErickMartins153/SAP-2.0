@@ -1,11 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { PropsWithoutRef, ReactNode } from "react";
 import { Modal, Pressable, StyleSheet, View, ViewProps } from "react-native";
-import Animated, {
-  FadeInDown,
-  FadeInUp,
-  FadeOutDown,
-} from "react-native-reanimated";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import StyledText from "../UI/StyledText";
 import Button from "../general/Button";
 
@@ -38,38 +34,43 @@ export default function Dialog({
       <Pressable
         style={styles.backdrop}
         onPress={backdropBehavior === "dismiss" ? closeDialog : undefined}
+      />
+      <Animated.View
+        style={[styles.dialog, style]}
+        entering={FadeInDown}
+        {...props}
       >
-        <Animated.View
-          style={[styles.dialog, style]}
-          entering={FadeInDown}
-          {...props}
-        >
-          <StyledText mode="title" fontWeight="bold" textAlign="center">
-            {title}
-          </StyledText>
-          {children}
-          {onSubmit && (
-            <View style={{ flexDirection: "row", gap: 12 }}>
-              <Button onPress={closeDialog}>Cancelar</Button>
-              <Button onPress={onSubmit}>Confirmar</Button>
-            </View>
-          )}
-        </Animated.View>
-      </Pressable>
+        <StyledText mode="title" fontWeight="bold" textAlign="center">
+          {title}
+        </StyledText>
+        {children}
+        {onSubmit && (
+          <View
+            style={{ flexDirection: "row", gap: 12, justifyContent: "center" }}
+          >
+            <Button onPress={closeDialog}>Cancelar</Button>
+            <Button onPress={onSubmit}>Confirmar</Button>
+          </View>
+        )}
+      </Animated.View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   backdrop: {
+    position: "absolute",
+    height: "100%",
+    width: "100%",
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: Colors.backdrop,
-    borderWidth: 10,
   },
   dialog: {
-    paddingHorizontal: "1%",
+    minWidth: "92%",
+    margin: "4%",
+    marginVertical: "auto",
+    alignSelf: "center",
+    paddingHorizontal: "2%",
     paddingVertical: "4%",
     justifyContent: "center",
     backgroundColor: Colors.white,
