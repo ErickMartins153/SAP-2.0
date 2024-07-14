@@ -122,7 +122,7 @@ export async function addFuncionario(funcionarioData: Omit<Funcionario, "id">) {
 
 export async function getTecnicos() {
   return FUNCIONARIOS.filter(
-    (funcionario) => funcionario.isTecnico === true && funcionario.ativo
+    (funcionario) => funcionario.isTecnico && funcionario.ativo
   );
 }
 

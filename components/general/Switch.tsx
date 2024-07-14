@@ -27,6 +27,9 @@ export default function Switch({
         alignItems: "center",
       }}
     >
+      <StyledText fontWeight="bold" mode="big">
+        {label}
+      </StyledText>
       <NativeSwitch
         trackColor={{ false: Colors.red, true: Colors.green }}
         thumbColor={Colors.lightRipple}
@@ -35,7 +38,6 @@ export default function Switch({
         value={isEnabled}
         {...props}
       />
-      <StyledText>{label}</StyledText>
     </View>
   );
 }

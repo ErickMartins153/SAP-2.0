@@ -4,7 +4,7 @@ export default interface Funcionario {
   nome: string;
   sobrenome: string;
   email: string;
-  isTecnico: boolean;
+  isTecnico: boolean | undefined;
   ativo: boolean;
   supervisor?: { id: string; nome: string; imagemURL?: string };
 }

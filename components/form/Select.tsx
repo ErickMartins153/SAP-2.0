@@ -17,10 +17,11 @@ type DataItem = {
 type SelectProps = {
   data: DataItem[];
   placeholder: string;
+  iconPress?: () => void;
 } & Omit<PropsWithoutRef<SelectDropdownProps>, "renderButton" | "renderItem">;
 
 const Select = forwardRef<SelectDropdown, SelectProps>(
-  ({ placeholder, onSelect: onSelection, ...props }, ref) => {
+  ({ placeholder, onSelect: onSelection, iconPress, ...props }, ref) => {
     return (
       <SelectDropdown
         ref={ref}
@@ -58,7 +59,10 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
                   `${selectedItem.nome} ${selectedItem.sobrenome ?? ""}`) ||
                   placeholder}
               </StyledText>
-              <Icon name={isOpened ? "chevron-up" : "chevron-down"} />
+              <Icon
+                name={isOpened ? "chevron-up" : "chevron-down"}
+                onPress={iconPress}
+              />
             </View>
           );
         }}

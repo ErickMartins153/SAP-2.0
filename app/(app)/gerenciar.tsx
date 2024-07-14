@@ -24,7 +24,7 @@ import SelectDropdown from "react-native-select-dropdown";
 
 const defaultFuncionario: newFuncionario = {
   email: "",
-  isTecnico: false,
+  isTecnico: undefined,
   nome: "",
   sobrenome: "",
   ativo: true,
@@ -35,6 +35,7 @@ export default function Gerenciar() {
     useState<newFuncionario>(defaultFuncionario);
   const supervisoresRef = useRef<SelectDropdown>(null);
   const isTecnicoRef = useRef<SelectDropdown>(null);
+
   const {
     changeBottomContent: changeModalContent,
     openBottom,
@@ -43,11 +44,7 @@ export default function Gerenciar() {
     clear,
   } = useBottomSheet();
   const navigation = useNavigation();
-  const {
-    data: tecnicos,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: tecnicos, isLoading } = useQuery({
     queryKey: ["funcionarios"],
     queryFn: getTecnicos,
   });
@@ -55,9 +52,9 @@ export default function Gerenciar() {
   const { mutate } = useMutation({
     mutationFn: addFuncionario,
     onSuccess: () => {
-      setFuncionarioData(defaultFuncionario);
       supervisoresRef.current!.reset();
       isTecnicoRef.current!.reset();
+      setFuncionarioData(defaultFuncionario);
       queryClient.invalidateQueries({
         queryKey: ["funcionarios"],
       });
@@ -100,6 +97,7 @@ export default function Gerenciar() {
   }
 
   function registerFuncionarioHandler() {
+    if (!funcionarioData.isTecnico && !funcionarioData.supervisor) return;
     if (notBlank(funcionarioData)) {
       mutate(funcionarioData);
     }
@@ -120,21 +118,26 @@ export default function Gerenciar() {
           />
           <View style={styles.gap}>
             <Select
-              ref={supervisoresRef}
-              data={tecnicos!}
-              onSelect={updateFuncionarioHandler.bind(null, "supervisor")}
-              search
-              placeholder="Escolha o Supervisor"
-              key="supervisor"
-            />
-
-            <Select
               ref={isTecnicoRef}
               data={[{ nome: "Sim" }, { nome: "Não" }]}
               placeholder="O funcionário é técnico?"
               onSelect={updateFuncionarioHandler.bind(null, "isTecnico")}
+              iconPress={isTecnicoRef && isTecnicoRef.current?.openDropdown}
               key="isTecnico"
             />
+            {funcionarioData.isTecnico === false && (
+              <Select
+                ref={supervisoresRef}
+                data={tecnicos!}
+                onSelect={updateFuncionarioHandler.bind(null, "supervisor")}
+                iconPress={
+                  supervisoresRef && supervisoresRef.current?.openDropdown
+                }
+                search
+                placeholder="Escolha o Supervisor"
+                key="supervisor"
+              />
+            )}
           </View>
           <Input
             placeholder="Nome do funcionário"

@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     elevation: 4,
     overflow: "hidden",
+    justifyContent: "center",
   },
 
   internalContainer: {
     paddingVertical: "4%",
     paddingHorizontal: "10%",
-    justifyContent: "center",
     alignItems: "center",
   },
   pressed: {
