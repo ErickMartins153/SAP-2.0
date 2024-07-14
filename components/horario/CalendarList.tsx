@@ -1,20 +1,21 @@
-import { FlatList, FlatListProps, StyleSheet, View } from "react-native";
+import { Alert, FlatList, FlatListProps, StyleSheet } from "react-native";
 import CalendarItem from "./CalendarItem";
 import { getTimeIntervals } from "@/util/dateUtils";
 import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getAgendamento,
   getAgendamentos,
+  removeAgendamento,
 } from "@/util/requests/agendamentoHTTP";
 import { PropsWithoutRef, useEffect, useState } from "react";
 import Dialog from "../layouts/Dialog";
 import StyledText from "../UI/StyledText";
 import InfoBox from "../UI/InfoBox";
 import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
-import { set } from "date-fns";
 import useAuth from "@/hooks/useAuth";
 import Button from "../general/Button";
+import { queryClient } from "@/util/queries";
 
 type CalendarListProps = {
   onSelection: (horario: string) => void;
@@ -57,14 +58,22 @@ export default function CalendarList({
   });
 
   const [showDialog, setShowDialog] = useState(false);
-  const [agendamentoData, setAgendamentoData] = useState<{
-    data: string;
-    horario: string;
-    sala: string;
-  }>();
+  const [agendamentoData, setAgendamentoData] = useState<
+    | {
+        data: string;
+        horario: string;
+        sala: string;
+      }
+    | undefined
+  >();
 
-  const { data: agendamento } = useQuery({
-    queryKey: ["agendamentos", agendamentoData],
+  const { data: agendamento, refetch: refetchAtendimento } = useQuery({
+    queryKey: [
+      "agendamentos",
+      agendamentoData?.data,
+      agendamentoData?.horario,
+      agendamentoData?.sala,
+    ],
     enabled: !!agendamentoData,
     queryFn: () =>
       getAgendamento(
@@ -80,6 +89,34 @@ export default function CalendarList({
     enabled: !!agendamento?.id,
   });
 
+  const { mutate: desmarcar } = useMutation({
+    mutationFn: () =>
+      removeAgendamento(
+        agendamento?.sala!,
+        agendamento?.data!,
+        agendamento?.horario!
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["agendamentos"] });
+      queryClient.removeQueries({
+        queryKey: [
+          "agendamentos",
+          agendamentoData?.data,
+          agendamentoData?.horario,
+          agendamentoData?.sala,
+        ],
+      });
+      refetch();
+      refetchAtendimento();
+      setAgendamentoData(undefined);
+      Alert.alert(
+        "Agendamento desmarcado com sucesso!",
+        "Essa sala agora está disponível nesse horário e nesse dia."
+      );
+      toggleDialog();
+    },
+  });
+
   useEffect(() => {
     refetch();
   }, [selected.data, selected.sala]);
@@ -89,10 +126,6 @@ export default function CalendarList({
     if (toggleModal) {
       toggleModal();
     }
-  }
-
-  if (isLoading) {
-    return;
   }
 
   function renderIntervalItem({ item: interval }: { item: string }) {
@@ -131,6 +164,33 @@ export default function CalendarList({
     setShowDialog(!showDialog);
   }
 
+  function desmarcarHandler() {
+    if (agendamento?.recorrente) {
+      Alert.alert(
+        "Esse agendamento é recorrente",
+        "deseja desmarcar apenas esta ocorrência ou todas elas?",
+        [
+          {
+            style: "destructive",
+            text: "Todas as ocorrências",
+            onPress: () => desmarcar(),
+          },
+          {
+            isPreferred: true,
+            text: "Apenas esta ocorrência",
+            onPress: () => desmarcar(),
+          },
+        ]
+      );
+    } else {
+      desmarcar();
+    }
+  }
+
+  if (isLoading) {
+    return;
+  }
+
   return (
     <>
       <FlatList
@@ -154,7 +214,12 @@ export default function CalendarList({
       >
         <StyledText>O horário escolhido já está ocupado</StyledText>
         <InfoBox content={funcionarioData?.nome || ""} label="Funcionário" />
-        {user?.isTecnico && <Button color="red">Desmarcar</Button>}
+        <InfoBox content={"placeholder"} label="Nome da atividade" />
+        {user?.isTecnico && (
+          <Button color="red" onPress={desmarcarHandler}>
+            Desmarcar
+          </Button>
+        )}
       </Dialog>
     </>
   );

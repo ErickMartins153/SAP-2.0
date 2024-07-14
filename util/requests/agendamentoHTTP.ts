@@ -110,12 +110,29 @@ export async function deleteAgendamento(agendamentoId: string) {
 export async function getAgendamento(
   searchedSala: string,
   searchedData: string,
-  searchedhorario: string
+  searchedHorario: string
+): Promise<Agendamento> {
+  return (
+    AGENDAMENTOS.find(
+      ({ sala, data, horario }) =>
+        sala === searchedSala &&
+        data === searchedData &&
+        horario === searchedHorario
+    ) || { id: "", responsavelId: "", sala: "" }
+  );
+}
+
+export async function removeAgendamento(
+  searchedSala: string,
+  searchedData: string,
+  searchedHorario: string
 ) {
-  return AGENDAMENTOS.find(
+  AGENDAMENTOS = AGENDAMENTOS.filter(
     ({ sala, data, horario }) =>
-      sala === searchedSala &&
-      data === searchedData &&
-      horario === searchedhorario
+      !(
+        sala === searchedSala &&
+        data === searchedData &&
+        horario === searchedHorario
+      )
   );
 }
