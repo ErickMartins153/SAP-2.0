@@ -1,4 +1,6 @@
-import Funcionario from "@/interfaces/Funcionario";
+import Funcionario, { newFuncionario } from "@/interfaces/Funcionario";
+import axios from "axios";
+import { registerTecnico } from "./authHTTP";
 
 export const FUNCIONARIOS: Funcionario[] = [
   {
@@ -6,16 +8,16 @@ export const FUNCIONARIOS: Funcionario[] = [
     nome: "Erick",
     sobrenome: "Martins",
     email: "",
-    isTecnico: true,
+    cargo: "TECNICO",
     ativo: true,
   },
   {
     id: "2",
-    imagemURL: `https://avatar.iran.liara.run/public/2`,
+    urlImagem: `https://avatar.iran.liara.run/public/2`,
     nome: "Ana",
     sobrenome: "Oliveira",
     email: "ana",
-    isTecnico: false,
+    cargo: "ESTAGIARIO",
     ativo: true,
     supervisor: {
       id: "1",
@@ -25,20 +27,20 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "3",
-    imagemURL: `https://avatar.iran.liara.run/public/3`,
+    urlImagem: `https://avatar.iran.liara.run/public/3`,
     nome: "Marcos",
     sobrenome: "Souza",
     email: "marcos.souza@upe.br",
-    isTecnico: true,
+    cargo: "TECNICO",
     ativo: true,
   },
   {
     id: "4",
-    imagemURL: `https://avatar.iran.liara.run/public/4`,
+    urlImagem: `https://avatar.iran.liara.run/public/4`,
     nome: "Julia",
     sobrenome: "Ferreira",
     email: "julia.ferreira@upe.br",
-    isTecnico: false,
+    cargo: "ESTAGIARIO",
     ativo: true,
     supervisor: {
       id: "3",
@@ -48,20 +50,20 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "5",
-    imagemURL: `https://avatar.iran.liara.run/public/5`,
+    urlImagem: `https://avatar.iran.liara.run/public/5`,
     nome: "Roberto",
     sobrenome: "Costa",
     email: "roberto.costa@upe.br",
-    isTecnico: true,
+    cargo: "TECNICO",
     ativo: true,
   },
   {
     id: "6",
-    imagemURL: `https://avatar.iran.liara.run/public/6`,
+    urlImagem: `https://avatar.iran.liara.run/public/6`,
     nome: "Fernanda",
     sobrenome: "Ribeiro",
     email: "fernanda.ribeiro@upe.br",
-    isTecnico: false,
+    cargo: "ESTAGIARIO",
     ativo: true,
     supervisor: {
       id: "5",
@@ -71,20 +73,20 @@ export const FUNCIONARIOS: Funcionario[] = [
   },
   {
     id: "7",
-    imagemURL: `https://avatar.iran.liara.run/public/7`,
+    urlImagem: `https://avatar.iran.liara.run/public/7`,
     nome: "Ricardo",
     sobrenome: "Almeida",
     email: "ricardo.almeida@upe.br",
-    isTecnico: true,
+    cargo: "TECNICO",
     ativo: true,
   },
   {
     id: "8",
-    imagemURL: `https://avatar.iran.liara.run/public/8`,
+    urlImagem: `https://avatar.iran.liara.run/public/8`,
     nome: "Patricia",
     sobrenome: "Lima",
     email: "patricia.lima@upe.br",
-    isTecnico: false,
+    cargo: "ESTAGIARIO",
     ativo: true,
     supervisor: {
       id: "7",
@@ -93,6 +95,8 @@ export const FUNCIONARIOS: Funcionario[] = [
     },
   },
 ];
+
+const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL + "/funcionarios";
 
 export function getFuncionariosAtivos() {
   return FUNCIONARIOS.filter(
@@ -114,22 +118,28 @@ export async function deleteFuncionario(funcionarioId: string) {
   FUNCIONARIOS[funcionarioIndex].ativo = false;
 }
 
-export async function addFuncionario(funcionarioData: Omit<Funcionario, "id">) {
-  const fakeId = FUNCIONARIOS.length.toString();
-  FUNCIONARIOS.push({ id: fakeId, ...funcionarioData });
-  return FUNCIONARIOS.length - 1;
+export async function addFuncionario(funcionarioData: newFuncionario) {
+  // if (funcionarioData.cargo === "TECNICO") {
+  return await registerTecnico(funcionarioData);
+  // }
 }
 
-export async function getTecnicos() {
-  return FUNCIONARIOS.filter(
-    (funcionario) => funcionario.isTecnico && funcionario.ativo
-  );
+export async function getTecnicos(token: string) {
+  const response = await axios.get(`${BASE_URL}/many?by=TECNICOS`, {
+    headers: { Authorization: "Bearer " + token },
+  });
+
+  return response.data as Funcionario[];
 }
 
-export async function getSupervisionados(supervisorId: string) {
-  return FUNCIONARIOS.filter(
-    (funcionario) => funcionario.supervisor?.id === supervisorId
+export async function getSupervisionados(supervisorId: string, token: string) {
+  const response = await axios.get(
+    `${BASE_URL}/many?by=supervisionados&uid=${supervisorId}`,
+    {
+      headers: { Authorization: "Bearer " + token },
+    }
   );
+  return response.data as Funcionario[];
 }
 
 export function getFuncionariosByIds(ids: string[]): Funcionario[] {
@@ -146,7 +156,7 @@ export async function changePictureFuncionario(
     (funcionario) => funcionario.id === funcionarioId
   );
   if (funcionario) {
-    funcionario.imagemURL = imageURI;
+    funcionario.urlImagem = imageURI;
     return true;
   }
   return false;

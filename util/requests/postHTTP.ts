@@ -3,7 +3,7 @@ import Post, { newPost } from "@/interfaces/Post";
 export const POSTS: Post[] = [
   {
     id: "124",
-    idAutor: "1",
+    idAutor: "0a8b5b95-104a-4572-a30c-97cd21fb68fc",
     horario: new Date(
       2024,
       +(Math.random() * 10).toFixed(0),
@@ -17,7 +17,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "125",
-    idAutor: "2",
+    idAutor: "0a8b5b95-104a-4572-a30c-97cd21fb68fc",
     horario: new Date(
       2024,
       +(Math.random() * 10).toFixed(0),
@@ -31,7 +31,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "126",
-    idAutor: "3",
+    idAutor: "0a8b5b95-104a-4572-a30c-97cd21fb68fc",
     horario: new Date(
       2024,
       +(Math.random() * 10).toFixed(0),
@@ -45,7 +45,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "127",
-    idAutor: "4",
+    idAutor: "0a8b5b95-104a-4572-a30c-97cd21fb68fc",
     horario: new Date(
       2024,
       +(Math.random() * 10).toFixed(0),
@@ -59,7 +59,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "128",
-    idAutor: "5",
+    idAutor: "0a8b5b95-104a-4572-a30c-97cd21fb68fc",
     horario: new Date(
       2024,
       +(Math.random() * 10).toFixed(0),
@@ -73,7 +73,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "129",
-    idAutor: "1",
+    idAutor: "0a8b5b95-104a-4572-a30c-97cd21fb68fc",
     horario: new Date(
       2024,
       +(Math.random() * 10).toFixed(0),
@@ -87,7 +87,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "130",
-    idAutor: "6",
+    idAutor: "0a8b5b95-104a-4572-a30c-97cd21fb68fc",
     horario: new Date(
       2024,
       +(Math.random() * 10).toFixed(0),
@@ -99,7 +99,7 @@ export const POSTS: Post[] = [
   },
   {
     id: "131",
-    idAutor: "7",
+    idAutor: "0a8b5b95-104a-4572-a30c-97cd21fb68fc",
     horario: new Date(
       2024,
       +(Math.random() * 10).toFixed(0),
