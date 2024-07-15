@@ -218,7 +218,7 @@ export default function CalendarList({
         <StyledText>O horário escolhido já está ocupado</StyledText>
         <InfoBox content={funcionarioData?.nome || ""} label="Funcionário" />
         <InfoBox content={"placeholder"} label="Nome da atividade" />
-        {user?.isTecnico && (
+        {user?.cargo === "TECNICO" && (
           <Button color="red" onPress={desmarcarHandler}>
             Desmarcar
           </Button>

@@ -1,19 +1,23 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 import { useEffect, useState } from "react";
 import Input from "../general/Input";
 import Button from "../general/Button";
 import useAuth from "@/hooks/useAuth";
 import { router } from "expo-router";
-import StyledText from "../UI/StyledText";
+
 import { Credentials } from "@/util/requests/authHTTP";
+import { notBlank } from "@/util/validate";
 
 type LoginFormType = {
   onShowModal: () => void;
 };
 
 export default function LoginForm({ onShowModal }: LoginFormType) {
-  const [inputs, setInputs] = useState<Credentials>({ email: "", senha: "" });
+  const [inputs, setInputs] = useState<Credentials>({
+    email: "",
+    senha: "",
+  });
   const { login, user } = useAuth();
 
   function InputChangeHandler(field: keyof Credentials, text: string) {
@@ -21,7 +25,14 @@ export default function LoginForm({ onShowModal }: LoginFormType) {
   }
 
   function onSubmitHandler() {
-    login(inputs);
+    if (notBlank(inputs)) {
+      login(inputs);
+    } else {
+      Alert.alert(
+        "Erro",
+        "Preencha todas as informações necessárias para continuar."
+      );
+    }
   }
 
   useEffect(() => {

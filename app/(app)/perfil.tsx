@@ -8,7 +8,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import useAuth from "@/hooks/useAuth";
 import {
   changePictureFuncionario,
-  getFuncionarioById,
   getSupervisionados,
 } from "@/util/requests/funcionarioHTTP";
 import Icon from "@/components/general/Icon";
@@ -22,7 +21,8 @@ import useImagePicker from "@/hooks/useImagePicker";
 import { queryClient } from "@/util/queries";
 
 export default function ProfileScreen() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+
   const navigation = useNavigation();
   const { changeBottomContent, openBottom, isVisible, closeBottom, clear } =
     useBottomSheet();
@@ -35,21 +35,16 @@ export default function ProfileScreen() {
 
   const {
     data: supervisionados,
-    isLoading,
+    isLoading: loadingSupervisionados,
     isError,
   } = useQuery({
-    queryFn: () => getSupervisionados(user!.id),
+    queryFn: () => getSupervisionados(user!.id, token!),
     queryKey: ["funcionarios", "supervisionados", user!.id],
-    enabled: !!user?.id,
-  });
-
-  const { data: funcionarioData } = useQuery({
-    queryKey: ["funcionarios", user!.id],
-    queryFn: () => getFuncionarioById(user!.id),
+    enabled: !!user!.id,
   });
 
   const { mutate: changePicture } = useMutation({
-    mutationFn: changePictureFuncionario.bind(null, funcionarioData!.id),
+    mutationFn: changePictureFuncionario.bind(null, user!.id),
     onMutate: () => {
       closeDialog();
     },
@@ -57,7 +52,7 @@ export default function ProfileScreen() {
       clearImage();
 
       queryClient.invalidateQueries({
-        queryKey: ["funcionarios", funcionarioData!.id],
+        queryKey: ["funcionarios", user!.id],
       });
       Alert.alert("Imagem alterada", "Sua imagem foi alterada com sucesso!");
     },
@@ -73,7 +68,7 @@ export default function ProfileScreen() {
   }
 
   useLayoutEffect(() => {
-    if (!isLoading && supervisionados) {
+    if (!loadingSupervisionados && supervisionados) {
       changeBottomContent(
         <Supervisionados
           supervisionados={supervisionados}
@@ -81,7 +76,7 @@ export default function ProfileScreen() {
         />
       );
     }
-  }, [supervisionados, isLoading]);
+  }, [supervisionados, loadingSupervisionados]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", () => {
@@ -152,16 +147,16 @@ export default function ProfileScreen() {
       <View style={styles.userContainer}>
         <UserAvatar
           size={144}
-          imageURL={imageURI ?? funcionarioData?.imagemURL}
+          imageURL={imageURI ?? user?.urlImagem}
           icon={(props) => (
             <Icon name="edit" {...props} onPress={toggleDialog} />
           )}
         />
         <StyledText fontWeight="bold" textTransform="capitalize">
-          {`${funcionarioData?.nome} ${funcionarioData?.sobrenome}`}
+          {`${user?.nome} ${user?.sobrenome}`}
         </StyledText>
         <StyledText>
-          {funcionarioData?.isTecnico ? "Técnico" : "Estagiário"}
+          {user?.cargo === "TECNICO" ? "Técnico" : "Estagiário"}
         </StyledText>
         <View style={styles.buttonsContainer}>
           {!imageURI && (
@@ -169,7 +164,7 @@ export default function ProfileScreen() {
               <Button onPress={() => router.navigate("estatisticas")}>
                 Estatísticas
               </Button>
-              {funcionarioData?.isTecnico && (
+              {user?.cargo === "TECNICO" && (
                 <Button onPress={openBottom}>Meus supervisionados</Button>
               )}
             </>
@@ -218,7 +213,7 @@ export default function ProfileScreen() {
             Galeria
           </Button>
         </View>
-        {funcionarioData?.imagemURL && (
+        {user?.urlImagem && (
           <View style={{ marginTop: "4%", alignItems: "center" }}>
             <Button onPress={removeImageHandler} color="red">
               Remover imagem

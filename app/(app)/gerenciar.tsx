@@ -19,12 +19,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { BackHandler, StyleSheet, View } from "react-native";
+import { Alert, BackHandler, StyleSheet, View } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
+import useAuth from "@/hooks/useAuth";
 
 const defaultFuncionario: newFuncionario = {
   email: "",
-  isTecnico: undefined,
+  cargo: undefined,
   nome: "",
   sobrenome: "",
   ativo: true,
@@ -44,20 +45,37 @@ export default function Gerenciar() {
     clear,
   } = useBottomSheet();
   const navigation = useNavigation();
+  const { token } = useAuth();
   const { data: tecnicos, isLoading } = useQuery({
-    queryKey: ["funcionarios"],
-    queryFn: getTecnicos,
+    queryKey: ["funcionarios", "tecnicos"],
+    queryFn: () => getTecnicos(token!),
   });
 
   const { mutate } = useMutation({
     mutationFn: addFuncionario,
-    onSuccess: () => {
-      supervisoresRef.current!.reset();
-      isTecnicoRef.current!.reset();
+    onSuccess: (email) => {
+      if (supervisoresRef.current && isTecnicoRef.current) {
+        supervisoresRef.current.reset();
+        isTecnicoRef.current.reset();
+      }
       setFuncionarioData(defaultFuncionario);
       queryClient.invalidateQueries({
         queryKey: ["funcionarios"],
       });
+      Alert.alert(
+        "Funcionário registrado com sucesso!",
+        `O funcionário de email: ${email} agora faz parte do sistema SAP!`,
+        [
+          {
+            isPreferred: true,
+            text: "Ok",
+            onPress: () => router.navigate("(app)"),
+          },
+        ]
+      );
+    },
+    onError: (error) => {
+      console.log(error.message);
     },
   });
 
@@ -93,11 +111,20 @@ export default function Gerenciar() {
   );
 
   function updateFuncionarioHandler(field: keyof newFuncionario, text: string) {
-    setFuncionarioData((funcionario) => ({ ...funcionario, [field]: text }));
+    if (field === "cargo") {
+      setFuncionarioData((funcionario) => ({
+        ...funcionario,
+        [field]: !!text === true ? "TECNICO" : "ESTAGIARIO",
+      }));
+    } else {
+      setFuncionarioData((funcionario) => ({ ...funcionario, [field]: text }));
+    }
   }
 
   function registerFuncionarioHandler() {
-    if (!funcionarioData.isTecnico && !funcionarioData.supervisor) return;
+    if (funcionarioData.cargo === "ESTAGIARIO" && !funcionarioData.supervisor) {
+      return;
+    }
     if (notBlank(funcionarioData)) {
       mutate(funcionarioData);
     }
@@ -121,11 +148,11 @@ export default function Gerenciar() {
               ref={isTecnicoRef}
               data={[{ nome: "Sim" }, { nome: "Não" }]}
               placeholder="O funcionário é técnico?"
-              onSelect={updateFuncionarioHandler.bind(null, "isTecnico")}
+              onSelect={updateFuncionarioHandler.bind(null, "cargo")}
               iconPress={isTecnicoRef && isTecnicoRef.current?.openDropdown}
               key="isTecnico"
             />
-            {funcionarioData.isTecnico === false && (
+            {funcionarioData.cargo === "ESTAGIARIO" && (
               <Select
                 ref={supervisoresRef}
                 data={tecnicos!}
@@ -145,6 +172,7 @@ export default function Gerenciar() {
             value={funcionarioData.nome}
             key="nome"
             rule="nameValidator"
+            autoCapitalize="words"
           />
           <Input
             placeholder="Sobrenome do funcionário"
@@ -153,6 +181,7 @@ export default function Gerenciar() {
             style={{ marginTop: 0 }}
             key="sobrenome"
             rule="nameValidator"
+            autoCapitalize="words"
           />
           <View style={styles.marginVertical}>
             <Button onPress={registerFuncionarioHandler}>Confirmar</Button>

@@ -37,7 +37,7 @@ const CommentItem = ({ comentario }: CommentItemProps) => {
   });
 
   function confirmDeleteHandler() {
-    if (user!.isTecnico || user?.id === comentario.idAutor) {
+    if (user!.cargo === "TECNICO" || user?.id === comentario.idAutor) {
       Alert.alert(
         "Tem certeza?",
         "Você tem certeza que deseja remover este comentário?",
@@ -56,7 +56,7 @@ const CommentItem = ({ comentario }: CommentItemProps) => {
       delayLongPress={200}
       android_ripple={{ color: Colors.lightRipple }}
     >
-      <UserAvatar size={64} imageURL={selectedFuncionario?.imagemURL} />
+      <UserAvatar size={64} imageURL={selectedFuncionario?.urlImagem} />
       <View style={styles.mainContainer}>
         <View
           style={{

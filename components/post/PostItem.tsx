@@ -8,6 +8,7 @@ import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 import { memo } from "react";
+import useAuth from "@/hooks/useAuth";
 
 type PostItemProps = {
   postData: Post;
@@ -33,6 +34,8 @@ const PostItem = ({
   isSelected,
   anySelected,
 }: PostItemProps) => {
+  const { token } = useAuth();
+
   const {
     data: funcionario,
     isLoading,
@@ -66,7 +69,7 @@ const PostItem = ({
         onLongPress={onSelectPost?.bind(null, postData.id)}
       >
         <View style={styles.postHeader}>
-          <Badge label={funcionario!.nome} imagemURL={funcionario?.imagemURL} />
+          <Badge label={funcionario!.nome} imagemURL={funcionario?.urlImagem} />
           <View style={styles.dateContainer}>
             <StyledText style={styles.dateText} mode="small">
               {postData.horario.toLocaleString()}
@@ -78,7 +81,7 @@ const PostItem = ({
         </StyledText>
         <View style={styles.postContent}>
           <StyledText style={styles.postText} mode="small">
-            {formatText(postData.conteudo, 360)}
+            {postData.conteudo && formatText(postData.conteudo, 360)}
           </StyledText>
         </View>
       </Pressable>

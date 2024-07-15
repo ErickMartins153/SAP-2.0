@@ -1,10 +1,13 @@
-import Funcionario from "@/interfaces/Funcionario";
+import Funcionario, { Token } from "@/interfaces/Funcionario";
 import { Credentials, authenticateUser } from "@/util/requests/authHTTP";
 import { useMutation } from "@tanstack/react-query";
 import { ReactNode, createContext, useState } from "react";
+import * as SecureStore from "expo-secure-store";
 
 interface AuthContextType {
   user: Funcionario | null;
+  tokenObj: Token | null;
+  token: string | null;
   login: (credentials: Credentials) => void;
   logout: () => void;
 }
@@ -13,6 +16,8 @@ export const AuthContext = createContext<AuthContextType>({
   login: (credentials: Credentials) => {},
   logout: () => {},
   user: null,
+  tokenObj: null,
+  token: null,
 });
 
 export default function AuthContextProvider({
@@ -20,25 +25,34 @@ export default function AuthContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const [user, setUser] = useState<Funcionario | null>(null);
+  const [userData, setUserData] = useState<Funcionario | null>(null);
+  const [token, setToken] = useState<Token | null>(null);
+
   const { mutate } = useMutation({
     mutationFn: authenticateUser,
     onSuccess: (user) => {
-      setUser(user);
+      setUserData(user.funcionario);
+      setToken(user.token);
+      SecureStore.setItemAsync("token", user.token.token);
     },
     onError: (e) => {
       console.log(e);
     },
   });
+
   function login(credentials: Credentials) {
     mutate(credentials);
   }
+
   function logout() {
-    setUser(null);
+    setUserData(null);
+    setToken(null);
   }
 
   const value = {
-    user,
+    user: userData,
+    tokenObj: token,
+    token: token?.token!,
     login,
     logout,
   };

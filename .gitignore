@@ -20,3 +20,5 @@ expo-env.d.ts
 scripts
 app-example
 # @end expo-cli
+
+.env

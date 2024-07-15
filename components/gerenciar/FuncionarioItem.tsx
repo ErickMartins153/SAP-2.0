@@ -17,7 +17,7 @@ const FuncionarioItem = ({ funcionario, onSelect }: FuncionarioItemProps) => {
       android_ripple={{ color: Colors.lightRipple }}
       onPress={() => onSelect(funcionario)}
     >
-      <UserAvatar size={64} imageURL={funcionario.imagemURL} />
+      <UserAvatar size={64} imageURL={funcionario.urlImagem} />
       <View style={styles.mainContainer}>
         <StyledText mode="small" fontWeight="bold">
           {`${funcionario?.nome} ${funcionario.sobrenome}`}

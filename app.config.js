@@ -4,7 +4,7 @@ export default {
   expo: {
     name: IS_DEV ? "SAP_DEV" : "SAP",
     slug: "SAP",
-    version: "1.0.0",
+    version: "1.5.0",
     orientation: "portrait",
     icon: `./assets/images/logoSAP.png`,
     scheme: "sap",

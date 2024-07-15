@@ -116,10 +116,10 @@ export default function Mural() {
   return (
     <MainPageLayout>
       <View>
-        <PostList
+        {/* <PostList
           onSelection={selectPostHandler}
           selectedPosts={selectedPosts}
-        />
+        /> */}
         <AddPost visible={showPostModal} toggleModal={togglePostModal} />
       </View>
       {/* <PostButton addPostHandler={togglePostModal} /> */}

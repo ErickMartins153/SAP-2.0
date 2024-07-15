@@ -133,7 +133,7 @@ export default function detalhesPost() {
         isLoadingFuncionario || isLoadingComentarios || isLoadingFuncionario
       }
       HeadRight={
-        (user?.isTecnico || user?.id === selectedFuncionario?.id) && (
+        (user?.cargo === "TECNICO" || user?.id === selectedFuncionario?.id) && (
           <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
         )
       }
@@ -144,7 +144,7 @@ export default function detalhesPost() {
             <UserAvatar
               size={64}
               alignSelf="flex-start"
-              imageURL={selectedFuncionario?.imagemURL}
+              imageURL={selectedFuncionario?.urlImagem}
             />
             <StyledText mode="title" style={{ marginHorizontal: "4%" }}>
               {`${selectedFuncionario?.nome} ${selectedFuncionario?.sobrenome}`}

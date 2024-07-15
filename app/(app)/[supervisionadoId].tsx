@@ -21,12 +21,12 @@ export default function PerfilSupervisionado() {
     <MainPageLayout>
       <ScrollView>
         <View style={styles.userContainer}>
-          <UserAvatar size={144} imageURL={funcionario?.imagemURL} />
+          <UserAvatar size={144} imageURL={funcionario?.urlImagem} />
           <StyledText fontWeight="bold" textTransform="capitalize">
             {`${funcionario?.nome} ${funcionario?.sobrenome}`}
           </StyledText>
           <StyledText>
-            {funcionario?.isTecnico ? "Técnico" : "Estagiário"}
+            {funcionario?.cargo === "TECNICO" ? "Técnico" : "Estagiário"}
           </StyledText>
         </View>
         <View style={{ marginVertical: "4%" }}>

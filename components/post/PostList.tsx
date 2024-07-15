@@ -39,7 +39,7 @@ export default function PostList({
         isSelected={isSelected(post.id, selectedPosts)}
         anySelected={selectedPosts.length > 0}
         onSelectPost={
-          user?.isTecnico
+          user?.cargo === "TECNICO"
             ? onSelection.bind(null, isSelected(post.id, selectedPosts))
             : undefined
         }

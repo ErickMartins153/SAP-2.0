@@ -39,14 +39,14 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
         <View>
           <View style={styles.avatar}>
             <Pressable onPress={handleNavigation.bind(null, "perfil")}>
-              <UserAvatar size={144} imageURL={user?.imagemURL} />
+              <UserAvatar size={144} imageURL={user?.urlImagem} />
             </Pressable>
             <View style={styles.userInfoSection}>
               <Title
                 style={styles.userInfoText}
               >{`${user?.nome} ${user?.sobrenome}`}</Title>
               <Caption>
-                Cargo: {user?.isTecnico ? "Técnico" : "Estagiário"}
+                Cargo: {user?.cargo === "TECNICO" ? "Técnico" : "Estagiário"}
               </Caption>
             </View>
           </View>
@@ -76,7 +76,7 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               page="grupos"
             />
           </Drawer.Section>
-          {user?.isTecnico && (
+          {user?.cargo === "TECNICO" && (
             <NavbarItem
               label="Gerenciar"
               icon="user-plus"
