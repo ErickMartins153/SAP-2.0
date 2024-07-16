@@ -1,9 +1,9 @@
 export default interface Post {
   id: string;
   idAutor: string;
-  horario: Date;
+  dataPublicacao: Date;
   titulo: string;
-  imagemURL?: string;
+  imagemPost?: string;
   conteudo?: string;
 }
 

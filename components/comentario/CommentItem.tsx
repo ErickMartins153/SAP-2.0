@@ -16,7 +16,7 @@ type CommentItemProps = {
 };
 
 const CommentItem = ({ comentario }: CommentItemProps) => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const {
     data: selectedFuncionario,
     isLoading,
@@ -24,7 +24,7 @@ const CommentItem = ({ comentario }: CommentItemProps) => {
   } = useQuery({
     enabled: !!comentario?.idAutor,
     queryKey: ["funcionarios", comentario?.idAutor],
-    queryFn: () => getFuncionarioById(comentario?.idAutor!),
+    queryFn: () => getFuncionarioById(comentario?.idAutor!, token!),
   });
 
   const { mutate: deleteComment } = useMutation({
@@ -33,6 +33,10 @@ const CommentItem = ({ comentario }: CommentItemProps) => {
       queryClient.invalidateQueries({
         queryKey: ["comentarios", comentario.idPost],
       });
+      queryClient.refetchQueries({
+        queryKey: ["comentarios", comentario.idPost],
+      });
+      Alert.alert("Comentário deletado com sucesso!");
     },
   });
 
@@ -43,7 +47,11 @@ const CommentItem = ({ comentario }: CommentItemProps) => {
         "Você tem certeza que deseja remover este comentário?",
         [
           { text: "Cancelar" },
-          { text: "Confirmar", onPress: () => deleteComment(comentario.id) },
+          {
+            text: "Confirmar",
+            onPress: () =>
+              deleteComment({ comentarioId: comentario.id!, token: token! }),
+          },
         ]
       );
     }
@@ -68,9 +76,9 @@ const CommentItem = ({ comentario }: CommentItemProps) => {
           <StyledText mode="small" fontWeight="bold">
             {selectedFuncionario?.nome}
           </StyledText>
-          <StyledText>
+          {/* <StyledText>
             {comentario.dataPublicacao.toLocaleDateString()}
-          </StyledText>
+          </StyledText> */}
         </View>
         <StyledText style={styles.text}>{comentario.conteudo}</StyledText>
       </View>

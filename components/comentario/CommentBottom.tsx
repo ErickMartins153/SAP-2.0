@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 
 import Comentario from "@/interfaces/Comentario";
 
@@ -24,14 +24,16 @@ export default function CommentBottom({
   const { mutate: addComment } = useMutation({
     mutationFn: addComentario,
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      queryClient.refetchQueries({
         queryKey: ["comentarios", postId],
       });
+
+      Alert.alert("Comentário publicado");
     },
   });
 
   function renderComentarioHandler(comentario: Comentario) {
-    return <CommentItem comentario={comentario} />;
+    return <CommentItem comentario={comentario} key={comentario.id} />;
   }
 
   function submitComentarioHandler(conteudo: string) {
@@ -39,7 +41,6 @@ export default function CommentBottom({
       conteudo,
       idAutor: user!.id,
       idPost: postId,
-      dataPublicacao: new Date(),
     });
   }
 

@@ -131,7 +131,6 @@ export async function desativarFuncionario({
   funcionarioId: string;
   token: string;
 }) {
-  console.log(`${BASE_URL}/activation?uid=${funcionarioId}&status=${false}`);
   try {
     const response = await axios.put(
       `${BASE_URL}/activation?uid=${funcionarioId}&status=${false}`,

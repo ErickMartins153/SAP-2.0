@@ -42,7 +42,7 @@ const PostItem = ({
     isError,
   } = useQuery({
     queryKey: ["funcionarios", postData.idAutor],
-    queryFn: () => getFuncionarioById(postData.idAutor),
+    queryFn: () => getFuncionarioById(postData.idAutor, token!),
   });
 
   function showPostHandler() {
@@ -72,7 +72,7 @@ const PostItem = ({
           <Badge label={funcionario!.nome} imagemURL={funcionario?.urlImagem} />
           <View style={styles.dateContainer}>
             <StyledText style={styles.dateText} mode="small">
-              {postData.horario.toLocaleString()}
+              {postData.dataPublicacao.toLocaleString()}
             </StyledText>
           </View>
         </View>

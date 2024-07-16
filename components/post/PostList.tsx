@@ -5,6 +5,7 @@ import PostItem from "./PostItem";
 import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "@/util/requests/postHTTP";
 import useAuth from "@/hooks/useAuth";
+import Loading from "../UI/Loading";
 
 function isSelected(postId: string, selectedPosts: string[]) {
   return selectedPosts.includes(postId);
@@ -38,6 +39,7 @@ export default function PostList({
         postData={post}
         isSelected={isSelected(post.id, selectedPosts)}
         anySelected={selectedPosts.length > 0}
+        key={post.id}
         onSelectPost={
           user?.cargo === "TECNICO"
             ? onSelection.bind(null, isSelected(post.id, selectedPosts))
@@ -51,6 +53,7 @@ export default function PostList({
     <>
       <FlatList
         data={posts}
+        ListEmptyComponent={<Loading />}
         renderItem={({ item }) => renderPostHandler(item)}
         keyExtractor={({ id }) => id}
         onRefresh={refetch}

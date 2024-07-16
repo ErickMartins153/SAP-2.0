@@ -15,6 +15,8 @@ import { newPost } from "@/interfaces/Post";
 import blurhash from "@/util/blurhash";
 import ModalLayout from "../layouts/ModalLayout";
 import { notBlank } from "@/util/validate";
+import { addPost } from "@/util/requests/postHTTP";
+import { queryClient } from "@/util/queries";
 
 type AddPostProps = {
   toggleModal: () => void;
@@ -35,14 +37,23 @@ export default function AddPost({
   visible = false,
   ...props
 }: AddPostProps) {
-  const { user } = useAuth();
-  const { mutate, isPending } = useMutation<void, Error, newPost>({
-    mutationKey: ["addPost"],
-    onSuccess: () => {
-      setPostContent(defaultValues);
-      clearImage();
-      toggleModal();
+  const { user, token } = useAuth();
+  const { mutate } = useMutation({
+    mutationFn: addPost,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["posts"] });
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.refetchQueries({ queryKey: ["posts"] });
+      Alert.alert(
+        "Post fixado no mural!",
+        "o conteudo foi postado no mural e está disponivel para todos."
+      );
+      router.navigate("(app)");
+      closeHandler();
+    },
+    retry: 3,
   });
 
   const navigation = useNavigation();
@@ -82,11 +93,14 @@ export default function AddPost({
     const { titulo } = postContent;
     if (notBlank({ titulo, idAutor: user!.id })) {
       mutate({
-        conteudo: postContent.conteudo,
-        titulo: postContent.titulo,
-        imagemURL: imageURI,
-        horario: new Date(),
-        idAutor: user!.id,
+        postData: {
+          conteudo: postContent.conteudo,
+          titulo: postContent.titulo,
+          imagemPost: imageURI,
+          dataPublicacao: new Date(),
+          idAutor: user!.id,
+        },
+        token: token!,
       });
     } else {
       Alert.alert("Erro", "Um post deve ter ao menos um título!");

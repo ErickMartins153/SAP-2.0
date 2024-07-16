@@ -3,6 +3,7 @@ import MainPageLayout from "@/components/layouts/MainPageLayout";
 import AddPost from "@/components/post/AddPost";
 
 import PostList from "@/components/post/PostList";
+import useAuth from "@/hooks/useAuth";
 import { queryClient } from "@/util/queries";
 import { deleteMultiplePosts } from "@/util/requests/postHTTP";
 import { useMutation } from "@tanstack/react-query";
@@ -11,13 +12,22 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { Alert, BackHandler, View } from "react-native";
 
 export default function Mural() {
+  const { token } = useAuth();
   const navigation = useNavigation();
   const [showPostModal, setShowPostModal] = useState(false);
   const [selectedPosts, setSelectedPosts] = useState<string[]>([]);
 
   const { mutate: deletePosts } = useMutation({
     mutationFn: deleteMultiplePosts,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.refetchQueries({ queryKey: ["posts"] });
+      Alert.alert(
+        "posts deletados",
+        "Todos os posts selecionados foram deletados com sucesso!"
+      );
+      setSelectedPosts([]);
+    },
   });
 
   useLayoutEffect(() => {
@@ -73,7 +83,8 @@ export default function Mural() {
                   { isPreferred: true, text: "Cancelar" },
                   {
                     text: "Confirmar",
-                    onPress: () => deletePosts(selectedPosts),
+                    onPress: () =>
+                      deletePosts({ postIds: selectedPosts, token: token! }),
                   },
                 ]
               )
@@ -116,10 +127,10 @@ export default function Mural() {
   return (
     <MainPageLayout>
       <View>
-        {/* <PostList
+        <PostList
           onSelection={selectPostHandler}
           selectedPosts={selectedPosts}
-        /> */}
+        />
         <AddPost visible={showPostModal} toggleModal={togglePostModal} />
       </View>
       {/* <PostButton addPostHandler={togglePostModal} /> */}

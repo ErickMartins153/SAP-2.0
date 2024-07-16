@@ -3,7 +3,7 @@ export default interface Comentario {
   idPost: string;
   idAutor: string;
   conteudo: string;
-  dataPublicacao: Date;
+  // dataPublicacao: Date;
 }
 
 export type newComentario = Omit<Comentario, "id">;

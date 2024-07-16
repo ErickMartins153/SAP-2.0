@@ -24,38 +24,40 @@ import useBottomSheet from "@/hooks/useBottom";
 import CommentBottom from "@/components/comentario/CommentBottom";
 import Button from "@/components/general/Button";
 import StackPageLayout from "@/components/layouts/StackPageLayout";
-import { getPostById } from "@/util/requests/postHTTP";
+import { deletePost, getPostById } from "@/util/requests/postHTTP";
 import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 import blurhash from "@/util/blurhash";
 import { getComentariosByPost } from "@/util/requests/comentarioHTTP";
 import useAuth from "@/hooks/useAuth";
+import Loading from "@/components/UI/Loading";
+import { queryClient } from "@/util/queries";
 
 export default function detalhesPost() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { postId } = useLocalSearchParams<{ postId: string }>();
   const {
     data: selectedPost,
-    isLoading,
+    isLoading: loadingPost,
     isError,
   } = useQuery({
     enabled: !!postId,
     queryKey: ["posts", postId],
-    queryFn: () => getPostById(postId!),
+    queryFn: () => getPostById(postId!, token!),
   });
 
   const {
     data: selectedFuncionario,
-    isLoading: isLoadingFuncionario,
+    isLoading: loadingFuncionario,
     isError: isErrorFuncionario,
   } = useQuery({
     enabled: !!selectedPost?.idAutor,
     queryKey: ["funcionarios", selectedPost?.idAutor],
-    queryFn: () => getFuncionarioById(selectedPost?.idAutor!),
+    queryFn: () => getFuncionarioById(selectedPost?.idAutor!, token!),
   });
 
   const {
     data: comentarios,
-    isLoading: isLoadingComentarios,
+    isLoading: loadingComentarios,
     isError: isErrorComentarios,
   } = useQuery({
     queryKey: ["comentarios", postId],
@@ -63,9 +65,24 @@ export default function detalhesPost() {
     enabled: !!postId,
   });
 
-  const { mutate } = useMutation<void, Error, string>({
-    mutationKey: ["deletePost"],
-    onSuccess: () => router.navigate("(app)"),
+  const { mutate } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.refetchQueries({ queryKey: ["posts"] });
+      Alert.alert(
+        "Post deletado com sucesso",
+        "O post foi desfixado do mural",
+        [
+          {
+            isPreferred: true,
+            text: "Ir para mural",
+            onPress: () => router.navigate("(app)"),
+          },
+        ]
+      );
+    },
+    retry: 3,
   });
 
   const navigation = useNavigation();
@@ -78,12 +95,12 @@ export default function detalhesPost() {
   } = useBottomSheet();
 
   useLayoutEffect(() => {
-    if (!isLoadingComentarios && postId) {
+    if (!loadingComentarios && postId) {
       changeModalContent(
         <CommentBottom comentarios={comentarios!} postId={postId} />
       );
     }
-  }, [comentarios, isLoadingComentarios]);
+  }, [comentarios, loadingComentarios]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", (e) => {
@@ -121,17 +138,19 @@ export default function detalhesPost() {
         {
           text: "Confirmar",
           style: "destructive",
-          onPress: () => mutate(postId!),
+          onPress: () => mutate({ postId: postId!, token: token! }),
         },
       ]
     );
   }
 
+  if (loadingFuncionario || loadingPost || loadingComentarios) {
+    return <Loading />;
+  }
+
   return (
     <StackPageLayout
-      isLoading={
-        isLoadingFuncionario || isLoadingComentarios || isLoadingFuncionario
-      }
+      isLoading={loadingFuncionario || loadingComentarios}
       HeadRight={
         (user?.cargo === "TECNICO" || user?.id === selectedFuncionario?.id) && (
           <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
@@ -151,8 +170,8 @@ export default function detalhesPost() {
             </StyledText>
           </View>
           <StyledText>
-            Publicado em: {selectedPost?.horario.toLocaleDateString()} às{" "}
-            {selectedPost?.horario.toLocaleTimeString()}
+            Publicado em: {selectedPost?.dataPublicacao.toLocaleDateString()} às{" "}
+            {selectedPost?.dataPublicacao.toLocaleTimeString()}
           </StyledText>
         </View>
       </View>
@@ -164,14 +183,14 @@ export default function detalhesPost() {
         <StyledText mode="title" fontWeight="bold">
           {selectedPost?.titulo}
         </StyledText>
-        {selectedPost?.imagemURL && (
+        {selectedPost?.imagemPost && (
           <Image
             contentFit="cover"
             style={styles.imageContainer}
             placeholder={{ blurhash }}
             transition={600}
             source={{
-              uri: selectedPost?.imagemURL,
+              uri: selectedPost?.imagemPost,
             }}
           />
         )}
@@ -185,7 +204,7 @@ export default function detalhesPost() {
           paddingVertical: "8%",
         }}
       >
-        <Button onPress={openBottom} disabled={isLoadingComentarios}>
+        <Button onPress={openBottom} disabled={loadingComentarios}>
           Ver comentários
         </Button>
       </View>
