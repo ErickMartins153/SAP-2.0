@@ -5,11 +5,13 @@ export default interface Funcionario {
   sobrenome: string;
   email: string;
   cargo?: "TECNICO" | "ESTAGIARIO";
-  ativo: boolean;
+  ativo?: boolean;
   supervisor?: { id: string; nome: string; imagemURL?: string };
 }
 
-export type newFuncionario = Omit<Funcionario, "id">;
+export type newFuncionario = Omit<Funcionario, "id" | "supervisor"> & {
+  uidTecnico?: string;
+};
 
 export interface Token {
   expiration: string;

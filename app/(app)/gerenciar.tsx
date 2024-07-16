@@ -25,25 +25,20 @@ import useAuth from "@/hooks/useAuth";
 
 const defaultFuncionario: newFuncionario = {
   email: "",
-  cargo: undefined,
   nome: "",
   sobrenome: "",
-  ativo: true,
 };
 
 export default function Gerenciar() {
   const [funcionarioData, setFuncionarioData] =
     useState<newFuncionario>(defaultFuncionario);
+  const [cargo, setCargo] = useState<newFuncionario["cargo"]>();
+  const [modo, setModo] = useState<"ATIVOS" | "INATIVOS">("ATIVOS");
   const supervisoresRef = useRef<SelectDropdown>(null);
   const isTecnicoRef = useRef<SelectDropdown>(null);
 
-  const {
-    changeBottomContent: changeModalContent,
-    openBottom,
-    isVisible,
-    closeBottom,
-    clear,
-  } = useBottomSheet();
+  const { changeBottomContent, openBottom, isVisible, closeBottom, clear } =
+    useBottomSheet();
   const navigation = useNavigation();
   const { token } = useAuth();
   const { data: tecnicos, isLoading } = useQuery({
@@ -80,8 +75,8 @@ export default function Gerenciar() {
   });
 
   useLayoutEffect(() => {
-    changeModalContent(<FuncionariosBottom />);
-  }, []);
+    changeBottomContent(<FuncionariosBottom mode={modo} />);
+  }, [modo]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", (e) => {
@@ -110,24 +105,36 @@ export default function Gerenciar() {
     }, [isVisible, closeBottom])
   );
 
-  function updateFuncionarioHandler(field: keyof newFuncionario, text: string) {
-    if (field === "cargo") {
-      setFuncionarioData((funcionario) => ({
-        ...funcionario,
-        [field]: !!text === true ? "TECNICO" : "ESTAGIARIO",
-      }));
+  function cargoHandler(isTecnico: boolean) {
+    let novoCargo: newFuncionario["cargo"];
+    if (isTecnico) {
+      novoCargo = "TECNICO";
     } else {
-      setFuncionarioData((funcionario) => ({ ...funcionario, [field]: text }));
+      novoCargo = "ESTAGIARIO";
     }
+    setCargo(novoCargo);
+  }
+
+  function changeModeHandler(novoModo: typeof modo) {
+    setModo(novoModo);
+    openBottom();
+  }
+
+  function updateFuncionarioHandler(field: keyof newFuncionario, text: string) {
+    setFuncionarioData((funcionario) => ({ ...funcionario, [field]: text }));
   }
 
   function registerFuncionarioHandler() {
-    if (funcionarioData.cargo === "ESTAGIARIO" && !funcionarioData.supervisor) {
+    if (funcionarioData.cargo === "ESTAGIARIO" && !funcionarioData.uidTecnico) {
       return;
     }
-    if (notBlank(funcionarioData)) {
-      mutate(funcionarioData);
+    if (notBlank(funcionarioData) && cargo !== undefined) {
+      return mutate({ funcionarioData, cargo, token: token! });
     }
+    Alert.alert(
+      "Erro",
+      "Preencha todas as informações necessárias para continuar."
+    );
   }
 
   return (
@@ -148,15 +155,15 @@ export default function Gerenciar() {
               ref={isTecnicoRef}
               data={[{ nome: "Sim" }, { nome: "Não" }]}
               placeholder="O funcionário é técnico?"
-              onSelect={updateFuncionarioHandler.bind(null, "cargo")}
+              onSelect={cargoHandler}
               iconPress={isTecnicoRef && isTecnicoRef.current?.openDropdown}
               key="isTecnico"
             />
-            {funcionarioData.cargo === "ESTAGIARIO" && (
+            {cargo === "ESTAGIARIO" && (
               <Select
                 ref={supervisoresRef}
                 data={tecnicos!}
-                onSelect={updateFuncionarioHandler.bind(null, "supervisor")}
+                onSelect={updateFuncionarioHandler.bind(null, "uidTecnico")}
                 iconPress={
                   supervisoresRef && supervisoresRef.current?.openDropdown
                 }
@@ -188,8 +195,14 @@ export default function Gerenciar() {
           </View>
         </View>
 
-        <Button color="red" onPress={openBottom}>
+        <Button color="red" onPress={changeModeHandler.bind(null, "ATIVOS")}>
           Remover usuário
+        </Button>
+        <Button
+          color="green"
+          onPress={changeModeHandler.bind(null, "INATIVOS")}
+        >
+          Reativar funcionário
         </Button>
       </View>
     </MainPageLayout>

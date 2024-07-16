@@ -1,7 +1,11 @@
 import { Colors } from "@/constants/Colors";
 import { ActivityIndicator, View } from "react-native";
 
-export default function Loading() {
+type LoadingProps = {
+  showBackdrop?: boolean;
+};
+
+export default function Loading({ showBackdrop = true }: LoadingProps) {
   return (
     <View
       style={{
@@ -11,10 +15,13 @@ export default function Loading() {
         justifyContent: "center",
         alignContent: "center",
         zIndex: 100,
-        backgroundColor: Colors.backdrop,
+        backgroundColor: showBackdrop ? Colors.backdrop : "",
       }}
     >
-      <ActivityIndicator color={Colors.background} size="large" />
+      <ActivityIndicator
+        color={showBackdrop ? Colors.background : Colors.icon}
+        size="large"
+      />
     </View>
   );
 }

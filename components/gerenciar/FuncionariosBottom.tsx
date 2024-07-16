@@ -4,32 +4,64 @@ import Input from "../general/Input";
 
 import FuncionarioItem from "./FuncionarioItem";
 import { Colors } from "@/constants/Colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "../general/Icon";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import StyledText from "../UI/StyledText";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  deleteFuncionario,
+  desativarFuncionario,
   getFuncionariosAtivos,
+  getFuncionariosInativos,
 } from "@/util/requests/funcionarioHTTP";
 import { queryClient } from "@/util/queries";
+import useAuth from "@/hooks/useAuth";
+import Loading from "../UI/Loading";
 
-export default function FuncionariosBottom() {
+type FuncionariosBottomProps = {
+  mode: "ATIVOS" | "INATIVOS";
+};
+
+export default function FuncionariosBottom({ mode }: FuncionariosBottomProps) {
+  const { token } = useAuth();
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const {
-    data: funcionarios,
-    isLoading,
-    isError,
+    data: funcionariosAtivos,
+    isLoading: loadingAtivos,
+    refetch: refetchAtivos,
   } = useQuery({
-    queryKey: ["funcionarios"],
-    queryFn: getFuncionariosAtivos,
+    queryKey: ["funcionarios", "ativos"],
+    queryFn: () => getFuncionariosAtivos(token!),
+    enabled: mode === "ATIVOS",
   });
+
+  const { data: funcionariosInativos, isLoading: loadingInativos } = useQuery({
+    queryKey: ["funcionarios", "inativos"],
+    queryFn: () => getFuncionariosInativos(token!),
+    enabled: mode === "INATIVOS",
+  });
+
+  useEffect(() => {
+    if (mode === "ATIVOS" && funcionariosAtivos) {
+      setFuncionarios(funcionariosAtivos);
+    } else if (mode === "INATIVOS" && funcionariosInativos) {
+      setFuncionarios(funcionariosInativos);
+    }
+  }, [funcionariosAtivos, funcionariosInativos]);
+
   const { mutate } = useMutation({
-    mutationFn: deleteFuncionario,
-    onSuccess: () =>
+    mutationFn: desativarFuncionario,
+    onSuccess: (funcionario) => {
       queryClient.invalidateQueries({
         queryKey: ["funcionarios"],
-      }),
+      });
+
+      refetchAtivos();
+      Alert.alert(
+        "Funcionário desligado com sucesso",
+        `O funcionário de email: ${funcionario?.email} foi desligado com sucesso! `
+      );
+    },
   });
 
   function confirmHandler(funcionario: Funcionario) {
@@ -44,7 +76,9 @@ export default function FuncionariosBottom() {
   }
 
   function deleteHandler(funcionarioId: string) {
-    mutate(funcionarioId);
+    console.log({ funcionarioId, token: token! });
+
+    mutate({ funcionarioId, token: token! });
   }
 
   const [search, setSearch] = useState("");
@@ -66,6 +100,10 @@ export default function FuncionariosBottom() {
     return (
       <FuncionarioItem funcionario={funcionario} onSelect={confirmHandler} />
     );
+  }
+
+  if (loadingAtivos || loadingInativos) {
+    return <Loading showBackdrop={false} />;
   }
 
   return (

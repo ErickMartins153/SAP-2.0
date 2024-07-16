@@ -5,12 +5,13 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import StyledText from "../UI/StyledText";
 import Button from "../general/Button";
 
-type DialogProps = {
+export type DialogProps = {
   children: ReactNode;
   visible: boolean;
   closeDialog: () => void;
   title: string;
   onSubmit?: () => void;
+  reset?: () => void;
   backdropBehavior?: "none" | "dismiss";
 } & PropsWithoutRef<ViewProps>;
 
@@ -22,18 +23,28 @@ export default function Dialog({
   onSubmit,
   style,
   backdropBehavior = "none",
+  reset,
   ...props
 }: DialogProps) {
+  function closeDialogHandler() {
+    if (reset) {
+      reset();
+    }
+    closeDialog();
+  }
+
   return (
     <Modal
       visible={visible}
       transparent={true}
       animationType="none"
-      onRequestClose={closeDialog}
+      onRequestClose={closeDialogHandler}
     >
       <Pressable
         style={styles.backdrop}
-        onPress={backdropBehavior === "dismiss" ? closeDialog : undefined}
+        onPress={
+          backdropBehavior === "dismiss" ? closeDialogHandler : undefined
+        }
       />
       <Animated.View
         style={[styles.dialog, style]}
@@ -48,7 +59,7 @@ export default function Dialog({
           <View
             style={{ flexDirection: "row", gap: 12, justifyContent: "center" }}
           >
-            <Button onPress={closeDialog}>Cancelar</Button>
+            <Button onPress={closeDialogHandler}>Cancelar</Button>
             <Button onPress={onSubmit}>Confirmar</Button>
           </View>
         )}

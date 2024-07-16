@@ -6,17 +6,25 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 import BarChart from "@/components/graphics/BarChart";
+import useAuth from "@/hooks/useAuth";
+import Loading from "@/components/UI/Loading";
 
 export default function PerfilSupervisionado() {
+  const { token } = useAuth();
   const navigation = useNavigation();
   const { supervisionadoId } = useLocalSearchParams<{
     supervisionadoId: string;
   }>();
 
-  const { data: funcionario } = useQuery({
+  const { data: funcionario, isLoading } = useQuery({
     queryKey: ["funcionarios", supervisionadoId],
-    queryFn: () => getFuncionarioById(supervisionadoId!),
+    queryFn: () => getFuncionarioById(supervisionadoId!, token!),
   });
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <MainPageLayout>
       <ScrollView>

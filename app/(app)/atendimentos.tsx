@@ -1,14 +1,18 @@
 import StyledText from "@/components/UI/StyledText";
 import AgendamentoItem from "@/components/atendimento/AtendimentoItem";
+import Icon from "@/components/general/Icon";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
 import useAuth from "@/hooks/useAuth";
 import { Agendamento } from "@/interfaces/Agendamento";
 import { getAgendamentosByFuncionario } from "@/util/requests/agendamentoHTTP";
 import { useQuery } from "@tanstack/react-query";
+import { router, useNavigation } from "expo-router";
+import { useLayoutEffect } from "react";
 import { FlatList, View } from "react-native";
 
 export default function Atendimentos() {
   const { user } = useAuth();
+  const navigation = useNavigation();
   const {
     data: agendamentos,
     isLoading,
@@ -18,6 +22,23 @@ export default function Atendimentos() {
     queryKey: ["agendamentos", user!.id],
     queryFn: () => getAgendamentosByFuncionario(user!.id),
   });
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Icon
+          name="plus"
+          style={{
+            paddingRight: "8%",
+            paddingLeft: "20%",
+            height: "100%",
+            justifyContent: "center",
+          }}
+          onPress={() => router.navigate("horarios")}
+        />
+      ),
+    });
+  }, [navigation]);
 
   function renderAgendamentosHandler(agendamento: Agendamento) {
     return <AgendamentoItem agendamento={agendamento} />;

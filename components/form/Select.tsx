@@ -73,6 +73,7 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
                 ...styles.dropdownItemStyle,
                 ...(isSelected && { backgroundColor: Colors.button }),
               }}
+              key={item.id}
             >
               <Icon name={item.icon} style={styles.dropdownItemIconStyle} />
               <StyledText

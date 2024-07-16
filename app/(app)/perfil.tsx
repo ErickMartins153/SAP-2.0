@@ -19,6 +19,9 @@ import Funcionario from "@/interfaces/Funcionario";
 import Dialog from "@/components/layouts/Dialog";
 import useImagePicker from "@/hooks/useImagePicker";
 import { queryClient } from "@/util/queries";
+import PasswordDialog, {
+  PasswordReset,
+} from "@/components/form/PasswordDialog";
 
 export default function ProfileScreen() {
   const { user, token } = useAuth();
@@ -32,6 +35,7 @@ export default function ProfileScreen() {
   >();
 
   const [showDialog, setShowDialog] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
 
   const {
     data: supervisionados,
@@ -111,6 +115,13 @@ export default function ProfileScreen() {
     setShowDialog((p) => !p);
   }
 
+  function toggleChangePassword() {
+    setChangePassword((p) => !p);
+  }
+  function closeChangePassword() {
+    setChangePassword(false);
+  }
+
   function closeDialog() {
     setShowDialog(false);
   }
@@ -142,44 +153,60 @@ export default function ProfileScreen() {
     );
   }
 
+  function onChangePassword(passwords: PasswordReset) {
+    console.log(passwords);
+  }
+
   return (
     <MainPageLayout>
-      <View style={styles.userContainer}>
-        <UserAvatar
-          size={144}
-          imageURL={imageURI ?? user?.urlImagem}
-          icon={(props) => (
-            <Icon name="edit" {...props} onPress={toggleDialog} />
-          )}
-        />
-        <StyledText fontWeight="bold" textTransform="capitalize">
-          {`${user?.nome} ${user?.sobrenome}`}
-        </StyledText>
-        <StyledText>
-          {user?.cargo === "TECNICO" ? "Técnico" : "Estagiário"}
-        </StyledText>
-        <View style={styles.buttonsContainer}>
-          {!imageURI && (
-            <>
-              <Button onPress={() => router.navigate("estatisticas")}>
-                Estatísticas
-              </Button>
-              {user?.cargo === "TECNICO" && (
-                <Button onPress={openBottom}>Meus supervisionados</Button>
-              )}
-            </>
-          )}
-          {imageURI && (
-            <>
-              <Button color="green" onPress={changePictureHandler}>
-                Confirmar alterações
-              </Button>
-              <Button color="red" onPress={clearImage}>
-                Remover alterações
-              </Button>
-            </>
-          )}
+      <View style={{ height: "80%" }}>
+        <View style={styles.userContainer}>
+          <UserAvatar
+            size={144}
+            imageURL={imageURI ?? user?.urlImagem}
+            icon={(props) => (
+              <Icon name="edit" {...props} onPress={toggleDialog} />
+            )}
+          />
+          <View style={{ alignItems: "center" }}>
+            <StyledText fontWeight="bold" textTransform="capitalize">
+              {`${user?.nome} ${user?.sobrenome}`}
+            </StyledText>
+            <StyledText>
+              {user?.cargo === "TECNICO" ? "Técnico" : "Estagiário"}
+            </StyledText>
+          </View>
+
+          <View style={styles.buttonsContainer}>
+            {!imageURI && (
+              <>
+                <Button onPress={() => router.navigate("estatisticas")}>
+                  Estatísticas
+                </Button>
+                {user?.cargo === "TECNICO" && (
+                  <Button onPress={openBottom}>Meus supervisionados</Button>
+                )}
+              </>
+            )}
+            {imageURI && (
+              <>
+                <Button color="green" onPress={changePictureHandler}>
+                  Confirmar alterações
+                </Button>
+                <Button color="red" onPress={clearImage}>
+                  Remover alterações
+                </Button>
+              </>
+            )}
+          </View>
         </View>
+      </View>
+      <View
+        style={{
+          justifyContent: "flex-end",
+        }}
+      >
+        <Button onPress={toggleChangePassword}>Alterar Senha</Button>
       </View>
       <Dialog
         closeDialog={toggleDialog}
@@ -221,6 +248,12 @@ export default function ProfileScreen() {
           </View>
         )}
       </Dialog>
+      <PasswordDialog
+        closeDialog={closeChangePassword}
+        visible={changePassword}
+        onChangePassword={onChangePassword}
+        backdropBehavior="dismiss"
+      />
     </MainPageLayout>
   );
 }
@@ -233,10 +266,10 @@ const styles = StyleSheet.create({
   },
   userContainer: {
     marginTop: "4%",
-    alignItems: "center",
   },
   buttonsContainer: {
     marginTop: "12%",
+    marginHorizontal: "8%",
     gap: 24,
   },
 });
