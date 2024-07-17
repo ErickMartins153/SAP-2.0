@@ -178,22 +178,22 @@ export async function getSupervisionados(supervisorId: string, token: string) {
   return response.data as Funcionario[];
 }
 
-export function getFuncionariosByIds(ids: string[]): Funcionario[] {
-  return ids
-    .map((id) => FUNCIONARIOS.find((funcionario) => funcionario.id === id))
-    .filter((funcionario) => funcionario !== undefined) as Funcionario[];
+export function getFuncionariosByIds(ids: string[]) {
+  // return ids
+  //   .map((id) => FUNCIONARIOS.find((funcionario) => funcionario.id === id))
+  //   .filter((funcionario) => funcionario !== undefined) as Funcionario[];
 }
 
 export async function changePictureFuncionario(
   funcionarioId: string,
   imageURI: string
 ) {
-  const funcionario = FUNCIONARIOS.find(
-    (funcionario) => funcionario.id === funcionarioId
-  );
-  if (funcionario) {
-    funcionario.urlImagem = imageURI;
-    return true;
-  }
-  return false;
+  // const funcionario = FUNCIONARIOS.find(
+  //   (funcionario) => funcionario.id === funcionarioId
+  // );
+  // if (funcionario) {
+  //   funcionario.urlImagem = imageURI;
+  //   return true;
+  // }
+  // return false;
 }

@@ -27,13 +27,22 @@ export default function CommentBottom({
       queryClient.refetchQueries({
         queryKey: ["comentarios", postId],
       });
-
       Alert.alert("Comentário publicado");
     },
   });
 
+  function deleteCommentHandler() {
+    queryClient.invalidateQueries({ queryKey: ["comentarios", postId] });
+  }
+
   function renderComentarioHandler(comentario: Comentario) {
-    return <CommentItem comentario={comentario} key={comentario.id} />;
+    return (
+      <CommentItem
+        comentario={comentario}
+        key={comentario.id}
+        onDelete={deleteCommentHandler}
+      />
+    );
   }
 
   function submitComentarioHandler(conteudo: string) {

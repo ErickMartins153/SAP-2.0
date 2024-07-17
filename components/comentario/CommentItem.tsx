@@ -13,9 +13,10 @@ import useAuth from "@/hooks/useAuth";
 
 type CommentItemProps = {
   comentario: Comentario;
+  onDelete: () => void;
 };
 
-const CommentItem = ({ comentario }: CommentItemProps) => {
+const CommentItem = ({ comentario, onDelete }: CommentItemProps) => {
   const { user, token } = useAuth();
   const {
     data: selectedFuncionario,
@@ -33,10 +34,8 @@ const CommentItem = ({ comentario }: CommentItemProps) => {
       queryClient.invalidateQueries({
         queryKey: ["comentarios", comentario.idPost],
       });
-      queryClient.refetchQueries({
-        queryKey: ["comentarios", comentario.idPost],
-      });
       Alert.alert("Comentário deletado com sucesso!");
+      onDelete();
     },
   });
 

@@ -1,11 +1,11 @@
-import { FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 
 import Post from "@/interfaces/Post";
 import PostItem from "./PostItem";
 import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "@/util/requests/postHTTP";
 import useAuth from "@/hooks/useAuth";
-import Loading from "../UI/Loading";
+import StyledText from "../UI/StyledText";
 
 function isSelected(postId: string, selectedPosts: string[]) {
   return selectedPosts.includes(postId);
@@ -53,7 +53,23 @@ export default function PostList({
     <>
       <FlatList
         data={posts}
-        ListEmptyComponent={<Loading />}
+        ListEmptyComponent={
+          <View
+            style={{
+              justifyContent: "center",
+              marginTop: "32%",
+              alignItems: "center",
+            }}
+          >
+            <StyledText mode="big" textAlign="center">
+              Não há nenhum post no momento, clique no{" "}
+              <StyledText fontWeight="bold" mode="big">
+                +
+              </StyledText>{" "}
+              no canto superior direito para adicionar um!
+            </StyledText>
+          </View>
+        }
         renderItem={({ item }) => renderPostHandler(item)}
         keyExtractor={({ id }) => id}
         onRefresh={refetch}
