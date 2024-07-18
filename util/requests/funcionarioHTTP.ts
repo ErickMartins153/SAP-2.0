@@ -180,10 +180,13 @@ export async function getSupervisionados(supervisorId: string, token: string) {
   return response.data as Funcionario[];
 }
 
-export function getFuncionariosByIds(ids: string[]) {
-  // return ids
-  //   .map((id) => FUNCIONARIOS.find((funcionario) => funcionario.id === id))
-  //   .filter((funcionario) => funcionario !== undefined) as Funcionario[];
+export async function getFuncionariosByIds(ids: string[], token: string) {
+  const response = await axios.get(`${BASE_URL}/many?by=uids`, {
+    data: ids,
+    headers: { Authorization: "Bearer " + token },
+  });
+
+  return response.data as Funcionario[];
 }
 
 export async function changePictureFuncionario(

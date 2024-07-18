@@ -31,13 +31,13 @@ export default function GrupoInfo({
         autoCapitalize="sentences"
         placeholder="Tema do grupo"
         maxLength={50}
-        value={grupo.temaEstudo}
-        onChangeText={inputHandler.bind(null, "temaEstudo")}
+        value={grupo.tema}
+        onChangeText={inputHandler.bind(null, "tema")}
       />
       <View style={{ gap: 24, paddingBottom: "4%" }}>
         <Select
           data={tecnicos!}
-          onSelect={inputHandler.bind(null, "ministrantesId")}
+          onSelect={inputHandler.bind(null, "idMinistrante")}
           search
           placeholder="Ministrante Principal"
           key="ministrantePrincipal"
@@ -48,7 +48,7 @@ export default function GrupoInfo({
           placeholder="Tipo de Grupo"
           key="tipoGrupo"
         />
-        <Button onPress={onSubmit}>Escolher horário</Button>
+        <Button onPress={onSubmit}>Criar Grupo</Button>
       </View>
     </>
   );

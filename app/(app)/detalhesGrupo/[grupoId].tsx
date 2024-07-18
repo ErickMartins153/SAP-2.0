@@ -10,31 +10,40 @@ import StackPageLayout from "@/components/layouts/StackPageLayout";
 import StyledText from "@/components/UI/StyledText";
 import { useCallback, useState } from "react";
 import { Alert, BackHandler, FlatList, StyleSheet, View } from "react-native";
-import InfoBox from "@/components/UI/InfoBox";
-import { getFuncionariosByIds } from "@/util/requests/funcionarioHTTP";
+
+import {
+  getFuncionarioById,
+  getFuncionariosByIds,
+} from "@/util/requests/funcionarioHTTP";
 import Funcionario from "@/interfaces/Funcionario";
 import FuncionarioItem from "@/components/gerenciar/FuncionarioItem";
 import Button from "@/components/general/Button";
 import { queryClient } from "@/util/queries";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
 import Icon from "@/components/general/Icon";
+import GrupoHorario from "@/components/grupos/GrupoHorario";
+import { NewAgendamento } from "@/interfaces/Agendamento";
 
 type mutateProps = {
   participanteId: string;
   grupoId: string;
 };
 
+const defaultValue: NewAgendamento = {
+  idResponsavel: "",
+  sala: "",
+  data: "",
+};
+
 function participa(funcionarioId: string, participantes: string[]) {
   return participantes.includes(funcionarioId);
 }
 
-function ministra(funcionarioId: string, ministrantes: string[]) {
-  return ministrantes.includes(funcionarioId);
-}
-
 export default function detalhesGrupo() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { grupoId } = useLocalSearchParams<{ grupoId: string }>();
+  const [showAgendar, setShowAgendar] = useState(false);
+  const [agendamentoInfo, setAgendamentoInfo] = useState(defaultValue);
 
   const [showFuncionarios, setShowFuncionarios] = useState<
     "ministrantes" | "participantes"
@@ -50,17 +59,16 @@ export default function detalhesGrupo() {
     queryFn: () => getGrupoById(grupoId!),
   });
 
-  const { data: ministrantes } = useQuery({
+  const { data: ministrante, isLoading: loadingMinistrante } = useQuery({
     queryKey: ["ministrantes", grupoId],
     enabled: !!grupoId && !!grupoData,
-    queryFn: () => getFuncionariosByIds(grupoData!.ministrantesId),
-    initialData: [],
+    queryFn: () => getFuncionarioById(grupoData!.idMinistrante, token!),
   });
 
   const { data: participantes, refetch: refetchParticipantes } = useQuery({
     queryKey: ["participantes", grupoId],
     enabled: !!grupoId && !!grupoData,
-    queryFn: () => getFuncionariosByIds(grupoData!.participantesId),
+    queryFn: () => getFuncionariosByIds(grupoData!.idParticipantes, token!),
     initialData: [],
   });
 
@@ -119,7 +127,7 @@ export default function detalhesGrupo() {
   }
 
   function renderFuncionariosHandler(funcionario: Funcionario) {
-    if (ministra(user!.id, grupoData!.ministrantesId)) {
+    if (user!.id === grupoData!.idMinistrante) {
       return (
         <FuncionarioItem
           funcionario={funcionario}
@@ -151,7 +159,15 @@ export default function detalhesGrupo() {
     setShowFuncionarios(v);
   }
 
-  if (!grupoData) {
+  function inputHandler(field: keyof NewAgendamento, text: string) {
+    setAgendamentoInfo((prev) => ({ ...prev, [field]: text }));
+  }
+
+  function toggleAgendamento() {
+    setShowAgendar(!showAgendar);
+  }
+
+  if (!grupoData || loadingMinistrante) {
     return;
   }
 
@@ -160,8 +176,8 @@ export default function detalhesGrupo() {
       isLoading={isLoading}
       route="grupos"
       HeadRight={
-        (user?.isTecnico ||
-          grupoData.ministrantesId.find((id) => id === user?.id)) && (
+        (user?.cargo === "ESTAGIARIO" ||
+          grupoData.idMinistrante === user?.id) && (
           <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
         )
       }
@@ -171,14 +187,16 @@ export default function detalhesGrupo() {
           {grupoData?.temaEstudo}
         </StyledText>
         <View style={{ marginTop: "12%", gap: 4 }}>
-          <InfoBox label="Data" content={grupoData!.encontro.horario.data} />
+          {/* <InfoBox label="Data" content={grupoData!.encontro.horario.data} />
           <InfoBox label="Horário" content={grupoData!.encontro.horario.hora} />
-          <InfoBox label="Sala" content={grupoData!.encontro.salaId} />
+          <InfoBox label="Sala" content={grupoData!.encontro.salaId} /> */}
         </View>
 
         <FlatList
           data={
-            showFuncionarios === "participantes" ? participantes : ministrantes
+            showFuncionarios === "participantes"
+              ? participantes
+              : [ministrante!]
           }
           renderItem={({ item }) => renderFuncionariosHandler(item)}
           contentContainerStyle={styles.flatListContent}
@@ -218,7 +236,6 @@ export default function detalhesGrupo() {
                 size="title"
                 style={{
                   borderBottomWidth: 1,
-                  borderTopWidth: 1,
                   paddingTop: "2%",
                 }}
               >
@@ -236,18 +253,28 @@ export default function detalhesGrupo() {
         />
       </View>
       <View style={{ marginBottom: "2%", paddingTop: "2%", borderTopWidth: 1 }}>
-        {participa(user!.id, grupoData!.participantesId) && (
+        {participa(user!.id, grupoData!.idParticipantes) && (
           <Button color="red" onPress={alertHandler.bind(null, "sair")}>
             Sair do Grupo
           </Button>
         )}
-        {!participa(user!.id, grupoData!.participantesId) &&
-          !ministra(user!.id, grupoData!.ministrantesId) && (
+        {!participa(user!.id, grupoData!.idParticipantes) &&
+          !(user!.id === grupoData!.idMinistrante) && (
             <Button color="green" onPress={alertHandler.bind(null, "entrar")}>
               Entrar no Grupo
             </Button>
           )}
+        {user?.id === grupoData.idMinistrante && (
+          <Button onPress={toggleAgendamento}>Agendar</Button>
+        )}
       </View>
+      {showAgendar && (
+        <GrupoHorario
+          inputHandler={inputHandler}
+          toggleModal={toggleAgendamento}
+          selected={agendamentoInfo}
+        />
+      )}
     </StackPageLayout>
   );
 }

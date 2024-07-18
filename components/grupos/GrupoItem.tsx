@@ -18,7 +18,7 @@ function isGrupoEstudo(grupo: any): grupo is GrupoEstudo {
 }
 
 const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
-  const dayName = getDayName(grupo.encontro.horario.data);
+  // const dayName = getDayName(grupo);
   const temaTitulo = isGrupoEstudo(grupo) ? grupo.temaEstudo : grupo.tema;
 
   function onPressHandler() {
@@ -40,9 +40,9 @@ const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
       <StyledText textAlign="center" fontWeight="bold" size="big">
         {temaTitulo}
       </StyledText>
-      <InfoBox label="Data" content={`${dayName}s`} />
+      {/* <InfoBox label="Data" content={`${dayName}s`} />
       <InfoBox label="Horário" content={grupo.encontro.horario.hora} />
-      <InfoBox label="Sala" content={grupo.encontro.salaId} />
+      <InfoBox label="Sala" content={grupo.encontro.salaId} /> */}
       {isGrupoEstudo(grupo) && (
         <StyledText textAlign="center" fontWeight="bold">
           Clique para ver mais informações

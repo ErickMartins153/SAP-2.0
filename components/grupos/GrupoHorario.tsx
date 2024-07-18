@@ -4,37 +4,41 @@ import Select from "../form/Select";
 import { SALAS } from "@/interfaces/Sala";
 
 import CalendarList from "../horario/CalendarList";
-import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
+import { NewAgendamento } from "@/interfaces/Agendamento";
+import ModalLayout from "../layouts/ModalLayout";
 
 type GrupoHorarioProps = {
-  inputHandler: (field: keyof Agendamento, text: string) => void;
-  toggleDialog: () => void;
+  inputHandler: (field: keyof NewAgendamento, text: string) => void;
+  toggleModal: () => void;
   selected: NewAgendamento;
 };
+
 export default function GrupoHorario({
   inputHandler,
-  toggleDialog,
+  toggleModal,
   selected,
 }: GrupoHorarioProps) {
   function confirmHandler(horario: string) {
     inputHandler("horario", horario);
-    toggleDialog();
+    toggleModal();
   }
 
   return (
-    <View style={{ marginVertical: "4%", gap: 24 }}>
-      <DaySelector onSelection={inputHandler.bind(null, "data")} />
-      <Select
-        data={SALAS}
-        onSelect={inputHandler.bind(null, "sala")}
-        placeholder="Sala"
-        key="salas"
-      />
-      <CalendarList
-        onSelection={confirmHandler}
-        selected={selected}
-        scrollEnabled={false}
-      />
-    </View>
+    <ModalLayout toggleModal={toggleModal}>
+      <View style={{ marginVertical: "4%", gap: 24 }}>
+        <DaySelector onSelection={inputHandler.bind(null, "data")} />
+        <Select
+          data={SALAS}
+          onSelect={inputHandler.bind(null, "sala")}
+          placeholder="Sala"
+          key="salas"
+        />
+        <CalendarList
+          onSelection={confirmHandler}
+          selected={selected}
+          scrollEnabled={false}
+        />
+      </View>
+    </ModalLayout>
   );
 }

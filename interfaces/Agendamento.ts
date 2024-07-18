@@ -1,3 +1,9 @@
+export enum Status {
+  PENDENTE,
+  APROVADO,
+  REPROVADO,
+}
+
 export interface Agendamento {
   id: string;
   sala: string;
@@ -5,6 +11,7 @@ export interface Agendamento {
   horario?: string;
   recorrente?: boolean;
   idResponsavel: string;
+  status?: Status;
 }
 
 export type NewAgendamento = Omit<Agendamento, "id">;

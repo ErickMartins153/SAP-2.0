@@ -1,12 +1,8 @@
 export default interface GrupoTerapeutico {
   id: string;
   tema: string;
-  participantesId: string[];
-  ministrantesId: string[];
-  encontro: {
-    salaId: string;
-    horario: { data: string; hora: string };
-  };
+  coordenador: string;
+  fichasId: string[];
 }
 
 export type NewGrupoTerapeutico = Omit<GrupoTerapeutico, "id">;

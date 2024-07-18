@@ -1,12 +1,14 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { router, useFocusEffect, useNavigation } from "expo-router";
-import { PropsWithoutRef, useCallback, useState } from "react";
-import { Alert, BackHandler, ModalProps } from "react-native";
+import { router } from "expo-router";
+import { PropsWithoutRef, useState } from "react";
+import { Alert, ModalProps } from "react-native";
 import ModalLayout from "../layouts/ModalLayout";
-import { getTecnicos } from "@/util/requests/funcionarioHTTP";
+import {
+  getFuncionarioById,
+  getTecnicos,
+} from "@/util/requests/funcionarioHTTP";
 import GrupoInfo from "./GrupoInfo";
-import GrupoHorario from "./GrupoHorario";
-import { Agendamento } from "@/interfaces/Agendamento";
+
 import Dialog from "../layouts/Dialog";
 import InfoBox from "../UI/InfoBox";
 import {
@@ -16,6 +18,7 @@ import {
 import { queryClient } from "@/util/queries";
 import useBottomSheet from "@/hooks/useBottom";
 import useAuth from "@/hooks/useAuth";
+import { notBlank } from "@/util/validate";
 
 type AddGrupoProps = {
   toggleModal: () => void;
@@ -24,17 +27,16 @@ type AddGrupoProps = {
 type GrupoType = "Estudo" | "Individual";
 
 type GrupoInfo = {
-  temaEstudo: string;
-  ministrantesId: string[];
+  tema: string;
+  idMinistrante: string;
   tipo?: GrupoType;
 };
 
-export type NewGrupo = GrupoInfo & (Agendamento | Partial<Agendamento>);
+export type NewGrupo = GrupoInfo;
 
 const defaultValues: NewGrupo = {
-  ministrantesId: [],
-  temaEstudo: "",
-  data: new Date().toLocaleDateString(),
+  tema: "",
+  idMinistrante: "",
 };
 
 export default function AddGrupoModal({
@@ -44,21 +46,9 @@ export default function AddGrupoModal({
 }: AddGrupoProps) {
   const { user, token } = useAuth();
   const [grupoInfo, setGrupoInfo] = useState(defaultValues);
-  const {
-    idResponsavel: responsavelId,
-    sala,
-    data,
-    horario,
-    recorrente,
-  } = grupoInfo;
-  const [step, setStep] = useState<0 | 1>(0);
   const [showDialog, setShowDialog] = useState(false);
   const { closeBottom } = useBottomSheet();
-  const {
-    data: tecnicos,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: tecnicos, isLoading } = useQuery({
     queryKey: ["funcionarios"],
     queryFn: () => getTecnicos(token!),
   });
@@ -68,11 +58,16 @@ export default function AddGrupoModal({
     queryFn: () => getGruposDisponiveis(user!.id),
   });
 
-  const navigation = useNavigation();
+  const { data: ministrante } = useQuery({
+    queryKey: ["funcionarios", grupoInfo.idMinistrante!],
+    queryFn: () => getFuncionarioById(grupoInfo.idMinistrante!, token!),
+    enabled: !!grupoInfo.idMinistrante,
+  });
 
   const { mutate: addGrupo } = useMutation({
     mutationFn: createGrupo,
     onSuccess: async () => {
+      setGrupoInfo(defaultValues);
       toggleDialog();
       toggleModal();
       queryClient.invalidateQueries({
@@ -85,48 +80,17 @@ export default function AddGrupoModal({
     },
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      function onBackPress() {
-        if (step === 0) {
-          router.navigate("(app)");
-          return true;
-        } else {
-          setStep(0);
-          return true;
-        }
-      }
-
-      BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-      return () =>
-        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    }, [navigation, step])
-  );
-
   function closeHandler() {
-    if (step === 0) {
-      setGrupoInfo(defaultValues);
-      toggleModal();
-    } else {
-      setStep(0);
-    }
+    toggleModal();
+    setGrupoInfo(defaultValues);
   }
 
   function toggleDialog() {
-    if (grupoInfo.data && grupoInfo.sala) {
-      setShowDialog((p) => !p);
-    } else {
-      errorHandler();
-    }
+    setShowDialog(!showDialog);
   }
 
   function inputHandler(field: keyof NewGrupo, text: string) {
-    if (field === "ministrantesId") {
-      grupoInfo[field] = [text];
-    } else {
-      setGrupoInfo((prev) => ({ ...prev, [field]: text }));
-    }
+    setGrupoInfo((prev) => ({ ...prev, [field]: text }));
   }
 
   function errorHandler() {
@@ -136,19 +100,16 @@ export default function AddGrupoModal({
     );
   }
 
-  function changeStepHandler() {
-    const { ministrantesId, temaEstudo, tipo } = grupoInfo;
-    if (temaEstudo.trim() !== "" && ministrantesId.length > 0 && !!tipo) {
-      setStep(1);
+  function createGroupHandler() {
+    addGrupo(grupoInfo);
+  }
+
+  function openDialog() {
+    if (notBlank(grupoInfo) && !!grupoInfo.idMinistrante && !!grupoInfo.tipo) {
+      setShowDialog(true);
     } else {
       errorHandler();
     }
-  }
-
-  function createGroupHandler() {
-    addGrupo(grupoInfo);
-    setGrupoInfo(defaultValues);
-    setStep(0);
   }
 
   return (
@@ -158,35 +119,28 @@ export default function AddGrupoModal({
       visible={visible}
       {...props}
     >
-      {step === 0 ? (
-        <GrupoInfo
-          grupo={grupoInfo}
-          tecnicos={tecnicos!}
-          inputHandler={inputHandler}
-          onSubmit={changeStepHandler}
-        />
-      ) : (
-        <GrupoHorario
-          inputHandler={inputHandler}
-          toggleDialog={toggleDialog}
-          selected={{
-            idResponsavel: responsavelId!,
-            sala: sala!,
-            data,
-            horario,
-            recorrente,
-          }}
-        />
-      )}
+      <GrupoInfo
+        grupo={grupoInfo}
+        tecnicos={tecnicos!}
+        inputHandler={inputHandler}
+        onSubmit={openDialog}
+      />
+
       <Dialog
         closeDialog={toggleDialog}
         visible={showDialog}
         title="Confirmar criação grupo"
         onSubmit={createGroupHandler}
+        backdropBehavior="dismiss"
       >
-        <InfoBox content={grupoInfo.data!} label="Dia" />
-        <InfoBox content={grupoInfo.horario!} label="Horário" />
-        <InfoBox content={grupoInfo.sala!} label="Sala" />
+        <InfoBox
+          content={
+            `${ministrante?.nome} ${ministrante?.sobrenome}` || "Carregando..."
+          }
+          label="Ministrante"
+        />
+        <InfoBox content={grupoInfo.tema} label="Tema" />
+        <InfoBox content={grupoInfo.tipo!} label="Tipo" />
       </Dialog>
     </ModalLayout>
   );

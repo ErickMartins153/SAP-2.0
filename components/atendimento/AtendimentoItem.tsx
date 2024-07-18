@@ -45,7 +45,7 @@ const AgendamentoItem = ({ agendamento }: AtendimentoItemProps) => {
       android_ripple={{ color: Colors.lightRipple }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <StyledText textAlign="center" fontWeight="bold" mode="big">
+        <StyledText textAlign="center" fontWeight="bold" size="big">
           Atendimento #{agendamento.id}
         </StyledText>
         <Icon

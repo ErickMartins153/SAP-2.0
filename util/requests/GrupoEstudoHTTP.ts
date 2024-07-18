@@ -1,5 +1,5 @@
 import { NewGrupo } from "@/components/grupos/AddGrupoModal";
-import { NewAgendamento } from "@/interfaces/Agendamento";
+import { NewAgendamento, Status } from "@/interfaces/Agendamento";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
 import { agendarHorario } from "./agendamentoHTTP";
 import { GRUPOS_TERAPEUTICOS } from "./GrupoTerapeuticoHTTP";
@@ -8,70 +8,46 @@ export const GRUPOS_ESTUDO: GrupoEstudo[] = [
   {
     id: "101",
     temaEstudo: "Psicologia Organizacional",
-    ministrantesId: ["1", "2"],
-    participantesId: ["3", "5", "4"],
-    encontro: {
-      salaId: "6",
-      horario: { data: "01/07/2023", hora: "10:00" },
-    },
+    idMinistrante: "2",
+    idParticipantes: ["3", "5", "4"],
   },
   {
     id: "102",
     temaEstudo: "Psicologia do Desenvolvimento",
-    ministrantesId: ["3"],
-    participantesId: ["2", "4", "6"],
-    encontro: {
-      salaId: "2",
-      horario: { data: "02/07/2023", hora: "14:00" },
-    },
+    idMinistrante: "3",
+    idParticipantes: ["2", "4", "6"],
   },
   {
     id: "103",
     temaEstudo: "Psicologia Social",
-    ministrantesId: ["7"],
-    participantesId: ["8"],
-    encontro: {
-      salaId: "6",
-      horario: { data: "03/07/2023", hora: "16:00" },
-    },
+    idMinistrante: "7",
+    idParticipantes: ["8"],
   },
   {
     id: "104",
     temaEstudo: "Psicologia Clínica",
-    ministrantesId: ["5"],
-    participantesId: ["1", "6", "8"],
-    encontro: {
-      salaId: "1",
-      horario: { data: "04/07/2023", hora: "11:00" },
-    },
+    idMinistrante: "5",
+    idParticipantes: ["1", "6", "8"],
   },
   {
     id: "105",
     temaEstudo: "Psicologia Cognitiva",
-    ministrantesId: ["3", "7"],
-    participantesId: ["2", "4", "6"],
-    encontro: {
-      salaId: "3",
-      horario: { data: "05/07/2023", hora: "15:00" },
-    },
+    idMinistrante: "7",
+    idParticipantes: ["2", "4", "6"],
   },
   {
     id: "106",
     temaEstudo: "Neurociência",
-    ministrantesId: ["5"],
-    participantesId: ["2", "3", "4", "6", "7", "8"],
-    encontro: {
-      salaId: "4",
-      horario: { data: "06/07/2023", hora: "09:00" },
-    },
+    idMinistrante: "5",
+    idParticipantes: ["2", "3", "4", "6", "7", "8"],
   },
 ];
 
 export function getGruposByFuncionario(funcionarioId: string) {
   return GRUPOS_ESTUDO.filter(
     (grupo) =>
-      grupo.participantesId.includes(funcionarioId) ||
-      grupo.ministrantesId.includes(funcionarioId)
+      grupo.idParticipantes.includes(funcionarioId) ||
+      grupo.idMinistrante.includes(funcionarioId)
   );
 }
 
@@ -85,7 +61,7 @@ export async function removeParticipante(
 ) {
   const grupo = getGrupoById(grupoId);
   if (grupo) {
-    grupo.participantesId = grupo.participantesId.filter(
+    grupo.idParticipantes = grupo.idParticipantes.filter(
       (id) => id !== participanteId
     );
   }
@@ -94,8 +70,8 @@ export async function removeParticipante(
 export async function addParticipante(participanteId: string, grupoId: string) {
   const grupo = getGrupoById(grupoId);
   if (grupo) {
-    if (!grupo.participantesId.includes(participanteId)) {
-      grupo.participantesId.push(participanteId);
+    if (!grupo.idParticipantes.includes(participanteId)) {
+      grupo.idParticipantes.push(participanteId);
     }
   }
 }
@@ -104,34 +80,20 @@ export async function getGruposDisponiveis(funcionarioId: string) {
   return GRUPOS_ESTUDO.filter(
     (grupo) =>
       !(
-        grupo.participantesId.includes(funcionarioId) ||
-        grupo.ministrantesId.includes(funcionarioId)
+        grupo.idParticipantes.includes(funcionarioId) ||
+        grupo.idMinistrante.includes(funcionarioId)
       )
   );
 }
 
 export async function createGrupo(newGrupo: NewGrupo) {
-  const id = (GRUPOS_ESTUDO.length + 101).toString();
-  const encontro: NewAgendamento = {
-    sala: newGrupo.sala!,
-    idResponsavel: newGrupo.idResponsavel!,
-    data: newGrupo.data,
-    horario: newGrupo.horario,
-    recorrente: true,
-  };
-
-  await agendarHorario(encontro);
-
-  const grupoEstudo: GrupoEstudo = {
-    id,
-    temaEstudo: newGrupo.temaEstudo,
-    ministrantesId: newGrupo.ministrantesId,
-    participantesId: [],
-    encontro: {
-      horario: { data: encontro.data!, hora: encontro.horario! },
-      salaId: encontro.sala,
-    },
-  };
-
-  return GRUPOS_ESTUDO.push(grupoEstudo);
+  const { tema: temaEstudo, idMinistrante, tipo } = newGrupo;
+  if (tipo === "Estudo") {
+    return GRUPOS_ESTUDO.push({
+      id: GRUPOS_ESTUDO.length.toString(),
+      idMinistrante,
+      temaEstudo,
+      idParticipantes: [],
+    });
+  }
 }

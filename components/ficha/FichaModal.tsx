@@ -21,7 +21,7 @@ export default function FichaModal({ ...props }: FichaModalProps) {
         id: "20",
         tema: "Gerenciamento de Estresse",
         fichasId: ["1", "2", "3"],
-        coordenador: ["4"],
+        coordenador: "4",
       },
       nome: "Pedin doido",
     },
