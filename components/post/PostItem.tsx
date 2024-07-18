@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 import { memo } from "react";
 import useAuth from "@/hooks/useAuth";
+import { formatText } from "@/util/formatter";
 
 type PostItemProps = {
   postData: Post;
@@ -16,17 +17,6 @@ type PostItemProps = {
   isSelected?: boolean;
   anySelected?: boolean;
 };
-
-function formatText(text: string, maxLength: number) {
-  if (text.length <= maxLength) return text;
-
-  const truncated = text.substring(0, maxLength);
-  const lastSpaceIndex = truncated.lastIndexOf(" ");
-
-  if (lastSpaceIndex === -1) return truncated + "...";
-
-  return truncated.substring(0, lastSpaceIndex) + "...";
-}
 
 const PostItem = ({
   postData,

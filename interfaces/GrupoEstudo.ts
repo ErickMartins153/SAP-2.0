@@ -3,6 +3,7 @@ export default interface GrupoEstudo {
   temaEstudo: string;
   idMinistrante: string;
   idParticipantes: string[];
+  descricao?: string;
 }
 
 export interface newGrupoEstudo {

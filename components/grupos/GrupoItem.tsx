@@ -5,8 +5,8 @@ import { Colors } from "@/constants/Colors";
 import { memo } from "react";
 import { router } from "expo-router";
 import InfoBox from "../UI/InfoBox";
-import { getDayName } from "@/util/dateUtils";
 import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
+import { formatText } from "@/util/formatter";
 
 type GrupoItemProps = {
   grupo: GrupoEstudo | GrupoTerapeutico;
@@ -41,8 +41,10 @@ const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
         {temaTitulo}
       </StyledText>
       {/* <InfoBox label="Data" content={`${dayName}s`} />
-      <InfoBox label="Horário" content={grupo.encontro.horario.hora} />
       <InfoBox label="Sala" content={grupo.encontro.salaId} /> */}
+      {grupo?.descricao && (
+        <InfoBox label="Descrição" content={formatText(grupo.descricao, 180)} />
+      )}
       {isGrupoEstudo(grupo) && (
         <StyledText textAlign="center" fontWeight="bold">
           Clique para ver mais informações

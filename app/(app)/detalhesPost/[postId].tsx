@@ -1,7 +1,6 @@
 import {
   Alert,
   BackHandler,
-  Keyboard,
   RefreshControl,
   ScrollView,
   StyleSheet,

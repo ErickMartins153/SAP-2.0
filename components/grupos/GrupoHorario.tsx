@@ -10,17 +10,19 @@ import ModalLayout from "../layouts/ModalLayout";
 type GrupoHorarioProps = {
   inputHandler: (field: keyof NewAgendamento, text: string) => void;
   toggleModal: () => void;
+  toggleDialog: () => void;
   selected: NewAgendamento;
 };
 
 export default function GrupoHorario({
   inputHandler,
   toggleModal,
+  toggleDialog,
   selected,
 }: GrupoHorarioProps) {
   function confirmHandler(horario: string) {
     inputHandler("horario", horario);
-    toggleModal();
+    toggleDialog();
   }
 
   return (

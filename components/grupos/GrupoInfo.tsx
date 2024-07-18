@@ -34,6 +34,14 @@ export default function GrupoInfo({
         value={grupo.tema}
         onChangeText={inputHandler.bind(null, "tema")}
       />
+      <Input
+        autoCapitalize="sentences"
+        placeholder="Descrição do grupo"
+        maxLength={400}
+        multiline
+        value={grupo.descricao || ""}
+        onChangeText={inputHandler.bind(null, "descricao")}
+      />
       <View style={{ gap: 24, paddingBottom: "4%" }}>
         <Select
           data={tecnicos!}

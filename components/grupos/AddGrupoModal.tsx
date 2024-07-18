@@ -11,17 +11,14 @@ import GrupoInfo from "./GrupoInfo";
 
 import Dialog from "../layouts/Dialog";
 import InfoBox from "../UI/InfoBox";
-import {
-  createGrupo,
-  getGruposDisponiveis,
-} from "@/util/requests/GrupoEstudoHTTP";
+import { createGrupo } from "@/util/requests/GrupoEstudoHTTP";
 import { queryClient } from "@/util/queries";
 import useBottomSheet from "@/hooks/useBottom";
 import useAuth from "@/hooks/useAuth";
-import { notBlank } from "@/util/validate";
 
 type AddGrupoProps = {
   toggleModal: () => void;
+  refetchGrupos: () => void;
 } & PropsWithoutRef<ModalProps>;
 
 type GrupoType = "Estudo" | "Individual";
@@ -30,6 +27,7 @@ type GrupoInfo = {
   tema: string;
   idMinistrante: string;
   tipo?: GrupoType;
+  descricao?: string;
 };
 
 export type NewGrupo = GrupoInfo;
@@ -37,11 +35,13 @@ export type NewGrupo = GrupoInfo;
 const defaultValues: NewGrupo = {
   tema: "",
   idMinistrante: "",
+  descricao: "",
 };
 
 export default function AddGrupoModal({
   toggleModal,
   visible = false,
+  refetchGrupos,
   ...props
 }: AddGrupoProps) {
   const { user, token } = useAuth();
@@ -51,11 +51,6 @@ export default function AddGrupoModal({
   const { data: tecnicos, isLoading } = useQuery({
     queryKey: ["funcionarios"],
     queryFn: () => getTecnicos(token!),
-  });
-  const { refetch: refetchGrupos } = useQuery({
-    queryKey: ["grupos", "disponiveis", user?.id],
-    enabled: !!user?.id,
-    queryFn: () => getGruposDisponiveis(user!.id),
   });
 
   const { data: ministrante } = useQuery({
@@ -74,8 +69,8 @@ export default function AddGrupoModal({
         exact: false,
         queryKey: ["grupos", "estudo", "agendamentos"],
       });
+      refetchGrupos();
       closeBottom();
-      await refetchGrupos();
       router.navigate("grupos");
     },
   });
@@ -105,7 +100,7 @@ export default function AddGrupoModal({
   }
 
   function openDialog() {
-    if (notBlank(grupoInfo) && !!grupoInfo.idMinistrante && !!grupoInfo.tipo) {
+    if (!!grupoInfo.idMinistrante && !!grupoInfo.tipo && !!grupoInfo.tema) {
       setShowDialog(true);
     } else {
       errorHandler();
@@ -140,6 +135,9 @@ export default function AddGrupoModal({
           label="Ministrante"
         />
         <InfoBox content={grupoInfo.tema} label="Tema" />
+        {grupoInfo.descricao && (
+          <InfoBox content={grupoInfo.descricao} label="Descrição" />
+        )}
         <InfoBox content={grupoInfo.tipo!} label="Tipo" />
       </Dialog>
     </ModalLayout>

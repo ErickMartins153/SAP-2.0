@@ -9,7 +9,14 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import StackPageLayout from "@/components/layouts/StackPageLayout";
 import StyledText from "@/components/UI/StyledText";
 import { useCallback, useState } from "react";
-import { Alert, BackHandler, FlatList, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  BackHandler,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 import {
   getFuncionarioById,
@@ -23,6 +30,9 @@ import GrupoEstudo from "@/interfaces/GrupoEstudo";
 import Icon from "@/components/general/Icon";
 import GrupoHorario from "@/components/grupos/GrupoHorario";
 import { NewAgendamento } from "@/interfaces/Agendamento";
+import Dialog from "@/components/layouts/Dialog";
+import InfoBox from "@/components/UI/InfoBox";
+import { notBlank } from "@/util/validate";
 
 type mutateProps = {
   participanteId: string;
@@ -43,6 +53,7 @@ export default function detalhesGrupo() {
   const { user, token } = useAuth();
   const { grupoId } = useLocalSearchParams<{ grupoId: string }>();
   const [showAgendar, setShowAgendar] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const [agendamentoInfo, setAgendamentoInfo] = useState(defaultValue);
 
   const [showFuncionarios, setShowFuncionarios] = useState<
@@ -167,6 +178,16 @@ export default function detalhesGrupo() {
     setShowAgendar(!showAgendar);
   }
 
+  function toggleDialog() {
+    setShowDialog(!showDialog);
+  }
+
+  function agendarHandler() {
+    if (notBlank(agendamentoInfo)) {
+      console.log(agendamentoInfo);
+    }
+  }
+
   if (!grupoData || loadingMinistrante) {
     return;
   }
@@ -186,11 +207,15 @@ export default function detalhesGrupo() {
         <StyledText size="title" fontWeight="bold" textAlign="center">
           {grupoData?.temaEstudo}
         </StyledText>
-        <View style={{ marginTop: "12%", gap: 4 }}>
-          {/* <InfoBox label="Data" content={grupoData!.encontro.horario.data} />
-          <InfoBox label="Horário" content={grupoData!.encontro.horario.hora} />
-          <InfoBox label="Sala" content={grupoData!.encontro.salaId} /> */}
-        </View>
+        <ScrollView
+          style={{ maxHeight: 200, marginVertical: "2%" }}
+          contentContainerStyle={{ paddingVertical: "2%" }}
+        >
+          <InfoBox label="Próximo agendamento" content="PLACEHOLDER" />
+          {grupoData.descricao && (
+            <InfoBox label="Conteúdo" content={grupoData?.descricao} />
+          )}
+        </ScrollView>
 
         <FlatList
           data={
@@ -218,7 +243,7 @@ export default function detalhesGrupo() {
                   }
                   onPress={() => toggleFuncionarioView("ministrantes")}
                 >
-                  Ministrantes
+                  Ministrante
                 </Button>
                 <Button
                   color={
@@ -272,9 +297,20 @@ export default function detalhesGrupo() {
         <GrupoHorario
           inputHandler={inputHandler}
           toggleModal={toggleAgendamento}
+          toggleDialog={toggleDialog}
           selected={agendamentoInfo}
         />
       )}
+      <Dialog
+        closeDialog={toggleDialog}
+        visible={showDialog}
+        title="Confirmar Agendamento"
+        onSubmit={agendarHandler}
+      >
+        <InfoBox content={agendamentoInfo.data!} label="Dia" />
+        <InfoBox content={agendamentoInfo.horario!} label="Horário" />
+        <InfoBox content={agendamentoInfo.sala!} label="Sala" />
+      </Dialog>
     </StackPageLayout>
   );
 }

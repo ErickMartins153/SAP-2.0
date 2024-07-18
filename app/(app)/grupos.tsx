@@ -111,11 +111,8 @@ export default function MeusGrupos() {
   }
 
   function refreshHandler() {
-    if (showGrupo === "estudo") {
-      refetchGrupo();
-    } else {
-      refetchTerapeutico();
-    }
+    refetchGrupo();
+    refetchTerapeutico();
   }
 
   if (loadingEstudo || isError) {
@@ -164,7 +161,11 @@ export default function MeusGrupos() {
         renderItem={({ item }) => renderGrupoHandler(item)}
       />
 
-      <AddGrupoModal toggleModal={toggleModalHandler} visible={showModal} />
+      <AddGrupoModal
+        toggleModal={toggleModalHandler}
+        visible={showModal}
+        refetchGrupos={refreshHandler}
+      />
     </MainPageLayout>
   );
 }

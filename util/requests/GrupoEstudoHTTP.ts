@@ -87,13 +87,14 @@ export async function getGruposDisponiveis(funcionarioId: string) {
 }
 
 export async function createGrupo(newGrupo: NewGrupo) {
-  const { tema: temaEstudo, idMinistrante, tipo } = newGrupo;
+  const { tema: temaEstudo, idMinistrante, tipo, descricao } = newGrupo;
   if (tipo === "Estudo") {
     return GRUPOS_ESTUDO.push({
       id: GRUPOS_ESTUDO.length.toString(),
       idMinistrante,
       temaEstudo,
       idParticipantes: [],
+      descricao: descricao,
     });
   }
 }
