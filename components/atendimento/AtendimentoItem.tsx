@@ -4,7 +4,6 @@ import { Agendamento } from "@/interfaces/Agendamento";
 
 import { Colors } from "@/constants/Colors";
 import { memo } from "react";
-import { router } from "expo-router";
 import InfoBox from "../UI/InfoBox";
 import Icon from "../general/Icon";
 import { useMutation } from "@tanstack/react-query";

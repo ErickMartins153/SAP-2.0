@@ -103,7 +103,7 @@ export async function createGrupo(newGrupo: NewGrupo) {
   const id = (GRUPOS_TERAPEUTICOS.length + 101).toString();
   const encontro: NewAgendamento = {
     sala: newGrupo.sala!,
-    responsavelId: newGrupo.responsavelId!,
+    idResponsavel: newGrupo.idResponsavel!,
     data: newGrupo.data,
     horario: newGrupo.horario,
     recorrente: true,

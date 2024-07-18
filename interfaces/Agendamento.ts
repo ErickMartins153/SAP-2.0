@@ -4,7 +4,7 @@ export interface Agendamento {
   data?: string;
   horario?: string;
   recorrente?: boolean;
-  responsavelId: string;
+  idResponsavel: string;
 }
 
 export type NewAgendamento = Omit<Agendamento, "id">;

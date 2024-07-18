@@ -9,7 +9,7 @@ export let AGENDAMENTOS: Agendamento[] = [
     data: today,
     horario: "10:20 - 11:10",
     recorrente: true,
-    responsavelId: "1",
+    idResponsavel: "1",
   },
   {
     id: "2",
@@ -17,7 +17,7 @@ export let AGENDAMENTOS: Agendamento[] = [
     data: today,
     horario: "11:10 - 12:00",
     recorrente: false,
-    responsavelId: "2",
+    idResponsavel: "2",
   },
   {
     id: "3",
@@ -25,7 +25,7 @@ export let AGENDAMENTOS: Agendamento[] = [
     data: today,
     horario: "12:00 - 12:50",
     recorrente: true,
-    responsavelId: "3",
+    idResponsavel: "3",
   },
   {
     id: "4",
@@ -33,7 +33,7 @@ export let AGENDAMENTOS: Agendamento[] = [
     data: today,
     horario: "12:50 - 13:40",
     recorrente: false,
-    responsavelId: "4",
+    idResponsavel: "4",
   },
   {
     id: "5",
@@ -41,7 +41,7 @@ export let AGENDAMENTOS: Agendamento[] = [
     data: today,
     horario: "15:30 - 16:20",
     recorrente: true,
-    responsavelId: "5",
+    idResponsavel: "5",
   },
   {
     id: "6",
@@ -49,7 +49,7 @@ export let AGENDAMENTOS: Agendamento[] = [
     data: today,
     horario: "16:20 - 17:10",
     recorrente: false,
-    responsavelId: "6",
+    idResponsavel: "6",
   },
   {
     id: "7",
@@ -57,7 +57,7 @@ export let AGENDAMENTOS: Agendamento[] = [
     data: today,
     horario: "17:10 - 18:00",
     recorrente: true,
-    responsavelId: "7",
+    idResponsavel: "7",
   },
   {
     id: "8",
@@ -65,7 +65,7 @@ export let AGENDAMENTOS: Agendamento[] = [
     data: today,
     horario: "18:00 - 18:50",
     recorrente: false,
-    responsavelId: "8",
+    idResponsavel: "8",
   },
 ];
 
@@ -97,7 +97,7 @@ export async function getAgendamentos({
 
 export async function getAgendamentosByFuncionario(funcionarioId: string) {
   return AGENDAMENTOS.filter(
-    (agendamento) => agendamento.responsavelId === funcionarioId
+    (agendamento) => agendamento.idResponsavel === funcionarioId
   );
 }
 
@@ -118,7 +118,7 @@ export async function getAgendamento(
         sala === searchedSala &&
         data === searchedData &&
         horario === searchedHorario
-    ) || { id: "", responsavelId: "", sala: "" }
+    ) || { id: "", idResponsavel: "", sala: "" }
   );
 }
 

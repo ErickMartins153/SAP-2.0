@@ -10,15 +10,20 @@ import HorarioModal from "@/components/horario/HorarioModal";
 import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
 import { useQuery } from "@tanstack/react-query";
 import { getAgendamentos } from "@/util/requests/agendamentoHTTP";
+import useAuth from "@/hooks/useAuth";
+
+import SolicitacoesModal from "@/components/horario/SolicitacoesModal";
+import SolicitacoesIcon from "@/components/horario/SolicitacoesIcon";
 
 const defaultValues: NewAgendamento = {
   sala: "",
   data: new Date().toLocaleDateString(),
-  responsavelId: "",
+  idResponsavel: "",
 };
 
 export default function Horarios() {
   const navigation = useNavigation();
+  const { user } = useAuth();
   const {
     clear,
     isVisible,
@@ -30,7 +35,7 @@ export default function Horarios() {
 
   const [showModal, setShowModal] = useState(false);
   const [agendamento, setAgendamento] = useState(defaultValues);
-
+  const [showSolicitacoes, setShowSolicitacoes] = useState(false);
   const { isLoading, refetch } = useQuery({
     queryKey: ["agendamentos", agendamento.data, agendamento.sala],
     enabled: !!agendamento.sala && !!agendamento.horario,
@@ -41,6 +46,19 @@ export default function Horarios() {
   useLayoutEffect(() => {
     changeBottomContent(<RoomModal />);
   }, []);
+
+  useLayoutEffect(() => {
+    if (user?.cargo === "TECNICO") {
+      navigation.setOptions({
+        headerRight: () => (
+          <SolicitacoesIcon
+            qtdSolicitacoes={2}
+            toggleModal={toggleSolicitacoesHandler}
+          />
+        ),
+      });
+    }
+  }, [navigation]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", (e) => {
@@ -104,6 +122,10 @@ export default function Horarios() {
     setAgendamento((prev) => ({ ...prev, [field]: text }));
   }, []);
 
+  function toggleSolicitacoesHandler() {
+    setShowSolicitacoes(!showSolicitacoes);
+  }
+
   return (
     <MainPageLayout isLoading={isLoading}>
       <Calendar
@@ -115,6 +137,10 @@ export default function Horarios() {
         visible={showModal}
         toggleDialog={toggleModalHandler}
         agendamento={agendamento}
+      />
+      <SolicitacoesModal
+        toggleModal={toggleSolicitacoesHandler}
+        visible={showSolicitacoes}
       />
     </MainPageLayout>
   );

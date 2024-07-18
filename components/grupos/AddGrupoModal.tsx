@@ -42,8 +42,15 @@ export default function AddGrupoModal({
   visible = false,
   ...props
 }: AddGrupoProps) {
+  const { user, token } = useAuth();
   const [grupoInfo, setGrupoInfo] = useState(defaultValues);
-  const { responsavelId, sala, data, horario, recorrente } = grupoInfo;
+  const {
+    idResponsavel: responsavelId,
+    sala,
+    data,
+    horario,
+    recorrente,
+  } = grupoInfo;
   const [step, setStep] = useState<0 | 1>(0);
   const [showDialog, setShowDialog] = useState(false);
   const { closeBottom } = useBottomSheet();
@@ -53,9 +60,8 @@ export default function AddGrupoModal({
     error,
   } = useQuery({
     queryKey: ["funcionarios"],
-    queryFn: getTecnicos,
+    queryFn: () => getTecnicos(token!),
   });
-  const { user } = useAuth();
   const { refetch: refetchGrupos } = useQuery({
     queryKey: ["grupos", "disponiveis", user?.id],
     enabled: !!user?.id,
@@ -164,7 +170,7 @@ export default function AddGrupoModal({
           inputHandler={inputHandler}
           toggleDialog={toggleDialog}
           selected={{
-            responsavelId: responsavelId!,
+            idResponsavel: responsavelId!,
             sala: sala!,
             data,
             horario,
