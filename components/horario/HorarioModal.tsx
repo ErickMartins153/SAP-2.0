@@ -6,10 +6,13 @@ import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
 import InfoBox from "../UI/InfoBox";
 import Dialog from "../layouts/Dialog";
 import Switch from "../general/Switch";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { agendarHorario } from "@/util/requests/agendamentoHTTP";
 import useAuth from "@/hooks/useAuth";
 import { queryClient } from "@/util/queries";
+import Select from "../form/Select";
+import { getFuncionariosAtivos } from "@/util/requests/funcionarioHTTP";
+import Loading from "../UI/Loading";
 
 type HorarioModalProps = {
   toggleDialog: () => void;
@@ -22,10 +25,11 @@ export default function HorarioModal({
   visible = false,
   ...props
 }: HorarioModalProps) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigation = useNavigation();
   const [step, setStep] = useState<0 | 1>(0);
   const [recorrente, setRecorrente] = useState(false);
+  const [responsavelId, setResponsavelId] = useState<string>(user?.id!);
 
   const { mutate: agendar } = useMutation({
     mutationFn: agendarHorario,
@@ -49,6 +53,16 @@ export default function HorarioModal({
     },
   });
 
+  const {
+    data: funcionarios,
+    isLoading: loadingFuncionarios,
+    refetch: refetchAtivos,
+  } = useQuery({
+    queryKey: ["funcionarios", "ativos"],
+    queryFn: () => getFuncionariosAtivos(token!),
+    initialData: [],
+  });
+
   useFocusEffect(
     useCallback(() => {
       function onBackPress() {
@@ -70,7 +84,12 @@ export default function HorarioModal({
 
   function agendarHandler() {
     setRecorrente(false);
-    agendar({ ...agendamento, recorrente, responsavelId: user!.id });
+
+    agendar({ ...agendamento, recorrente, idResponsavel: responsavelId });
+  }
+
+  function changeResponsavelHandler(id: string) {
+    setResponsavelId(id);
   }
 
   function toggleRecorrencia() {
@@ -94,6 +113,14 @@ export default function HorarioModal({
       {agendamento.data && <InfoBox content={agendamento.data} label="Dia" />}
       <InfoBox content={agendamento.horario!} label="Horário" />
       <InfoBox content={agendamento.sala!} label="Sala" />
+      {user?.cargo === "TECNICO" && (
+        <Select
+          onSelect={changeResponsavelHandler}
+          data={funcionarios}
+          placeholder="Escolha o responsável"
+          defaultValue={user}
+        />
+      )}
       <Switch
         isEnabled={recorrente}
         label="Recorrente?"

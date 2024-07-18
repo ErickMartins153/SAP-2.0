@@ -45,7 +45,7 @@ export default function CalendarList({
   selected,
   scrollEnabled,
 }: CalendarListProps) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const {
     data: agendamentos,
     isLoading,
@@ -85,7 +85,7 @@ export default function CalendarList({
 
   const { data: funcionarioData } = useQuery({
     queryKey: ["funcionarios", agendamento?.id],
-    queryFn: () => getFuncionarioById(agendamento!.responsavelId),
+    queryFn: () => getFuncionarioById(agendamento!.idResponsavel, token!),
     enabled: !!agendamento?.id,
   });
 

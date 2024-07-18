@@ -2,6 +2,7 @@ import {
   Alert,
   BackHandler,
   Keyboard,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   View,
@@ -38,7 +39,8 @@ export default function detalhesPost() {
   const {
     data: selectedPost,
     isLoading: loadingPost,
-    isError,
+    refetch: refetchPost,
+    isRefetching: refetchingPost,
   } = useQuery({
     enabled: !!postId,
     queryKey: ["posts", postId],
@@ -49,6 +51,8 @@ export default function detalhesPost() {
     data: selectedFuncionario,
     isLoading: loadingFuncionario,
     isError: isErrorFuncionario,
+    refetch: RefetchFuncionario,
+    isRefetching: refetchingFuncionario,
   } = useQuery({
     enabled: !!selectedPost?.idAutor,
     queryKey: ["funcionarios", selectedPost?.idAutor],
@@ -59,6 +63,8 @@ export default function detalhesPost() {
     data: comentarios,
     isLoading: loadingComentarios,
     isError: isErrorComentarios,
+    refetch: refetchComentarios,
+    isRefetching: refetchingComentarios,
   } = useQuery({
     queryKey: ["comentarios", postId],
     queryFn: () => getComentariosByPost(postId!),
@@ -84,6 +90,12 @@ export default function detalhesPost() {
     },
     retry: 3,
   });
+
+  function refetchAll() {
+    RefetchFuncionario();
+    refetchPost();
+    refetchComentarios();
+  }
 
   const navigation = useNavigation();
   const {
@@ -179,6 +191,14 @@ export default function detalhesPost() {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.description}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={
+              refetchingComentarios || refetchingFuncionario || refetchingPost
+            }
+            onRefresh={refetchAll}
+          />
+        }
       >
         <StyledText mode="title" fontWeight="bold">
           {selectedPost?.titulo}

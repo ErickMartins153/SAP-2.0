@@ -35,7 +35,7 @@ export default function GrupoBottom({
           <StyledText mode="title" textAlign="center" fontWeight="bold">
             Grupos disponíveis
           </StyledText>
-          {user?.isTecnico && (
+          {user?.cargo === "TECNICO" && (
             <Button onPress={toggleModal}>Criar Grupo</Button>
           )}
         </View>

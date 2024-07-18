@@ -12,11 +12,14 @@ import Icon from "../general/Icon";
 import StyledText from "../UI/StyledText";
 import Loading from "../UI/Loading";
 
-type ModalLayoutProps = {
+export type ModalLayoutProps = {
   children: ReactNode;
   submitButton?: SubmitButton;
   toggleModal: () => void;
   isLoading?: boolean;
+  backgroundColor?: keyof typeof Colors;
+  headerColor?: keyof typeof Colors;
+  scrollEnabled?: boolean;
 } & PropsWithoutRef<ModalProps>;
 
 type SubmitButton = {
@@ -29,47 +32,94 @@ export default function ModalLayout({
   submitButton,
   toggleModal,
   isLoading,
+  backgroundColor,
+  headerColor = "white",
+  scrollEnabled = true,
   ...props
 }: ModalLayoutProps) {
-  return (
-    <Modal animationType="slide" onRequestClose={toggleModal} {...props}>
-      {isLoading && <Loading />}
-      <ScrollView
-        contentContainerStyle={{ paddingBottom: "4%" }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.header}>
-          <Pressable
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingHorizontal: "2%",
-            }}
-            onPress={toggleModal}
+  if (scrollEnabled) {
+    return (
+      <Modal animationType="slide" onRequestClose={toggleModal} {...props}>
+        {isLoading && <Loading />}
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: "4%" }}
+          keyboardShouldPersistTaps="handled"
+          style={
+            backgroundColor && { backgroundColor: Colors[backgroundColor] }
+          }
+          scrollEnabled={scrollEnabled}
+        >
+          <View
+            style={[styles.header, { backgroundColor: Colors[headerColor] }]}
           >
-            <Icon name="chevron-left" size={32} onPress={toggleModal} />
-            <StyledText
-              mode="big"
-              fontWeight="bold"
-              textAlign="center"
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: "2%",
+              }}
               onPress={toggleModal}
             >
-              Voltar
-            </StyledText>
-          </Pressable>
-          {submitButton &&
-            submitButton.button({ onSubmit: submitButton.onSubmit })}
+              <Icon name="chevron-left" size={32} onPress={toggleModal} />
+              <StyledText
+                mode="big"
+                fontWeight="bold"
+                textAlign="center"
+                onPress={toggleModal}
+              >
+                Voltar
+              </StyledText>
+            </Pressable>
+            {submitButton &&
+              submitButton.button({ onSubmit: submitButton.onSubmit })}
+          </View>
+          <View style={{ marginHorizontal: "3%" }}>{children}</View>
+        </ScrollView>
+      </Modal>
+    );
+  } else {
+    return (
+      <Modal animationType="slide" onRequestClose={toggleModal} {...props}>
+        {isLoading && <Loading />}
+        <View
+          style={
+            backgroundColor && { backgroundColor: Colors[backgroundColor] }
+          }
+        >
+          <View
+            style={[styles.header, { backgroundColor: Colors[headerColor] }]}
+          >
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: "2%",
+              }}
+              onPress={toggleModal}
+            >
+              <Icon name="chevron-left" size={32} onPress={toggleModal} />
+              <StyledText
+                mode="big"
+                fontWeight="bold"
+                textAlign="center"
+                onPress={toggleModal}
+              >
+                Voltar
+              </StyledText>
+            </Pressable>
+            {submitButton &&
+              submitButton.button({ onSubmit: submitButton.onSubmit })}
+          </View>
+          <View style={{ marginHorizontal: "3%" }}>{children}</View>
         </View>
-        <View style={{ marginHorizontal: "3%" }}>{children}</View>
-      </ScrollView>
-    </Modal>
-  );
+      </Modal>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    backgroundColor: Colors.white,
     elevation: 4,
     paddingVertical: "4%",
     paddingRight: "2%",
