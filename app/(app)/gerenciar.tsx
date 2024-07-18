@@ -141,7 +141,7 @@ export default function Gerenciar() {
     <MainPageLayout isLoading={isLoading}>
       <View style={styles.gap}>
         <View style={styles.wrapper}>
-          <StyledText mode="big" textAlign="center" fontWeight="bold">
+          <StyledText size="big" textAlign="center" fontWeight="bold">
             Cadastrar funcionário
           </StyledText>
           <Input

@@ -7,7 +7,7 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { Alert, BackHandler } from "react-native";
 import RoomModal from "@/components/horario/RoomBottom";
 import HorarioModal from "@/components/horario/HorarioModal";
-import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
+import { Agendamento, NewAgendamento, Status } from "@/interfaces/Agendamento";
 import { useQuery } from "@tanstack/react-query";
 import { getAgendamentos } from "@/util/requests/agendamentoHTTP";
 import useAuth from "@/hooks/useAuth";
@@ -19,6 +19,7 @@ const defaultValues: NewAgendamento = {
   sala: "",
   data: new Date().toLocaleDateString(),
   idResponsavel: "",
+  status: Status.PENDENTE,
 };
 
 export default function Horarios() {

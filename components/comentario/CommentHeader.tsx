@@ -28,7 +28,7 @@ export default function CommentHeader({ onComment }: CommentHeaderProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <StyledText mode="title" fontWeight="bold" textAlign="center">
+      <StyledText size="title" fontWeight="bold" textAlign="center">
         Comentários
       </StyledText>
       <View style={styles.form}>

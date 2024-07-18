@@ -61,9 +61,9 @@ export default function PostList({
               alignItems: "center",
             }}
           >
-            <StyledText mode="big" textAlign="center">
+            <StyledText size="big" textAlign="center">
               Não há nenhum post no momento, clique no{" "}
-              <StyledText fontWeight="bold" mode="big">
+              <StyledText fontWeight="bold" size="big">
                 +
               </StyledText>{" "}
               no canto superior direito para adicionar um!

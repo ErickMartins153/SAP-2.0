@@ -14,7 +14,7 @@ export default function RoomBottom() {
   return (
     <BottomSheetFlatList
       ListHeaderComponent={
-        <StyledText mode="title" textAlign="center" fontWeight="bold">
+        <StyledText size="title" textAlign="center" fontWeight="bold">
           Salas
         </StyledText>
       }

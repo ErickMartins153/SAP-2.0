@@ -19,7 +19,7 @@ const FuncionarioItem = ({ funcionario, onSelect }: FuncionarioItemProps) => {
     >
       <UserAvatar size={64} imageURL={funcionario.urlImagem} />
       <View style={styles.mainContainer}>
-        <StyledText mode="small" fontWeight="bold">
+        <StyledText size="small" fontWeight="bold">
           {`${funcionario?.nome} ${funcionario.sobrenome}`}
         </StyledText>
         <StyledText style={styles.text}>{funcionario.email}</StyledText>

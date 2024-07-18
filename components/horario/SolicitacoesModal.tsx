@@ -52,7 +52,6 @@ export default function SolicitacoesModal({
         agendamentos={DUMMY}
         onSelectAtividade={selectAtividadeHandler}
       />
-      {/* <Button onPress={toggleDialog}>Testar dialog</Button> */}
       <SolicitacaoDialog
         closeDialog={closeDialog}
         visible={showDialog}

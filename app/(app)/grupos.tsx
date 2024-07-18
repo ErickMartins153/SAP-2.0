@@ -149,7 +149,7 @@ export default function MeusGrupos() {
                 Grupos Terapêuticos
               </Button>
             </View>
-            <StyledText mode="title" fontWeight="bold" textAlign="center">
+            <StyledText size="title" fontWeight="bold" textAlign="center">
               {showGrupo === "estudo"
                 ? "Grupos de estudo"
                 : "Grupos Terapêuticos"}

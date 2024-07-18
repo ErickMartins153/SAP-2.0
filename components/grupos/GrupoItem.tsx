@@ -37,7 +37,7 @@ const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
       android_ripple={{ color: Colors.lightRipple }}
       onPress={onPressHandler}
     >
-      <StyledText textAlign="center" fontWeight="bold" mode="big">
+      <StyledText textAlign="center" fontWeight="bold" size="big">
         {temaTitulo}
       </StyledText>
       <InfoBox label="Data" content={`${dayName}s`} />

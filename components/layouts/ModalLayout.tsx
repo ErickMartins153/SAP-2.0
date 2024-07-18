@@ -62,7 +62,7 @@ export default function ModalLayout({
             >
               <Icon name="chevron-left" size={32} onPress={toggleModal} />
               <StyledText
-                mode="big"
+                size="big"
                 fontWeight="bold"
                 textAlign="center"
                 onPress={toggleModal}
@@ -99,7 +99,7 @@ export default function ModalLayout({
             >
               <Icon name="chevron-left" size={32} onPress={toggleModal} />
               <StyledText
-                mode="big"
+                size="big"
                 fontWeight="bold"
                 textAlign="center"
                 onPress={toggleModal}

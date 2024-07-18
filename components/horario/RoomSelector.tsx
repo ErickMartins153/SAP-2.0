@@ -13,7 +13,7 @@ export default function RoomSelector() {
       style={({ pressed }) => [styles.mainContainer, pressed && styles.pressed]}
       onPress={openBottom}
     >
-      <StyledText mode="big" color="white">
+      <StyledText size="big" color="white">
         {selectedValue ? `Sala ${selectedValue}` : "Selecione a sala desejada"}
       </StyledText>
       <Icon name="chevron-down" size={28} color="white" />

@@ -32,7 +32,7 @@ export default function Button({
       >
         <View style={{ flexDirection: "row", gap: 8 }}>
           {leftIcon}
-          <StyledText mode="big" color="white">
+          <StyledText size="big" color="white">
             {children}
           </StyledText>
         </View>

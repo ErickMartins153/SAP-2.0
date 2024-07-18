@@ -71,16 +71,16 @@ const PostItem = ({
         <View style={styles.postHeader}>
           <Badge label={funcionario!.nome} imagemURL={funcionario?.urlImagem} />
           <View style={styles.dateContainer}>
-            <StyledText style={styles.dateText} mode="small">
+            <StyledText style={styles.dateText} size="small">
               {postData.dataPublicacao.toLocaleString()}
             </StyledText>
           </View>
         </View>
-        <StyledText mode="big" color="text" fontWeight="bold">
+        <StyledText size="big" color="text" fontWeight="bold">
           {postData.titulo}
         </StyledText>
         <View style={styles.postContent}>
-          <StyledText style={styles.postText} mode="small">
+          <StyledText style={styles.postText} size="small">
             {postData.conteudo && formatText(postData.conteudo, 360)}
           </StyledText>
         </View>

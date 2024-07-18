@@ -1,16 +1,10 @@
 import { Colors } from "@/constants/Colors";
 import { PropsWithoutRef, type ReactNode } from "react";
-import {
-  type StyleProp,
-  StyleSheet,
-  Text,
-  type TextStyle,
-  TextProps,
-} from "react-native";
+import { StyleSheet, Text, TextProps } from "react-native";
 
 type StyledTextProps = {
   children: ReactNode;
-  mode?: keyof typeof styles;
+  size?: keyof typeof styles;
   color?: keyof typeof Colors;
   textTransform?: "capitalize" | "none";
   fontWeight?: "regular" | "bold";
@@ -19,7 +13,7 @@ type StyledTextProps = {
 
 export default function StyledText({
   children,
-  mode = "average",
+  size = "average",
   color = "text",
   textTransform = "none",
   fontWeight = "regular",
@@ -31,7 +25,7 @@ export default function StyledText({
     <Text
       style={[
         { color: Colors[color], textTransform, fontWeight, textAlign },
-        styles[mode],
+        styles[size],
         style,
       ]}
     >

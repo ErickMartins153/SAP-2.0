@@ -177,7 +177,7 @@ export default function detalhesPost() {
               alignSelf="flex-start"
               imageURL={selectedFuncionario?.urlImagem}
             />
-            <StyledText mode="title" style={{ marginHorizontal: "4%" }}>
+            <StyledText size="title" style={{ marginHorizontal: "4%" }}>
               {`${selectedFuncionario?.nome} ${selectedFuncionario?.sobrenome}`}
             </StyledText>
           </View>
@@ -200,7 +200,7 @@ export default function detalhesPost() {
           />
         }
       >
-        <StyledText mode="title" fontWeight="bold">
+        <StyledText size="title" fontWeight="bold">
           {selectedPost?.titulo}
         </StyledText>
         {selectedPost?.imagemPost && (

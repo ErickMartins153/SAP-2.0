@@ -8,7 +8,7 @@ type InfoBoxProps = {
 export default function InfoBox({ label, content }: InfoBoxProps) {
   return (
     <StyledText style={{ flexDirection: "row", gap: 4 }} selectable={true}>
-      <StyledText fontWeight="bold" mode="big">
+      <StyledText fontWeight="bold" size="big">
         {label}:
       </StyledText>
       <StyledText textTransform="capitalize"> {content}</StyledText>

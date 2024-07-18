@@ -72,7 +72,7 @@ const CommentItem = ({ comentario, onDelete }: CommentItemProps) => {
             flexDirection: "row",
           }}
         >
-          <StyledText mode="small" fontWeight="bold" textTransform="capitalize">
+          <StyledText size="small" fontWeight="bold" textTransform="capitalize">
             {selectedFuncionario?.nome}
           </StyledText>
           {/* <StyledText>

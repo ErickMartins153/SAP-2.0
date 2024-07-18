@@ -27,7 +27,7 @@ export default function Switch({
         alignItems: "center",
       }}
     >
-      <StyledText fontWeight="bold" mode="big">
+      <StyledText fontWeight="bold" size="big">
         {label}
       </StyledText>
       <NativeSwitch

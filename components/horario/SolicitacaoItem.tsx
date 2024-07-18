@@ -10,10 +10,11 @@ import { memo } from "react";
 import useAuth from "@/hooks/useAuth";
 import { Agendamento } from "@/interfaces/Agendamento";
 import InfoBox from "../UI/InfoBox";
+import ItemLayout from "../layouts/ItemLayout";
 
 type SolicitacaoItemProps = {
   solicitacao: Agendamento;
-  onSelect: (solicitacaoId: string) => void;
+  onSelect: () => void;
 };
 
 const SolicitacaoItem = ({ solicitacao, onSelect }: SolicitacaoItemProps) => {
@@ -25,35 +26,18 @@ const SolicitacaoItem = ({ solicitacao, onSelect }: SolicitacaoItemProps) => {
   });
 
   return (
-    <Pressable
-      style={styles.rootContainer}
-      onPress={() => onSelect(solicitacao.id)}
-      android_ripple={{ color: Colors.lightRipple }}
-    >
-      <UserAvatar size={64} imageURL={selectedFuncionario?.urlImagem} />
-      <View style={styles.mainContainer}>
-        <View
-          style={{
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexDirection: "row",
-          }}
-        >
-          <StyledText mode="big" fontWeight="bold">
-            {selectedFuncionario?.nome} {selectedFuncionario?.sobrenome}
-          </StyledText>
-          <StyledText>DATA SOLICITAÇÃO?</StyledText>
-        </View>
-        <InfoBox content={solicitacao.data!} label="Data" />
-        <InfoBox content={solicitacao.horario!} label="Horário" />
-        <InfoBox content={solicitacao.sala!} label="Sala" />
-        <InfoBox
-          content={solicitacao.recorrente ? "Sim" : "Não"}
-          label="Recorrente"
-        />
-      </View>
-    </Pressable>
+    <ItemLayout onSelect={onSelect}>
+      <StyledText size="big" fontWeight="bold">
+        {selectedFuncionario?.nome} {selectedFuncionario?.sobrenome}
+      </StyledText>
+      <InfoBox content={solicitacao.data!} label="Data" />
+      <InfoBox content={solicitacao.horario!} label="Horário" />
+      <InfoBox content={solicitacao.sala!} label="Sala" />
+      <InfoBox
+        content={solicitacao.recorrente ? "Sim" : "Não"}
+        label="Recorrente"
+      />
+    </ItemLayout>
   );
 };
 

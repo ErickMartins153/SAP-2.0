@@ -34,7 +34,7 @@ export default function Header({ navigation, ...props }: HeaderProps) {
           onPress={() => navigation.navigate("perfil")}
         />
         <StyledText
-          mode="big"
+          size="big"
           fontWeight="bold"
           textAlign="center"
           onPress={() => navigation.navigate("perfil")}

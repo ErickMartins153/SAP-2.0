@@ -42,7 +42,7 @@ export default function CalendarItem({
   return (
     <View style={appliedStyle}>
       <View style={styles.timeContainer}>
-        <StyledText mode="big">{timeInterval}</StyledText>
+        <StyledText size="big">{timeInterval}</StyledText>
       </View>
       <Pressable
         style={({ pressed }) => [

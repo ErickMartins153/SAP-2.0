@@ -32,7 +32,7 @@ export default function GrupoBottom({
     <BottomSheetFlatList
       ListHeaderComponent={
         <View style={{ gap: 16, borderBottomWidth: 1, paddingBottom: "4%" }}>
-          <StyledText mode="title" textAlign="center" fontWeight="bold">
+          <StyledText size="title" textAlign="center" fontWeight="bold">
             Grupos disponíveis
           </StyledText>
           {user?.cargo === "TECNICO" && (

@@ -52,7 +52,7 @@ export default function Atendimentos() {
         renderItem={({ item }) => renderAgendamentosHandler(item)}
         ListEmptyComponent={
           <View style={{ marginTop: "50%" }}>
-            <StyledText mode="big" textAlign="center">
+            <StyledText size="big" textAlign="center">
               Você não possui nenhum horário agendado!
             </StyledText>
           </View>

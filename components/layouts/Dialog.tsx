@@ -51,7 +51,7 @@ export default function Dialog({
         entering={FadeInDown}
         {...props}
       >
-        <StyledText mode="title" fontWeight="bold" textAlign="center">
+        <StyledText size="title" fontWeight="bold" textAlign="center">
           {title}
         </StyledText>
         {children}

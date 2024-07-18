@@ -167,7 +167,7 @@ export default function detalhesGrupo() {
       }
     >
       <View style={{ flex: 1, marginBottom: "2%" }}>
-        <StyledText mode="title" fontWeight="bold" textAlign="center">
+        <StyledText size="title" fontWeight="bold" textAlign="center">
           {grupoData?.temaEstudo}
         </StyledText>
         <View style={{ marginTop: "12%", gap: 4 }}>
@@ -215,7 +215,7 @@ export default function detalhesGrupo() {
               </View>
               <StyledText
                 textAlign="center"
-                mode="title"
+                size="title"
                 style={{
                   borderBottomWidth: 1,
                   borderTopWidth: 1,
@@ -229,7 +229,7 @@ export default function detalhesGrupo() {
             </>
           }
           ListEmptyComponent={
-            <StyledText mode="big" textAlign="center">
+            <StyledText size="big" textAlign="center">
               Esse grupo ainda não possui nenhum participante
             </StyledText>
           }
