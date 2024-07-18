@@ -22,9 +22,13 @@ import { queryClient } from "@/util/queries";
 import PasswordDialog, {
   PasswordReset,
 } from "@/components/form/PasswordDialog";
+import FichaModal from "@/components/ficha/FichaModal";
 
 export default function ProfileScreen() {
   const { user, token } = useAuth();
+  const [showDialog, setShowDialog] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
+  const [showFichas, setShowFichas] = useState(false);
 
   const navigation = useNavigation();
   const { changeBottomContent, openBottom, isVisible, closeBottom, clear } =
@@ -33,9 +37,6 @@ export default function ProfileScreen() {
   const [supervisionado, setSupervisionado] = useState<
     Funcionario | undefined
   >();
-
-  const [showDialog, setShowDialog] = useState(false);
-  const [changePassword, setChangePassword] = useState(false);
 
   const {
     data: supervisionados,
@@ -142,6 +143,14 @@ export default function ProfileScreen() {
     toggleDialog();
   }
 
+  function openFichasModal() {
+    setShowFichas(true);
+  }
+
+  function closeFichasModal() {
+    setShowFichas(false);
+  }
+
   function removeImageHandler() {
     Alert.alert(
       "Você tem certeza?",
@@ -186,6 +195,7 @@ export default function ProfileScreen() {
                 {user?.cargo === "TECNICO" && (
                   <Button onPress={openBottom}>Meus supervisionados</Button>
                 )}
+                <Button onPress={openFichasModal}>Minhas fichas</Button>
               </>
             )}
             {imageURI && (
@@ -254,6 +264,7 @@ export default function ProfileScreen() {
         onChangePassword={onChangePassword}
         backdropBehavior="dismiss"
       />
+      <FichaModal toggleModal={closeFichasModal} visible={showFichas} />
     </MainPageLayout>
   );
 }
