@@ -124,16 +124,18 @@ export async function getFuncionarioById(funcionarioId: string, token: string) {
   return response.data as Funcionario;
 }
 
-export async function desativarFuncionario({
+export async function toggleAtivacaoFuncionario({
   funcionarioId,
+  mode,
   token,
 }: {
   funcionarioId: string;
+  mode: "ATIVAR" | "DESATIVAR";
   token: string;
 }) {
   try {
     const response = await axios.put(
-      `${BASE_URL}/activation?uid=${funcionarioId}&status=${false}`,
+      `${BASE_URL}/activation?uid=${funcionarioId}&status=${mode === "ATIVAR"}`,
       {
         headers: { Authorization: "Bearer " + token },
       }

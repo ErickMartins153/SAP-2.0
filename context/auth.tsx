@@ -31,9 +31,11 @@ export default function AuthContextProvider({
   const { mutate } = useMutation({
     mutationFn: authenticateUser,
     onSuccess: (user) => {
-      setUserData(user.funcionario);
-      setToken(user.token);
-      SecureStore.setItemAsync("token", user.token.token);
+      if (user) {
+        setUserData(user.funcionario);
+        setToken(user.token);
+        SecureStore.setItemAsync("token", user.token.token);
+      }
     },
     onError: (e) => {
       console.log(e);

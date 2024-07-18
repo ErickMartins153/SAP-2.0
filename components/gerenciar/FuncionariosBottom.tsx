@@ -10,7 +10,7 @@ import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import StyledText from "../UI/StyledText";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  desativarFuncionario,
+  toggleAtivacaoFuncionario,
   getFuncionariosAtivos,
   getFuncionariosInativos,
 } from "@/util/requests/funcionarioHTTP";
@@ -50,7 +50,7 @@ export default function FuncionariosBottom({ mode }: FuncionariosBottomProps) {
   }, [funcionariosAtivos, funcionariosInativos]);
 
   const { mutate } = useMutation({
-    mutationFn: desativarFuncionario,
+    mutationFn: toggleAtivacaoFuncionario,
     onSuccess: (funcionario) => {
       queryClient.invalidateQueries({
         queryKey: ["funcionarios"],
@@ -65,20 +65,36 @@ export default function FuncionariosBottom({ mode }: FuncionariosBottomProps) {
   });
 
   function confirmHandler(funcionario: Funcionario) {
-    Alert.alert(
-      "Você tem certeza?",
-      `Uma vez deletado, ${funcionario.nome} ${funcionario.sobrenome} precisará ser registrado novamente`,
-      [
-        { text: "Cancelar", isPreferred: true },
-        { text: "Confirmar", onPress: () => deleteHandler(funcionario.id) },
-      ]
-    );
+    if (mode === "ATIVOS") {
+      Alert.alert(
+        "Você tem certeza?",
+        `Uma vez deletado, ${funcionario.nome} ${funcionario.sobrenome} precisará ser registrado novamente`,
+        [
+          { text: "Cancelar", isPreferred: true },
+          {
+            text: "Confirmar",
+            onPress: () => desativarHandler(funcionario.id),
+          },
+        ]
+      );
+    } else {
+      Alert.alert(
+        "Você tem certeza?",
+        `Uma vez reativado, ${funcionario.nome} ${funcionario.sobrenome} poderá acessar o SAP novamente`,
+        [
+          { text: "Cancelar", isPreferred: true },
+          { text: "Confirmar", onPress: () => ativarHandler(funcionario.id) },
+        ]
+      );
+    }
   }
 
-  function deleteHandler(funcionarioId: string) {
-    console.log({ funcionarioId, token: token! });
+  function desativarHandler(funcionarioId: string) {
+    mutate({ funcionarioId, token: token!, mode: "DESATIVAR" });
+  }
 
-    mutate({ funcionarioId, token: token! });
+  function ativarHandler(funcionarioId: string) {
+    mutate({ funcionarioId, token: token!, mode: "ATIVAR" });
   }
 
   const [search, setSearch] = useState("");
