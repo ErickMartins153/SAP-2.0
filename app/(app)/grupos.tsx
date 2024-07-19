@@ -159,6 +159,14 @@ export default function MeusGrupos() {
         // @ts-expect-error
         data={showGrupo === "estudo" ? gruposEstudo : gruposTerapeuticos}
         renderItem={({ item }) => renderGrupoHandler(item)}
+        ListEmptyComponent={
+          <View style={{ marginVertical: "24%" }}>
+            <StyledText textAlign="center" size="big" fontWeight="bold">
+              Você não participa de nenhum Grupo
+              {showGrupo === "estudo" ? " de Estudo" : " Terapêutico"}
+            </StyledText>
+          </View>
+        }
       />
 
       <AddGrupoModal

@@ -26,7 +26,7 @@ export default function SolicitacoesModal({
     {
       id: "1",
       idResponsavel: user?.id!,
-      sala: "1",
+      nomeSala: "1",
       data: "17/07/2024",
       horario: "12:00 - 13:00",
       recorrente: false,

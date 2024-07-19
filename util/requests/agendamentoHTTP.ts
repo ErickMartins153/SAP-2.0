@@ -5,7 +5,7 @@ const today = new Date().toLocaleDateString();
 export let AGENDAMENTOS: Agendamento[] = [
   {
     id: "1",
-    sala: "1",
+    nomeSala: "1",
     data: today,
     horario: "10:20 - 11:10",
     recorrente: true,
@@ -13,7 +13,7 @@ export let AGENDAMENTOS: Agendamento[] = [
   },
   {
     id: "2",
-    sala: "2",
+    nomeSala: "2",
     data: today,
     horario: "11:10 - 12:00",
     recorrente: false,
@@ -21,7 +21,7 @@ export let AGENDAMENTOS: Agendamento[] = [
   },
   {
     id: "3",
-    sala: "3",
+    nomeSala: "3",
     data: today,
     horario: "12:00 - 12:50",
     recorrente: true,
@@ -29,7 +29,7 @@ export let AGENDAMENTOS: Agendamento[] = [
   },
   {
     id: "4",
-    sala: "4",
+    nomeSala: "4",
     data: today,
     horario: "12:50 - 13:40",
     recorrente: false,
@@ -37,7 +37,7 @@ export let AGENDAMENTOS: Agendamento[] = [
   },
   {
     id: "5",
-    sala: "5",
+    nomeSala: "5",
     data: today,
     horario: "15:30 - 16:20",
     recorrente: true,
@@ -45,7 +45,7 @@ export let AGENDAMENTOS: Agendamento[] = [
   },
   {
     id: "6",
-    sala: "6",
+    nomeSala: "6",
     data: today,
     horario: "16:20 - 17:10",
     recorrente: false,
@@ -53,7 +53,7 @@ export let AGENDAMENTOS: Agendamento[] = [
   },
   {
     id: "7",
-    sala: "7",
+    nomeSala: "7",
     data: today,
     horario: "17:10 - 18:00",
     recorrente: true,
@@ -61,7 +61,7 @@ export let AGENDAMENTOS: Agendamento[] = [
   },
   {
     id: "8",
-    sala: "1",
+    nomeSala: "1",
     data: today,
     horario: "18:00 - 18:50",
     recorrente: false,
@@ -70,9 +70,11 @@ export let AGENDAMENTOS: Agendamento[] = [
 ];
 
 export async function agendarHorario(agendamento: NewAgendamento) {
+  console.log(agendamento);
+
   const exists = AGENDAMENTOS.find(
     (item) =>
-      item.sala === agendamento.sala &&
+      item.nomeSala === agendamento.nomeSala &&
       item.data === agendamento.data &&
       item.horario === agendamento.horario &&
       item.recorrente === agendamento.recorrente
@@ -84,14 +86,15 @@ export async function agendarHorario(agendamento: NewAgendamento) {
 }
 
 export async function getAgendamentos({
-  sala,
+  salaId,
   data,
 }: {
-  sala: string;
+  salaId: string;
   data: string;
 }) {
   return AGENDAMENTOS.filter(
-    (agendamento) => agendamento.sala === sala && agendamento.data === data
+    (agendamento) =>
+      agendamento.nomeSala === salaId && agendamento.data === data
   );
 }
 
@@ -114,11 +117,11 @@ export async function getAgendamento(
 ): Promise<Agendamento> {
   return (
     AGENDAMENTOS.find(
-      ({ sala, data, horario }) =>
+      ({ nomeSala: sala, data, horario }) =>
         sala === searchedSala &&
         data === searchedData &&
         horario === searchedHorario
-    ) || { id: "", idResponsavel: "", sala: "" }
+    ) || { id: "", idResponsavel: "", nomeSala: "" }
   );
 }
 
@@ -128,7 +131,7 @@ export async function removeAgendamento(
   searchedHorario: string
 ) {
   AGENDAMENTOS = AGENDAMENTOS.filter(
-    ({ sala, data, horario }) =>
+    ({ nomeSala: sala, data, horario }) =>
       !(
         sala === searchedSala &&
         data === searchedData &&

@@ -34,6 +34,13 @@ export default function GrupoInfo({
         value={grupo.tema}
         onChangeText={inputHandler.bind(null, "tema")}
       />
+      <Select
+        data={tecnicos!}
+        onSelect={inputHandler.bind(null, "idMinistrante")}
+        search
+        placeholder="Ministrante Principal"
+        key="ministrantePrincipal"
+      />
       <Input
         autoCapitalize="sentences"
         placeholder="Descrição do grupo"
@@ -43,13 +50,6 @@ export default function GrupoInfo({
         onChangeText={inputHandler.bind(null, "descricao")}
       />
       <View style={{ gap: 24, paddingBottom: "4%" }}>
-        <Select
-          data={tecnicos!}
-          onSelect={inputHandler.bind(null, "idMinistrante")}
-          search
-          placeholder="Ministrante Principal"
-          key="ministrantePrincipal"
-        />
         <Select
           data={[{ nome: "Estudo" }, { nome: "Terapêutico" }]}
           onSelect={inputHandler.bind(null, "tipo")}

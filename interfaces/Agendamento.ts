@@ -6,7 +6,7 @@ export enum Status {
 
 export interface Agendamento {
   id: string;
-  sala: string;
+  nomeSala: string;
   data?: string;
   horario?: string;
   recorrente?: boolean;

@@ -32,7 +32,7 @@ const SolicitacaoItem = ({ solicitacao, onSelect }: SolicitacaoItemProps) => {
       </StyledText>
       <InfoBox content={solicitacao.data!} label="Data" />
       <InfoBox content={solicitacao.horario!} label="Horário" />
-      <InfoBox content={solicitacao.sala!} label="Sala" />
+      <InfoBox content={solicitacao.nomeSala!} label="Sala" />
       <InfoBox
         content={solicitacao.recorrente ? "Sim" : "Não"}
         label="Recorrente"

@@ -35,7 +35,7 @@ function isAvailable(
     (agendamento) =>
       agendamento.horario === interval &&
       agendamento.data! === date &&
-      agendamento.sala === sala
+      agendamento.nomeSala === sala
   );
 }
 
@@ -51,10 +51,10 @@ export default function CalendarList({
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["agendamentos", selected.data, selected.sala],
-    enabled: !!selected.sala,
+    queryKey: ["agendamentos", selected.data, selected.nomeSala],
+    enabled: !!selected.nomeSala,
     queryFn: () =>
-      getAgendamentos({ data: selected.data!, sala: selected.sala! }),
+      getAgendamentos({ data: selected.data!, salaId: selected.nomeSala! }),
   });
 
   const [showDialog, setShowDialog] = useState(false);
@@ -92,7 +92,7 @@ export default function CalendarList({
   const { mutate: desmarcar } = useMutation({
     mutationFn: () =>
       removeAgendamento(
-        agendamento?.sala!,
+        agendamento?.nomeSala!,
         agendamento?.data!,
         agendamento?.horario!
       ),
@@ -119,7 +119,7 @@ export default function CalendarList({
 
   useEffect(() => {
     refetch();
-  }, [selected.data, selected.sala]);
+  }, [selected.data, selected.nomeSala]);
 
   function selectDayHandler(interval: string) {
     onSelection(interval);
@@ -131,7 +131,7 @@ export default function CalendarList({
   function renderIntervalItem({ item: interval }: { item: string }) {
     const available =
       selected && agendamentos
-        ? isAvailable(interval, selected.data!, selected.sala, agendamentos)
+        ? isAvailable(interval, selected.data!, selected.nomeSala, agendamentos)
         : false;
 
     return (
@@ -140,7 +140,7 @@ export default function CalendarList({
         lastIndex={false}
         timeInterval={interval}
         available={available}
-        disabled={!selected.sala}
+        disabled={!selected.nomeSala}
         onPress={
           available
             ? selectDayHandler.bind(null, interval)
@@ -148,7 +148,7 @@ export default function CalendarList({
                 null,
                 interval,
                 selected.data!,
-                selected.sala
+                selected.nomeSala
               )
         }
       />

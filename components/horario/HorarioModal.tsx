@@ -36,7 +36,7 @@ export default function HorarioModal({
     onSuccess: () => {
       toggleDialog();
       queryClient.invalidateQueries({
-        queryKey: ["agendamentos", agendamento.data, agendamento.sala],
+        queryKey: ["agendamentos", agendamento.data, agendamento.nomeSala],
       });
       Alert.alert(
         "Horário agendado com sucesso",
@@ -112,7 +112,7 @@ export default function HorarioModal({
     >
       {agendamento.data && <InfoBox content={agendamento.data} label="Dia" />}
       <InfoBox content={agendamento.horario!} label="Horário" />
-      <InfoBox content={agendamento.sala!} label="Sala" />
+      <InfoBox content={agendamento.nomeSala!} label="Sala" />
       {user?.cargo === "TECNICO" && (
         <Select
           onSelect={changeResponsavelHandler}

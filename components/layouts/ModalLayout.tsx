@@ -5,6 +5,7 @@ import {
   ModalProps,
   Pressable,
   ScrollView,
+  ScrollViewProps,
   StyleSheet,
   View,
 } from "react-native";
@@ -20,6 +21,7 @@ export type ModalLayoutProps = {
   backgroundColor?: keyof typeof Colors;
   headerColor?: keyof typeof Colors;
   scrollEnabled?: boolean;
+  keyboardShouldPersistTaps?: ScrollViewProps["keyboardShouldPersistTaps"];
 } & PropsWithoutRef<ModalProps>;
 
 type SubmitButton = {
@@ -35,6 +37,7 @@ export default function ModalLayout({
   backgroundColor,
   headerColor = "white",
   scrollEnabled = true,
+  keyboardShouldPersistTaps = "handled",
   ...props
 }: ModalLayoutProps) {
   if (scrollEnabled) {
@@ -43,7 +46,7 @@ export default function ModalLayout({
         {isLoading && <Loading />}
         <ScrollView
           contentContainerStyle={{ paddingBottom: "4%" }}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps={keyboardShouldPersistTaps}
           style={
             backgroundColor && { backgroundColor: Colors[backgroundColor] }
           }

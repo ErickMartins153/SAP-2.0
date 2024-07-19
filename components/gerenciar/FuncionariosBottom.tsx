@@ -23,7 +23,7 @@ type FuncionariosBottomProps = {
 };
 
 export default function FuncionariosBottom({ mode }: FuncionariosBottomProps) {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const {
     data: funcionariosAtivos,
@@ -35,7 +35,11 @@ export default function FuncionariosBottom({ mode }: FuncionariosBottomProps) {
     enabled: mode === "ATIVOS",
   });
 
-  const { data: funcionariosInativos, isLoading: loadingInativos } = useQuery({
+  const {
+    data: funcionariosInativos,
+    isLoading: loadingInativos,
+    refetch: refetchInativos,
+  } = useQuery({
     queryKey: ["funcionarios", "inativos"],
     queryFn: () => getFuncionariosInativos(token!),
     enabled: mode === "INATIVOS",
@@ -55,12 +59,16 @@ export default function FuncionariosBottom({ mode }: FuncionariosBottomProps) {
       queryClient.invalidateQueries({
         queryKey: ["funcionarios"],
       });
-
       refetchAtivos();
+      refetchInativos();
       Alert.alert(
         "Funcionário desligado com sucesso",
         `O funcionário de email: ${funcionario?.email} foi desligado com sucesso! `
       );
+    },
+    onError: () => {
+      refetchAtivos();
+      refetchInativos();
     },
   });
 
@@ -68,7 +76,7 @@ export default function FuncionariosBottom({ mode }: FuncionariosBottomProps) {
     if (mode === "ATIVOS") {
       Alert.alert(
         "Você tem certeza?",
-        `Uma vez deletado, ${funcionario.nome} ${funcionario.sobrenome} precisará ser registrado novamente`,
+        `Uma vez deletado, ${funcionario.nome} ${funcionario.sobrenome} perderá acesso ao sistema do SAP.`,
         [
           { text: "Cancelar", isPreferred: true },
           {
@@ -114,7 +122,11 @@ export default function FuncionariosBottom({ mode }: FuncionariosBottomProps) {
 
   function renderFuncionariosHandler(funcionario: Funcionario) {
     return (
-      <FuncionarioItem funcionario={funcionario} onSelect={confirmHandler} />
+      <FuncionarioItem
+        funcionario={funcionario}
+        onSelect={confirmHandler}
+        selectable={funcionario.id !== user?.id}
+      />
     );
   }
 

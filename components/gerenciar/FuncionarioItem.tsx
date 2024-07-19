@@ -8,14 +8,19 @@ import { memo } from "react";
 type FuncionarioItemProps = {
   funcionario: Funcionario;
   onSelect: (funcionario: Funcionario) => void;
+  selectable?: boolean;
 };
 
-const FuncionarioItem = ({ funcionario, onSelect }: FuncionarioItemProps) => {
+const FuncionarioItem = ({
+  funcionario,
+  onSelect,
+  selectable: selfSelectable = true,
+}: FuncionarioItemProps) => {
   return (
     <Pressable
       style={({ pressed }) => [styles.rootContainer, pressed && styles.pressed]}
       android_ripple={{ color: Colors.lightRipple }}
-      onPress={() => onSelect(funcionario)}
+      onPress={selfSelectable ? () => onSelect(funcionario) : undefined}
     >
       <UserAvatar size={64} imageURL={funcionario.urlImagem} />
       <View style={styles.mainContainer}>

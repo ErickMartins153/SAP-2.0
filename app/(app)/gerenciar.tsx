@@ -75,7 +75,7 @@ export default function Gerenciar() {
   });
 
   useLayoutEffect(() => {
-    changeBottomContent(<FuncionariosBottom mode={modo} />);
+    changeBottomContent(<FuncionariosBottom mode={modo} key={modo} />);
   }, [modo]);
 
   useEffect(() => {

@@ -4,44 +4,7 @@ import GrupoEstudo from "@/interfaces/GrupoEstudo";
 import { agendarHorario } from "./agendamentoHTTP";
 import { GRUPOS_TERAPEUTICOS } from "./GrupoTerapeuticoHTTP";
 
-export const GRUPOS_ESTUDO: GrupoEstudo[] = [
-  {
-    id: "101",
-    temaEstudo: "Psicologia Organizacional",
-    idMinistrante: "2",
-    idParticipantes: ["3", "5", "4"],
-  },
-  {
-    id: "102",
-    temaEstudo: "Psicologia do Desenvolvimento",
-    idMinistrante: "3",
-    idParticipantes: ["2", "4", "6"],
-  },
-  {
-    id: "103",
-    temaEstudo: "Psicologia Social",
-    idMinistrante: "7",
-    idParticipantes: ["8"],
-  },
-  {
-    id: "104",
-    temaEstudo: "Psicologia Clínica",
-    idMinistrante: "5",
-    idParticipantes: ["1", "6", "8"],
-  },
-  {
-    id: "105",
-    temaEstudo: "Psicologia Cognitiva",
-    idMinistrante: "7",
-    idParticipantes: ["2", "4", "6"],
-  },
-  {
-    id: "106",
-    temaEstudo: "Neurociência",
-    idMinistrante: "5",
-    idParticipantes: ["2", "3", "4", "6", "7", "8"],
-  },
-];
+export const GRUPOS_ESTUDO: GrupoEstudo[] = [];
 
 export function getGruposByFuncionario(funcionarioId: string) {
   return GRUPOS_ESTUDO.filter(
@@ -86,15 +49,15 @@ export async function getGruposDisponiveis(funcionarioId: string) {
   );
 }
 
-export async function createGrupo(newGrupo: NewGrupo) {
+export async function createGrupoEstudo(newGrupo: NewGrupo) {
   const { tema: temaEstudo, idMinistrante, tipo, descricao } = newGrupo;
   if (tipo === "Estudo") {
     return GRUPOS_ESTUDO.push({
       id: GRUPOS_ESTUDO.length.toString(),
       idMinistrante,
-      temaEstudo,
+      temaEstudo: temaEstudo.trim(),
       idParticipantes: [],
-      descricao: descricao,
+      descricao: descricao?.trim(),
     });
   }
 }

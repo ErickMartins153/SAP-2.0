@@ -28,6 +28,11 @@ export default function GrupoBottom({
     return <GrupoItem grupo={grupo} key={grupo.id} onPress={closeBottom} />;
   }
 
+  const suggestionText =
+    user?.cargo === "TECNICO"
+      ? "Seja a primeira pessoa a criar um grupo!"
+      : "Se desejar, solicite a algum técnico que crie um novo grupo.";
+
   return (
     <BottomSheetFlatList
       ListHeaderComponent={
@@ -38,6 +43,13 @@ export default function GrupoBottom({
           {user?.cargo === "TECNICO" && (
             <Button onPress={toggleModal}>Criar Grupo</Button>
           )}
+        </View>
+      }
+      ListEmptyComponent={
+        <View style={{ marginVertical: "12%" }}>
+          <StyledText size="big" textAlign="center" fontWeight="bold">
+            Não há nenhum grupo disponível no momento. {suggestionText}
+          </StyledText>
         </View>
       }
       data={gruposDisponiveis}

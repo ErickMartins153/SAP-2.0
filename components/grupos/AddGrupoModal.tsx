@@ -11,26 +11,25 @@ import GrupoInfo from "./GrupoInfo";
 
 import Dialog from "../layouts/Dialog";
 import InfoBox from "../UI/InfoBox";
-import { createGrupo } from "@/util/requests/GrupoEstudoHTTP";
+import { createGrupoEstudo } from "@/util/requests/GrupoEstudoHTTP";
 import { queryClient } from "@/util/queries";
 import useBottomSheet from "@/hooks/useBottom";
 import useAuth from "@/hooks/useAuth";
+import { createGrupoTerapeutico } from "@/util/requests/GrupoTerapeuticoHTTP";
 
 type AddGrupoProps = {
   toggleModal: () => void;
   refetchGrupos: () => void;
 } & PropsWithoutRef<ModalProps>;
 
-type GrupoType = "Estudo" | "Individual";
+type GrupoType = "Estudo" | "Terapêutico";
 
-type GrupoInfo = {
+export type NewGrupo = {
   tema: string;
   idMinistrante: string;
   tipo?: GrupoType;
   descricao?: string;
 };
-
-export type NewGrupo = GrupoInfo;
 
 const defaultValues: NewGrupo = {
   tema: "",
@@ -60,7 +59,8 @@ export default function AddGrupoModal({
   });
 
   const { mutate: addGrupo } = useMutation({
-    mutationFn: createGrupo,
+    mutationFn:
+      grupoInfo.tipo === "Estudo" ? createGrupoEstudo : createGrupoTerapeutico,
     onSuccess: async () => {
       setGrupoInfo(defaultValues);
       toggleDialog();
@@ -112,6 +112,7 @@ export default function AddGrupoModal({
       isLoading={isLoading}
       toggleModal={closeHandler}
       visible={visible}
+      keyboardShouldPersistTaps="never"
       {...props}
     >
       <GrupoInfo
@@ -124,7 +125,7 @@ export default function AddGrupoModal({
       <Dialog
         closeDialog={toggleDialog}
         visible={showDialog}
-        title="Confirmar criação grupo"
+        title="Confirmar criação de grupo"
         onSubmit={createGroupHandler}
         backdropBehavior="dismiss"
       >
@@ -134,9 +135,9 @@ export default function AddGrupoModal({
           }
           label="Ministrante"
         />
-        <InfoBox content={grupoInfo.tema} label="Tema" />
+        <InfoBox content={grupoInfo.tema.trim()} label="Tema" />
         {grupoInfo.descricao && (
-          <InfoBox content={grupoInfo.descricao} label="Descrição" />
+          <InfoBox content={grupoInfo.descricao.trim()} label="Descrição" />
         )}
         <InfoBox content={grupoInfo.tipo!} label="Tipo" />
       </Dialog>

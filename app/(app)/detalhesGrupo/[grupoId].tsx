@@ -41,7 +41,7 @@ type mutateProps = {
 
 const defaultValue: NewAgendamento = {
   idResponsavel: "",
-  sala: "",
+  nomeSala: "",
   data: "",
 };
 
@@ -309,7 +309,7 @@ export default function detalhesGrupo() {
       >
         <InfoBox content={agendamentoInfo.data!} label="Dia" />
         <InfoBox content={agendamentoInfo.horario!} label="Horário" />
-        <InfoBox content={agendamentoInfo.sala!} label="Sala" />
+        <InfoBox content={agendamentoInfo.nomeSala!} label="Sala" />
       </Dialog>
     </StackPageLayout>
   );
