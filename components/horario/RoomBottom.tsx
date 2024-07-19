@@ -1,14 +1,23 @@
 import { StyleSheet } from "react-native";
 import StyledText from "../UI/StyledText";
-import Sala, { SALAS } from "@/interfaces/Sala";
+import Sala from "@/interfaces/Sala";
 import Button from "../general/Button";
 import useBottomSheet from "@/hooks/useBottom";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { useQuery } from "@tanstack/react-query";
+import { getSalas } from "@/util/requests/salaHTTP";
 
 export default function RoomBottom() {
+  const { data: salas } = useQuery({
+    queryKey: ["salas"],
+    queryFn: getSalas,
+    initialData: [],
+  });
   const { onSelectValue } = useBottomSheet();
   function renderSalaHandler(sala: Sala) {
-    return <Button onPress={() => onSelectValue(sala.id)}>{sala.nome}</Button>;
+    return (
+      <Button onPress={() => onSelectValue(sala.nome)}>{sala.nome}</Button>
+    );
   }
 
   return (
@@ -18,7 +27,7 @@ export default function RoomBottom() {
           Salas
         </StyledText>
       }
-      data={SALAS}
+      data={salas}
       renderItem={({ item }) => renderSalaHandler(item)}
       keyExtractor={({ id: idSala }) => idSala}
       contentContainerStyle={styles.items}

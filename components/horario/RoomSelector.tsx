@@ -14,9 +14,9 @@ export default function RoomSelector() {
       onPress={openBottom}
     >
       <StyledText size="big" color="white">
-        {selectedValue ? `Sala ${selectedValue}` : "Selecione a sala desejada"}
+        {selectedValue ? selectedValue : "Selecione a sala desejada"}
       </StyledText>
-      <Icon name="chevron-down" size={28} color="white" />
+      <Icon name="chevron-down" size={28} color="white" onPress={openBottom} />
     </Pressable>
   );
 }

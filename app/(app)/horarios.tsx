@@ -14,9 +14,10 @@ import useAuth from "@/hooks/useAuth";
 
 import SolicitacoesModal from "@/components/horario/SolicitacoesModal";
 import SolicitacoesIcon from "@/components/horario/SolicitacoesIcon";
+import { getSalaByName } from "@/util/requests/salaHTTP";
 
 const defaultValues: NewAgendamento = {
-  sala: "",
+  nomeSala: "",
   data: new Date().toLocaleDateString(),
   idResponsavel: "",
   status: Status.PENDENTE,
@@ -37,11 +38,17 @@ export default function Horarios() {
   const [showModal, setShowModal] = useState(false);
   const [agendamento, setAgendamento] = useState(defaultValues);
   const [showSolicitacoes, setShowSolicitacoes] = useState(false);
+  const { data: selectedSala } = useQuery({
+    queryKey: ["salas", agendamento.nomeSala],
+    enabled: !!agendamento.nomeSala,
+    queryFn: () => getSalaByName(agendamento.nomeSala),
+  });
+
   const { isLoading, refetch } = useQuery({
-    queryKey: ["agendamentos", agendamento.data, agendamento.sala],
-    enabled: !!agendamento.sala && !!agendamento.horario,
+    queryKey: ["agendamentos", agendamento.data, agendamento.nomeSala],
+    enabled: !!selectedSala,
     queryFn: () =>
-      getAgendamentos({ data: agendamento.data!, sala: agendamento.sala! }),
+      getAgendamentos({ data: agendamento.data!, salaId: selectedSala?.id! }),
   });
 
   useLayoutEffect(() => {
@@ -99,16 +106,16 @@ export default function Horarios() {
 
   useEffect(() => {
     refetch();
-  }, [agendamento.data, agendamento.sala]);
+  }, [agendamento.data, agendamento.nomeSala]);
 
   useEffect(() => {
     if (selectedValue) {
-      inputHandler("sala", selectedValue);
+      inputHandler("nomeSala", selectedValue);
     }
   }, [selectedValue]);
 
   function toggleModalHandler() {
-    if (agendamento.sala) {
+    if (agendamento.nomeSala) {
       setShowModal((p) => !p);
     } else {
       Alert.alert(
