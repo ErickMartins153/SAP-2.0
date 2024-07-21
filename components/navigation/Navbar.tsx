@@ -45,7 +45,7 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               <Title
                 style={styles.userInfoText}
               >{`${user?.nome} ${user?.sobrenome}`}</Title>
-              <Caption>
+              <Caption style={{ fontWeight: "700" }}>
                 Cargo: {user?.cargo === "TECNICO" ? "Técnico" : "Estagiário"}
               </Caption>
             </View>
@@ -68,6 +68,12 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               icon="book"
               onPress={handleNavigation}
               page="atendimentos"
+            />
+            <NavbarItem
+              label="Minhas Fichas"
+              icon="file-text"
+              onPress={handleNavigation}
+              page="fichas"
             />
             <NavbarItem
               label="Meus Grupos"
@@ -109,6 +115,7 @@ const styles = StyleSheet.create({
   },
   userInfoText: {
     textTransform: "capitalize",
+    fontWeight: "bold",
     fontSize: 18,
     textAlign: "center",
     borderBottomColor: Colors.text,

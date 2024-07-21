@@ -6,14 +6,14 @@ import { Colors } from "@/constants/Colors";
 import { ReactNode } from "react";
 
 export type ItemLayoutProps = {
-  onSelect: () => void;
+  onPress: () => void;
   imageURL?: string;
   children: ReactNode;
   header?: ReactNode;
 };
 
 export default function ItemLayout({
-  onSelect,
+  onPress,
   imageURL,
   children,
   header,
@@ -21,7 +21,7 @@ export default function ItemLayout({
   return (
     <Pressable
       style={styles.rootContainer}
-      onPress={() => onSelect()}
+      onPress={() => onPress()}
       android_ripple={{ color: Colors.lightRipple }}
     >
       {imageURL && <UserAvatar size={64} imageURL={imageURL} />}

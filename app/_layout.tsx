@@ -17,7 +17,7 @@ export default function RootLayout() {
       style={{ flex: 1 }}
       onLayout={async () => await checkUpdate()}
     >
-      <StatusBar style="auto" backgroundColor="transparent" translucent />
+      <StatusBar style="auto" />
       <QueryClientProvider client={queryClient}>
         <AuthContextProvider>
           <BottomContextProvider>

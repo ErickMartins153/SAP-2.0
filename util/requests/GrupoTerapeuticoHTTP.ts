@@ -1,7 +1,6 @@
 import { NewGrupo } from "@/components/grupos/AddGrupoModal";
-import { NewAgendamento, Status } from "@/interfaces/Agendamento";
+
 import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
-import { agendarHorario } from "./agendamentoHTTP";
 
 export const GRUPOS_TERAPEUTICOS: GrupoTerapeutico[] = [];
 

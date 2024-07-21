@@ -11,7 +11,6 @@ import Button from "../general/Button";
 import useImagePicker from "@/hooks/useImagePicker";
 
 import useAuth from "@/hooks/useAuth";
-import { newPost } from "@/interfaces/Post";
 import blurhash from "@/util/blurhash";
 import ModalLayout from "../layouts/ModalLayout";
 import { notBlank } from "@/util/validate";
@@ -38,7 +37,7 @@ export default function AddPost({
   ...props
 }: AddPostProps) {
   const { user, token } = useAuth();
-  const { mutate } = useMutation({
+  const { mutate: createPost, isPending: postando } = useMutation({
     mutationFn: addPost,
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["posts"] });
@@ -92,7 +91,7 @@ export default function AddPost({
   function createPostHandler() {
     const { titulo } = postContent;
     if (notBlank({ titulo, idAutor: user!.id })) {
-      mutate({
+      createPost({
         postData: {
           conteudo: postContent.conteudo,
           titulo: postContent.titulo,
@@ -115,7 +114,11 @@ export default function AddPost({
   return (
     <ModalLayout
       submitButton={{
-        button: ({ onSubmit }) => <Button onPress={onSubmit}>Postar</Button>,
+        button: ({ onSubmit }) => (
+          <Button onPress={onSubmit} disabled={postando}>
+            {postando ? "Postando..." : "Postar"}
+          </Button>
+        ),
         onSubmit: createPostHandler,
       }}
       toggleModal={closeHandler}

@@ -26,7 +26,7 @@ const SolicitacaoItem = ({ solicitacao, onSelect }: SolicitacaoItemProps) => {
   });
 
   return (
-    <ItemLayout onSelect={onSelect}>
+    <ItemLayout onPress={onSelect}>
       <StyledText size="big" fontWeight="bold">
         {selectedFuncionario?.nome} {selectedFuncionario?.sobrenome}
       </StyledText>
