@@ -51,9 +51,9 @@ export default function Atendimentos() {
         keyExtractor={({ id }) => id}
         renderItem={({ item }) => renderAgendamentosHandler(item)}
         ListEmptyComponent={
-          <View style={{ marginTop: "50%" }}>
+          <View style={{ marginVertical: "50%" }}>
             <StyledText size="big" textAlign="center">
-              Você não possui nenhum horário agendado!
+              Você não possui nenhum agendamento!
             </StyledText>
           </View>
         }

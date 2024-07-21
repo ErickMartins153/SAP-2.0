@@ -75,17 +75,8 @@ export default function detalhesPost() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.refetchQueries({ queryKey: ["posts"] });
-      Alert.alert(
-        "Post deletado com sucesso",
-        "O post foi desfixado do mural",
-        [
-          {
-            isPreferred: true,
-            text: "Ir para mural",
-            onPress: () => router.navigate("(app)"),
-          },
-        ]
-      );
+      router.navigate("(app)");
+      Alert.alert("Post deletado com sucesso", "O post foi desfixado do mural");
     },
     retry: 3,
   });

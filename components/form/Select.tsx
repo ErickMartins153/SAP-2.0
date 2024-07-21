@@ -10,7 +10,8 @@ import { Colors } from "@/constants/Colors";
 type DataItem = {
   [key: string]: any;
   id?: string;
-  nome: string;
+  nome?: string;
+  tema?: string;
   sobrenome?: string;
 };
 
@@ -19,6 +20,14 @@ type SelectProps = {
   placeholder: string;
   iconPress?: () => void;
 } & Omit<PropsWithoutRef<SelectDropdownProps>, "renderButton" | "renderItem">;
+
+function getDisplayText(item: DataItem | null, placeholder: string): string {
+  if (!item) return placeholder;
+  if (item.tema) return item.tema;
+  if (item.nome)
+    return item.sobrenome ? `${item.nome} ${item.sobrenome}` : item.nome;
+  return placeholder;
+}
 
 const Select = forwardRef<SelectDropdown, SelectProps>(
   ({ placeholder, onSelect: onSelection, iconPress, ...props }, ref) => {
@@ -34,12 +43,14 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
           return <Icon name="search" />;
         }}
         onSelect={(item: DataItem, index) => {
-          if (item.nome.toLowerCase() === "sim") {
+          if (item.nome && item.nome.toLowerCase() === "sim") {
             return onSelection(true, index);
-          } else if (item.nome.toLowerCase() === "não") {
+          } else if (item.nome && item.nome.toLowerCase() === "não") {
             return onSelection(false, index);
           } else if (item.id) {
             return onSelection(item.id, index);
+          } else if (item.tema) {
+            return onSelection(item.tema, index);
           } else {
             return onSelection(item.nome, index);
           }
@@ -55,9 +66,7 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
                 />
               )}
               <StyledText style={styles.dropdownButtonTxtStyle}>
-                {(selectedItem &&
-                  `${selectedItem.nome} ${selectedItem.sobrenome ?? ""}`) ||
-                  placeholder}
+                {getDisplayText(selectedItem, placeholder)}
               </StyledText>
               <Icon
                 name={isOpened ? "chevron-up" : "chevron-down"}
@@ -82,7 +91,7 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
                   isSelected && { color: Colors.white },
                 ]}
               >
-                {`${item.nome} ${item.sobrenome ?? ""}`}
+                {getDisplayText(item, placeholder)}
               </StyledText>
             </View>
           );
