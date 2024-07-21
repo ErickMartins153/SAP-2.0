@@ -3,6 +3,7 @@ import { Credentials, authenticateUser } from "@/util/requests/authHTTP";
 import { useMutation } from "@tanstack/react-query";
 import { ReactNode, createContext, useState } from "react";
 import * as SecureStore from "expo-secure-store";
+import { Alert } from "react-native";
 
 interface AuthContextType {
   user: Funcionario | null;
@@ -28,7 +29,7 @@ export default function AuthContextProvider({
   const [userData, setUserData] = useState<Funcionario | null>(null);
   const [token, setToken] = useState<Token | null>(null);
 
-  const { mutate } = useMutation({
+  const { mutate: onLogin } = useMutation({
     mutationFn: authenticateUser,
     onSuccess: (user) => {
       if (user) {
@@ -38,12 +39,12 @@ export default function AuthContextProvider({
       }
     },
     onError: (e) => {
-      console.log(e);
+      Alert.alert(e.cause as string, e.message);
     },
   });
 
   function login(credentials: Credentials) {
-    mutate(credentials);
+    onLogin(credentials);
   }
 
   function logout() {

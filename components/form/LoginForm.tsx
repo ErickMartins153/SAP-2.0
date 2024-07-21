@@ -15,8 +15,8 @@ type LoginFormType = {
 
 export default function LoginForm({ onShowModal }: LoginFormType) {
   const [inputs, setInputs] = useState<Credentials>({
-    email: "",
-    senha: "",
+    email: "erick.martins@upe.br",
+    senha: "1234",
   });
   const { login, user } = useAuth();
 
@@ -26,7 +26,10 @@ export default function LoginForm({ onShowModal }: LoginFormType) {
 
   function onSubmitHandler() {
     if (notBlank(inputs)) {
-      login(inputs);
+      login({
+        email: inputs.email.toLowerCase(),
+        senha: inputs.senha,
+      });
     } else {
       Alert.alert(
         "Erro",

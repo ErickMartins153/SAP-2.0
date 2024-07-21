@@ -48,7 +48,7 @@ export default function Gerenciar() {
 
   const { mutate } = useMutation({
     mutationFn: addFuncionario,
-    onSuccess: (email) => {
+    onSuccess: (data) => {
       if (supervisoresRef.current && isTecnicoRef.current) {
         supervisoresRef.current.reset();
         isTecnicoRef.current.reset();
@@ -59,7 +59,8 @@ export default function Gerenciar() {
       });
       Alert.alert(
         "Funcionário registrado com sucesso!",
-        `O funcionário de email: ${email} agora faz parte do sistema SAP!`,
+        `O funcionário de email: ${data?.email} agora faz parte do sistema SAP!
+        A senha desse funcionário é: ${data?.senha}`,
         [
           {
             isPreferred: true,

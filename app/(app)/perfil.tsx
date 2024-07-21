@@ -22,10 +22,10 @@ import { queryClient } from "@/util/queries";
 import PasswordDialog, {
   PasswordReset,
 } from "@/components/form/PasswordDialog";
-import FichaModal from "@/components/ficha/FichaModal";
+import { redefinePassword } from "@/util/requests/authHTTP";
 
 export default function ProfileScreen() {
-  const { user, token } = useAuth();
+  const { user, token, logout } = useAuth();
   const [showDialog, setShowDialog] = useState(false);
   const [changePassword, setChangePassword] = useState(false);
   const [showFichas, setShowFichas] = useState(false);
@@ -60,6 +60,21 @@ export default function ProfileScreen() {
         queryKey: ["funcionarios", user!.id],
       });
       Alert.alert("Imagem alterada", "Sua imagem foi alterada com sucesso!");
+    },
+  });
+
+  const { mutate: onRedefinePassword } = useMutation({
+    mutationFn: redefinePassword,
+    onSuccess: () => {
+      toggleChangePassword();
+      Alert.alert(
+        "Senha alterada com sucesso!",
+        "Sua senha foi alterada com sucesso! Por favor, faça login novamente",
+        [{ text: "Ok", onPress: logout }]
+      );
+    },
+    onError: (error) => {
+      Alert.alert("Error", error.message);
     },
   });
 
@@ -163,7 +178,7 @@ export default function ProfileScreen() {
   }
 
   function onChangePassword(passwords: PasswordReset) {
-    console.log(passwords);
+    onRedefinePassword({ passwords, token: token! });
   }
 
   return (
@@ -195,7 +210,6 @@ export default function ProfileScreen() {
                 {user?.cargo === "TECNICO" && (
                   <Button onPress={openBottom}>Meus supervisionados</Button>
                 )}
-                <Button onPress={openFichasModal}>Minhas fichas</Button>
               </>
             )}
             {imageURI && (
@@ -264,7 +278,6 @@ export default function ProfileScreen() {
         onChangePassword={onChangePassword}
         backdropBehavior="dismiss"
       />
-      <FichaModal toggleModal={closeFichasModal} visible={showFichas} />
     </MainPageLayout>
   );
 }
