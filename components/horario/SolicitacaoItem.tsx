@@ -20,9 +20,9 @@ type SolicitacaoItemProps = {
 const SolicitacaoItem = ({ solicitacao, onSelect }: SolicitacaoItemProps) => {
   const { user, token } = useAuth();
   const { data: selectedFuncionario } = useQuery({
-    enabled: !!solicitacao?.idResponsavel,
-    queryKey: ["funcionarios", solicitacao?.idResponsavel],
-    queryFn: () => getFuncionarioById(solicitacao?.idResponsavel!, token!),
+    enabled: !!solicitacao?.terapeuta,
+    queryKey: ["funcionarios", solicitacao?.terapeuta],
+    queryFn: () => getFuncionarioById(solicitacao?.terapeuta!, token!),
   });
 
   return (
@@ -32,7 +32,7 @@ const SolicitacaoItem = ({ solicitacao, onSelect }: SolicitacaoItemProps) => {
       </StyledText>
       <InfoBox content={solicitacao.data!} label="Data" />
       <InfoBox content={solicitacao.horario!} label="Horário" />
-      <InfoBox content={solicitacao.nomeSala!} label="Sala" />
+      <InfoBox content={solicitacao.sala!} label="Sala" />
       <InfoBox
         content={solicitacao.recorrente ? "Sim" : "Não"}
         label="Recorrente"

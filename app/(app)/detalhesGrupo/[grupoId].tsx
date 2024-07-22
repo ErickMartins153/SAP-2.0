@@ -1,7 +1,9 @@
 import useAuth from "@/hooks/useAuth";
 import {
   addParticipante,
+  deleteGrupoEstudo,
   getGrupoById,
+  getParticipantesByGrupo,
   removeParticipante,
 } from "@/util/requests/GrupoEstudoHTTP";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -33,6 +35,8 @@ import { NewAgendamento } from "@/interfaces/Agendamento";
 import Dialog from "@/components/layouts/Dialog";
 import InfoBox from "@/components/UI/InfoBox";
 import { notBlank } from "@/util/validate";
+import Loading from "@/components/UI/Loading";
+import Select from "@/components/form/Select";
 
 type mutateProps = {
   participanteId: string;
@@ -40,9 +44,10 @@ type mutateProps = {
 };
 
 const defaultValue: NewAgendamento = {
-  idResponsavel: "",
-  nomeSala: "",
+  terapeuta: "",
+  sala: "",
   data: "",
+  funcionario: "",
 };
 
 function participa(funcionarioId: string, participantes: string[]) {
@@ -55,7 +60,7 @@ export default function detalhesGrupo() {
   const [showAgendar, setShowAgendar] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [agendamentoInfo, setAgendamentoInfo] = useState(defaultValue);
-
+  const nextDate = "Indefinido";
   const [showFuncionarios, setShowFuncionarios] = useState<
     "ministrantes" | "participantes"
   >("ministrantes");
@@ -67,41 +72,76 @@ export default function detalhesGrupo() {
   } = useQuery({
     queryKey: ["grupos", "estudo", grupoId!],
     enabled: !!grupoId,
-    queryFn: () => getGrupoById(grupoId!),
+    queryFn: () => getGrupoById({ grupoId: grupoId!, token: token! }),
   });
 
   const { data: ministrante, isLoading: loadingMinistrante } = useQuery({
     queryKey: ["ministrantes", grupoId],
     enabled: !!grupoId && !!grupoData,
-    queryFn: () => getFuncionarioById(grupoData!.idMinistrante, token!),
+    queryFn: () => getFuncionarioById(grupoData!.dono, token!),
   });
 
-  const { data: participantes, refetch: refetchParticipantes } = useQuery({
-    queryKey: ["participantes", grupoId],
+  const {
+    data: idParticipantes,
+    refetch: refetchIdParticipantes,
+    isLoading: loadingIdParticipantes,
+  } = useQuery({
+    queryKey: ["idParticipantes", grupoId],
     enabled: !!grupoId && !!grupoData,
-    queryFn: () => getFuncionariosByIds(grupoData!.idParticipantes, token!),
+    queryFn: () =>
+      getParticipantesByGrupo({ idGrupo: grupoData?.id!, token: token! }),
+    initialData: [],
+  });
+
+  const {
+    data: participantes,
+    isLoading: loadingParticipantes,
+    refetch: refetchParticipantes,
+  } = useQuery({
+    queryKey: ["participantes", grupoId],
+    queryFn: () => getFuncionariosByIds(idParticipantes!, token!),
+    enabled: !!idParticipantes,
     initialData: [],
   });
 
   const { mutate: removerGrupo } = useMutation({
     mutationFn: ({ participanteId, grupoId }: mutateProps) =>
-      removeParticipante(participanteId, grupoId),
+      removeParticipante({
+        idParticipante: participanteId,
+        idGrupo: grupoId,
+        token: token!,
+      }),
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["grupos"] });
+      await refetchIdParticipantes();
       await refetchParticipantes();
     },
   });
 
   const { mutate: adicionarGrupo } = useMutation({
     mutationFn: ({ participanteId, grupoId }: mutateProps) =>
-      addParticipante(participanteId, grupoId),
+      addParticipante({ participanteId, grupoId, token: token! }),
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["grupos"] });
       await refetchParticipantes();
       Alert.alert(
         "Entrada confirmada!",
-        `Você agora faz parte do grupo ${grupoData?.temaEstudo}!`
+        `Você agora faz parte do grupo ${grupoData?.tema}!`
       );
+    },
+  });
+
+  const { mutate: onDelete } = useMutation({
+    mutationFn: deleteGrupoEstudo,
+    onSuccess: () => {
+      Alert.alert("Grupo deletado", `O grupo foi deletado com sucesso!`);
+      router.back();
+      queryClient.invalidateQueries({ queryKey: ["grupos", "estudo"] });
+      queryClient.refetchQueries({ queryKey: ["grupos", "estudo"] });
+    },
+    onError: (error) => {
+      console.log(error);
+      Alert.alert((error.cause as string) || "Error", error.message);
     },
   });
 
@@ -125,7 +165,7 @@ export default function detalhesGrupo() {
   ) {
     Alert.alert(
       "Tem certeza?",
-      `Você tem certeza que quer remover ${funcionario.nome} do grupo ${grupo.temaEstudo}`,
+      `Você tem certeza que quer remover ${funcionario.nome} do grupo ${grupo.tema}`,
       [
         { text: "Não", isPreferred: false },
         {
@@ -138,7 +178,13 @@ export default function detalhesGrupo() {
   }
 
   function renderFuncionariosHandler(funcionario: Funcionario) {
-    if (user!.id === grupoData!.idMinistrante) {
+    if (
+      idParticipantes?.includes(user?.id!) &&
+      showFuncionarios === "participantes"
+    ) {
+      return undefined;
+    }
+    if (user!.id === grupoData!.dono) {
       return (
         <FuncionarioItem
           funcionario={funcionario}
@@ -146,7 +192,8 @@ export default function detalhesGrupo() {
         />
       );
     }
-    return <FuncionarioItem funcionario={funcionario} onSelect={() => {}} />;
+    if (idParticipantes)
+      return <FuncionarioItem funcionario={funcionario} onSelect={() => {}} />;
   }
 
   function alertHandler(mode: "entrar" | "sair") {
@@ -164,7 +211,19 @@ export default function detalhesGrupo() {
     }
   }
 
-  function deleteHandler() {}
+  function deleteHandler() {
+    Alert.alert(
+      "Você tem certeza?",
+      "Uma vez deletado, o grupo ficará indisponível!",
+      [
+        { isPreferred: true, text: "Cancelar" },
+        {
+          text: "Deletar",
+          onPress: () => onDelete({ grupoId: grupoId!, token: token! }),
+        },
+      ]
+    );
+  }
 
   function toggleFuncionarioView(v: typeof showFuncionarios) {
     setShowFuncionarios(v);
@@ -188,8 +247,13 @@ export default function detalhesGrupo() {
     }
   }
 
-  if (!grupoData || loadingMinistrante) {
-    return;
+  if (
+    !grupoData ||
+    loadingMinistrante ||
+    loadingParticipantes ||
+    loadingIdParticipantes
+  ) {
+    return <Loading />;
   }
 
   return (
@@ -197,21 +261,20 @@ export default function detalhesGrupo() {
       isLoading={isLoading}
       route="grupos"
       HeadRight={
-        (user?.cargo === "ESTAGIARIO" ||
-          grupoData.idMinistrante === user?.id) && (
+        (user?.cargo === "TECNICO" || grupoData.dono === user?.id) && (
           <Icon name="trash-2" color="red" size={32} onPress={deleteHandler} />
         )
       }
     >
       <View style={{ flex: 1, marginBottom: "2%" }}>
         <StyledText size="title" fontWeight="bold" textAlign="center">
-          {grupoData?.temaEstudo}
+          {grupoData?.tema}
         </StyledText>
         <ScrollView
           style={{ maxHeight: 200, marginVertical: "2%" }}
           contentContainerStyle={{ paddingVertical: "2%" }}
         >
-          <InfoBox label="Próximo agendamento" content="PLACEHOLDER" />
+          <InfoBox label="Próximo encontro" content={nextDate} />
           {grupoData.descricao && (
             <InfoBox label="Conteúdo" content={grupoData?.descricao} />
           )}
@@ -223,6 +286,7 @@ export default function detalhesGrupo() {
               ? participantes
               : [ministrante!]
           }
+          // @ts-expect-error
           renderItem={({ item }) => renderFuncionariosHandler(item)}
           contentContainerStyle={styles.flatListContent}
           style={styles.flatlist}
@@ -278,18 +342,19 @@ export default function detalhesGrupo() {
         />
       </View>
       <View style={{ marginBottom: "2%", paddingTop: "2%", borderTopWidth: 1 }}>
-        {participa(user!.id, grupoData!.idParticipantes) && (
-          <Button color="red" onPress={alertHandler.bind(null, "sair")}>
-            Sair do Grupo
-          </Button>
-        )}
-        {!participa(user!.id, grupoData!.idParticipantes) &&
-          !(user!.id === grupoData!.idMinistrante) && (
+        {participa(user!.id, idParticipantes!) &&
+          grupoData.dono !== user?.id && (
+            <Button color="red" onPress={alertHandler.bind(null, "sair")}>
+              Sair do Grupo
+            </Button>
+          )}
+        {!participa(user!.id, idParticipantes!) &&
+          !(user!.id === grupoData!.dono) && (
             <Button color="green" onPress={alertHandler.bind(null, "entrar")}>
               Entrar no Grupo
             </Button>
           )}
-        {user?.id === grupoData.idMinistrante && (
+        {user?.id === grupoData.dono && (
           <Button onPress={toggleAgendamento}>Agendar</Button>
         )}
       </View>
@@ -309,7 +374,7 @@ export default function detalhesGrupo() {
       >
         <InfoBox content={agendamentoInfo.data!} label="Dia" />
         <InfoBox content={agendamentoInfo.horario!} label="Horário" />
-        <InfoBox content={agendamentoInfo.nomeSala!} label="Sala" />
+        <InfoBox content={agendamentoInfo.sala!} label="Sala" />
       </Dialog>
     </StackPageLayout>
   );

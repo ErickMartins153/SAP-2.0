@@ -6,12 +6,14 @@ export enum Status {
 
 export interface Agendamento {
   id: string;
-  nomeSala: string;
+  sala: string;
   data?: string;
   horario?: string;
   recorrente?: boolean;
-  idResponsavel: string;
+  terapeuta: string;
+  funcionario: string;
   status?: Status;
+  ficha?: string;
 }
 
 export type NewAgendamento = Omit<Agendamento, "id">;

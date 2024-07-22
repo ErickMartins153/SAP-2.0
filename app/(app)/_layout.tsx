@@ -99,6 +99,12 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      <Drawer.Screen
+        name="fichas"
+        options={{
+          title: "Minhas Fichas",
+        }}
+      />
     </Drawer>
   );
 }

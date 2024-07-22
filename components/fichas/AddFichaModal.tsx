@@ -4,11 +4,14 @@ import Input from "../general/Input";
 import { NewFicha } from "@/interfaces/Ficha";
 import Select from "../form/Select";
 import SelectDropdown from "react-native-select-dropdown";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getGruposTerapeuticosByFuncionario } from "@/util/requests/GrupoTerapeuticoHTTP";
 import useAuth from "@/hooks/useAuth";
-import { Button, View } from "react-native";
-
+import { Alert, View } from "react-native";
+import { createFicha } from "@/util/requests/fichaHTTP";
+import Button from "../general/Button";
+import { queryClient } from "@/util/queries";
+import { notBlank } from "@/util/validate";
 type AddFichaModalProps = {} & PropsWithoutRef<
   Omit<ModalLayoutProps, "children">
 >;
@@ -24,10 +27,10 @@ export default function AddFichaModal({
   toggleModal,
   ...props
 }: AddFichaModalProps) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const hasGroupRef = useRef<SelectDropdown>(null);
   const [inputs, setInputs] = useState(defaultValues);
-  const [hasGroup, setHasGroup] = useState(false);
+  const [hasGroup, setHasGroup] = useState<boolean | undefined>(undefined);
 
   const {
     data: gruposTerapeuticos,
@@ -38,6 +41,23 @@ export default function AddFichaModal({
     enabled: !!user?.id && hasGroup,
     queryFn: () => getGruposTerapeuticosByFuncionario(user!.id),
     initialData: [],
+  });
+
+  const { mutate: criarFicha, isPending } = useMutation({
+    mutationFn: createFicha,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fichas"],
+      });
+      queryClient.refetchQueries({
+        queryKey: ["fichas"],
+      });
+      closeModal();
+      Alert.alert(
+        "Ficha criada",
+        "A ficha foi registrada com sucesso no sistema SAP"
+      );
+    },
   });
 
   function inputHandler(field: keyof typeof defaultValues, input: string) {
@@ -58,7 +78,22 @@ export default function AddFichaModal({
     toggleModal();
   }
 
-  function createFichaHandler() {}
+  function createFichaHandler() {
+    if (notBlank({ nome: inputs.nome }) && hasGroup !== undefined) {
+      criarFicha({
+        ficha: {
+          ...inputs,
+          idResponsavel: user?.id!,
+        },
+        token: token!,
+      });
+    } else {
+      Alert.alert(
+        "Erro",
+        "Preencha todas as informações necessárias para continuar."
+      );
+    }
+  }
 
   return (
     <ModalLayout
@@ -67,7 +102,9 @@ export default function AddFichaModal({
       {...props}
       submitButton={{
         button: ({ onSubmit }) => (
-          <Button onPress={onSubmit} title="Criar Ficha" />
+          <Button onPress={onSubmit}>
+            {!isPending ? "Criar Ficha" : "Criando..."}
+          </Button>
         ),
         onSubmit: createFichaHandler,
       }}
@@ -75,6 +112,7 @@ export default function AddFichaModal({
       <Input
         onChangeText={inputHandler.bind(null, "nome")}
         placeholder="Digite o nome do paciente"
+        autoCapitalize="words"
         value={inputs.nome}
       />
       <View style={{ gap: 24 }}>

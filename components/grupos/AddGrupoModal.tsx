@@ -44,7 +44,7 @@ export default function AddGrupoModal({
   ...props
 }: AddGrupoProps) {
   const { user, token } = useAuth();
-  const [grupoInfo, setGrupoInfo] = useState(defaultValues);
+  const [newGrupo, setNewGrupo] = useState(defaultValues);
   const [showDialog, setShowDialog] = useState(false);
   const { closeBottom } = useBottomSheet();
   const { data: tecnicos, isLoading } = useQuery({
@@ -53,16 +53,16 @@ export default function AddGrupoModal({
   });
 
   const { data: ministrante } = useQuery({
-    queryKey: ["funcionarios", grupoInfo.idMinistrante!],
-    queryFn: () => getFuncionarioById(grupoInfo.idMinistrante!, token!),
-    enabled: !!grupoInfo.idMinistrante,
+    queryKey: ["funcionarios", newGrupo.idMinistrante!],
+    queryFn: () => getFuncionarioById(newGrupo.idMinistrante!, token!),
+    enabled: !!newGrupo.idMinistrante,
   });
 
   const { mutate: addGrupo } = useMutation({
     mutationFn:
-      grupoInfo.tipo === "Estudo" ? createGrupoEstudo : createGrupoTerapeutico,
-    onSuccess: async () => {
-      setGrupoInfo(defaultValues);
+      newGrupo.tipo === "Estudo" ? createGrupoEstudo : createGrupoTerapeutico,
+    onSuccess: (nome) => {
+      setNewGrupo(defaultValues);
       toggleDialog();
       toggleModal();
       queryClient.invalidateQueries({
@@ -71,13 +71,17 @@ export default function AddGrupoModal({
       });
       refetchGrupos();
       closeBottom();
+      Alert.alert(
+        "Grupo criado com sucesso",
+        `O grupo ${nome} foi criado com sucesso`
+      );
       router.navigate("grupos");
     },
   });
 
   function closeHandler() {
     toggleModal();
-    setGrupoInfo(defaultValues);
+    setNewGrupo(defaultValues);
   }
 
   function toggleDialog() {
@@ -85,7 +89,7 @@ export default function AddGrupoModal({
   }
 
   function inputHandler(field: keyof NewGrupo, text: string) {
-    setGrupoInfo((prev) => ({ ...prev, [field]: text }));
+    setNewGrupo((prev) => ({ ...prev, [field]: text }));
   }
 
   function errorHandler() {
@@ -96,11 +100,11 @@ export default function AddGrupoModal({
   }
 
   function createGroupHandler() {
-    addGrupo(grupoInfo);
+    addGrupo({ newGrupo, token: token! });
   }
 
   function openDialog() {
-    if (!!grupoInfo.idMinistrante && !!grupoInfo.tipo && !!grupoInfo.tema) {
+    if (!!newGrupo.idMinistrante && !!newGrupo.tipo && !!newGrupo.tema) {
       setShowDialog(true);
     } else {
       errorHandler();
@@ -116,7 +120,7 @@ export default function AddGrupoModal({
       {...props}
     >
       <GrupoInfo
-        grupo={grupoInfo}
+        grupo={newGrupo}
         tecnicos={tecnicos!}
         inputHandler={inputHandler}
         onSubmit={openDialog}
@@ -135,11 +139,11 @@ export default function AddGrupoModal({
           }
           label="Ministrante"
         />
-        <InfoBox content={grupoInfo.tema.trim()} label="Tema" />
-        {grupoInfo.descricao && (
-          <InfoBox content={grupoInfo.descricao.trim()} label="Descrição" />
+        <InfoBox content={newGrupo.tema.trim()} label="Tema" />
+        {newGrupo.descricao && (
+          <InfoBox content={newGrupo.descricao.trim()} label="Descrição" />
         )}
-        <InfoBox content={grupoInfo.tipo!} label="Tipo" />
+        <InfoBox content={newGrupo.tipo!} label="Tipo" />
       </Dialog>
     </ModalLayout>
   );

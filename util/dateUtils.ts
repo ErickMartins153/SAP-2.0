@@ -55,3 +55,29 @@ export function getDayName(dateString: string) {
   // @ts-expect-error
   return format(date, "EEE", { locale: ptBR });
 }
+
+export function createTimestamps(data: string, horario: string) {
+  const [dia, mes, ano] = data.split("/").map(Number);
+  const dataFormatada = new Date(ano, mes - 1, dia);
+
+  const [horaInicio, horaFim] = horario.split(" - ");
+
+  const [horaInicioHoras, horaInicioMinutos] = horaInicio
+    .split(":")
+    .map(Number);
+  const [horaFimHoras, horaFimMinutos] = horaFim.split(":").map(Number);
+
+  const tempoInicio = new Date(dataFormatada);
+  tempoInicio.setHours(horaInicioHoras, horaInicioMinutos);
+
+  const tempoFim = new Date(dataFormatada);
+  tempoFim.setHours(horaFimHoras, horaFimMinutos);
+
+  const tempoInicioISO = tempoInicio.toISOString();
+  const tempoFimISO = tempoFim.toISOString();
+
+  return {
+    tempoInicio: tempoInicioISO,
+    tempoFim: tempoFimISO,
+  };
+}

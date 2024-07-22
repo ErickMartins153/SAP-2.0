@@ -46,7 +46,7 @@ export async function addPost({
     imagemPost: postData.imagemPost !== undefined ? postData.imagemPost : "",
   };
 
-  const response = await axios.post(BASE_URL, finalPost, {
+  const response = await axios.post(`${BASE_URL}/`, finalPost, {
     headers: { Authorization: "Bearer " + token },
   });
 }

@@ -6,22 +6,38 @@ import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "@/hooks/useAuth";
-import { getGruposDisponiveis } from "@/util/requests/GrupoEstudoHTTP";
+import { getGruposEstudoDisponiveis } from "@/util/requests/GrupoEstudoHTTP";
 import GrupoItem from "./GrupoItem";
 import Button from "../general/Button";
+import { getGruposTerapeuticoDisponiveis } from "@/util/requests/GrupoTerapeuticoHTTP";
 
 export default function GrupoBottom({
   toggleModal,
+  mode,
 }: {
   toggleModal: () => void;
+  mode: "estudo" | "terapeutico";
 }) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { closeBottom } = useBottomSheet();
+  const groupMode = mode === "estudo" ? "de Estudo" : "Terapêutico";
 
-  const { data: gruposDisponiveis } = useQuery({
-    queryKey: ["grupos", "disponiveis", user?.id],
-    enabled: !!user?.id,
-    queryFn: () => getGruposDisponiveis(user!.id),
+  const { data: gruposEstudoDisponiveis } = useQuery({
+    queryKey: ["grupos", "estudo", "disponiveis", user?.id],
+    enabled: !!user?.id && mode === "estudo",
+    queryFn: () =>
+      getGruposEstudoDisponiveis({ funcionarioId: user!.id, token: token! }),
+  });
+  console.log(gruposEstudoDisponiveis);
+
+  const { data: gruposTerapeuticosDisponiveis } = useQuery({
+    queryKey: ["grupos", "terapeuticos", "disponiveis", user?.id],
+    enabled: !!user?.id && mode === "terapeutico",
+    queryFn: () =>
+      getGruposTerapeuticoDisponiveis({
+        funcionarioId: user!.id,
+        token: token!,
+      }),
   });
 
   function renderSalaHandler(grupo: GrupoEstudo) {
@@ -48,11 +64,17 @@ export default function GrupoBottom({
       ListEmptyComponent={
         <View style={{ marginVertical: "12%" }}>
           <StyledText size="big" textAlign="center" fontWeight="bold">
-            Não há nenhum grupo disponível no momento. {suggestionText}
+            Não há nenhum grupo {groupMode} disponível no momento.{" "}
+            {suggestionText}
           </StyledText>
         </View>
       }
-      data={gruposDisponiveis}
+      // @ts-expect-error
+      data={
+        mode === "estudo"
+          ? gruposEstudoDisponiveis
+          : gruposTerapeuticosDisponiveis
+      }
       renderItem={({ item }) => renderSalaHandler(item)}
       keyExtractor={({ id }) => id}
       contentContainerStyle={styles.items}

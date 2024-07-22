@@ -1,63 +1,166 @@
 import { NewGrupo } from "@/components/grupos/AddGrupoModal";
 import { NewAgendamento, Status } from "@/interfaces/Agendamento";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
-import { agendarHorario } from "./agendamentoHTTP";
-import { GRUPOS_TERAPEUTICOS } from "./GrupoTerapeuticoHTTP";
+import { createAtendimento } from "./atendimentoIndividualHTTP";
 
-export const GRUPOS_ESTUDO: GrupoEstudo[] = [];
+import axios, { isAxiosError } from "axios";
 
-export function getGruposByFuncionario(funcionarioId: string) {
-  return GRUPOS_ESTUDO.filter(
-    (grupo) =>
-      grupo.idParticipantes.includes(funcionarioId) ||
-      grupo.idMinistrante.includes(funcionarioId)
-  );
-}
+const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL + "/grupoEstudo";
 
-export function getGrupoById(grupoId: string) {
-  return GRUPOS_ESTUDO.find((grupo) => grupo.id === grupoId);
-}
-
-export async function removeParticipante(
-  participanteId: string,
-  grupoId: string
-) {
-  const grupo = getGrupoById(grupoId);
-  if (grupo) {
-    grupo.idParticipantes = grupo.idParticipantes.filter(
-      (id) => id !== participanteId
+export async function getGruposByFuncionario({
+  funcionarioId,
+  token,
+}: {
+  funcionarioId: string;
+  token: string;
+}) {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/funcionario/${funcionarioId}`,
+      { headers: { Authorization: "Bearer " + token } }
     );
+    return response.data as GrupoEstudo[];
+  } catch (error) {
+    console.log(error);
   }
 }
 
-export async function addParticipante(participanteId: string, grupoId: string) {
-  const grupo = getGrupoById(grupoId);
-  if (grupo) {
-    if (!grupo.idParticipantes.includes(participanteId)) {
-      grupo.idParticipantes.push(participanteId);
-    }
+export async function getGrupoById({
+  grupoId,
+  token,
+}: {
+  grupoId: string;
+  token: string;
+}) {
+  try {
+    const response = await axios.get(`${BASE_URL}/${grupoId}`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+    return response.data as GrupoEstudo;
+  } catch (error) {
+    console.log(error);
   }
 }
 
-export async function getGruposDisponiveis(funcionarioId: string) {
-  return GRUPOS_ESTUDO.filter(
-    (grupo) =>
-      !(
-        grupo.idParticipantes.includes(funcionarioId) ||
-        grupo.idMinistrante.includes(funcionarioId)
-      )
-  );
+export async function removeParticipante({
+  idGrupo,
+  idParticipante,
+  token,
+}: {
+  idParticipante: string;
+  idGrupo: string;
+  token: string;
+}) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/deleteParticipacao`, {
+      data: { idParticipante, idGrupo },
+      headers: { Authorization: "Bearer " + token },
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-export async function createGrupoEstudo(newGrupo: NewGrupo) {
+export async function addParticipante({
+  grupoId,
+  participanteId,
+  token,
+}: {
+  participanteId: string;
+  grupoId: string;
+  token: string;
+}) {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/addFuncionario`,
+      {
+        uid: participanteId,
+        uidGrupo: grupoId,
+      },
+      { headers: { Authorization: "Bearer " + token } }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getGruposEstudoDisponiveis({
+  funcionarioId,
+  token,
+}: {
+  funcionarioId: string;
+  token: string;
+}) {
+  try {
+    const response = await axios.get(`${BASE_URL}/all`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+    return response.data as GrupoEstudo[];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function createGrupoEstudo({
+  newGrupo,
+  token,
+}: {
+  newGrupo: NewGrupo;
+  token: string;
+}) {
   const { tema: temaEstudo, idMinistrante, tipo, descricao } = newGrupo;
   if (tipo === "Estudo") {
-    return GRUPOS_ESTUDO.push({
-      id: GRUPOS_ESTUDO.length.toString(),
-      idMinistrante,
-      temaEstudo: temaEstudo.trim(),
-      idParticipantes: [],
+    console.log({
+      tema: temaEstudo.trim(),
       descricao: descricao?.trim(),
+      dono: idMinistrante,
     });
+
+    const response = await axios.post(
+      `${BASE_URL}/`,
+      {
+        tema: temaEstudo.trim(),
+        descricao: descricao?.trim(),
+        dono: idMinistrante,
+      },
+      { headers: { Authorization: "Bearer " + token } }
+    );
+    return temaEstudo;
+  }
+}
+
+export async function getParticipantesByGrupo({
+  idGrupo,
+  token,
+}: {
+  idGrupo: string;
+  token: string;
+}) {
+  try {
+    const response = await axios.get(`${BASE_URL}/participantes/${idGrupo}`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+    return response.data as string[];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deleteGrupoEstudo({
+  grupoId,
+  token,
+}: {
+  grupoId: string;
+  token: string;
+}) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/delete/${grupoId}`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      throw new Error(error.message, { cause: "Algo deu errado" });
+    }
+    throw new Error("Erro inesperado");
   }
 }

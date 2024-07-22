@@ -18,7 +18,7 @@ import { getGruposTerapeuticosByFuncionario } from "@/util/requests/GrupoTerapeu
 import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
 
 export default function MeusGrupos() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigation = useNavigation();
   const { clear, isVisible, closeBottom, changeBottomContent, openBottom } =
     useBottomSheet();
@@ -39,7 +39,8 @@ export default function MeusGrupos() {
   } = useQuery({
     queryKey: ["grupos", "estudo", user!.id],
     enabled: !!user?.id,
-    queryFn: () => getGruposByFuncionario(user!.id),
+    queryFn: () =>
+      getGruposByFuncionario({ funcionarioId: user!.id, token: token! }),
     initialData: [],
   });
 
@@ -55,8 +56,10 @@ export default function MeusGrupos() {
   });
 
   useLayoutEffect(() => {
-    changeBottomContent(<GrupoBottom toggleModal={toggleModalHandler} />);
-  }, []);
+    changeBottomContent(
+      <GrupoBottom toggleModal={toggleModalHandler} mode={showGrupo} />
+    );
+  }, [showGrupo]);
 
   useLayoutEffect(() => {
     navigation.setOptions({

@@ -7,12 +7,14 @@ import InfoBox from "../UI/InfoBox";
 import Dialog from "../layouts/Dialog";
 import Switch from "../general/Switch";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { agendarHorario } from "@/util/requests/agendamentoHTTP";
+import { createAtendimento } from "@/util/requests/atendimentoIndividualHTTP";
 import useAuth from "@/hooks/useAuth";
 import { queryClient } from "@/util/queries";
 import Select from "../form/Select";
 import { getFuncionariosAtivos } from "@/util/requests/funcionarioHTTP";
 import Loading from "../UI/Loading";
+import { getFichasByFuncionario } from "@/util/requests/fichaHTTP";
+import { notBlank } from "@/util/validate";
 
 type HorarioModalProps = {
   toggleDialog: () => void;
@@ -30,14 +32,16 @@ export default function HorarioModal({
   const [step, setStep] = useState<0 | 1>(0);
   const [recorrente, setRecorrente] = useState(false);
   const [responsavelId, setResponsavelId] = useState<string>(user?.id!);
+  const [ficha, setFicha] = useState<string | null>(null);
 
   const { mutate: agendar } = useMutation({
-    mutationFn: agendarHorario,
+    mutationFn: createAtendimento,
     onSuccess: () => {
       toggleDialog();
       queryClient.invalidateQueries({
-        queryKey: ["agendamentos", agendamento.data, agendamento.nomeSala],
+        queryKey: ["agendamentos", agendamento.data, agendamento.sala],
       });
+      setRecorrente(false);
       Alert.alert(
         "Horário agendado com sucesso",
         "Gostaria de ver seus agendamentos?",
@@ -51,6 +55,14 @@ export default function HorarioModal({
         ]
       );
     },
+  });
+
+  const { data: fichas, isLoading: loadingFichas } = useQuery({
+    queryKey: ["fichas", user?.id],
+    queryFn: () =>
+      getFichasByFuncionario({ idFuncionario: user?.id!, token: token! }),
+    enabled: !!user?.id && !!token,
+    initialData: [],
   });
 
   const {
@@ -83,9 +95,22 @@ export default function HorarioModal({
   );
 
   function agendarHandler() {
-    setRecorrente(false);
-
-    agendar({ ...agendamento, recorrente, idResponsavel: responsavelId });
+    const atendimento = {
+      ...agendamento,
+      terapeuta: responsavelId,
+      funcionario: user?.id!,
+    };
+    if (notBlank(atendimento) && !!ficha) {
+      agendar({
+        atendimento,
+        token: token!,
+      });
+    } else {
+      Alert.alert(
+        "Erro",
+        "Preencha todas as informações necessárias para continuar."
+      );
+    }
   }
 
   function changeResponsavelHandler(id: string) {
@@ -101,6 +126,14 @@ export default function HorarioModal({
     toggleDialog();
   }
 
+  function selectFichaHandler(id: string) {
+    setFicha(id);
+  }
+
+  if (loadingFuncionarios || loadingFichas) {
+    return <Loading />;
+  }
+
   return (
     <Dialog
       visible={visible}
@@ -112,7 +145,7 @@ export default function HorarioModal({
     >
       {agendamento.data && <InfoBox content={agendamento.data} label="Dia" />}
       <InfoBox content={agendamento.horario!} label="Horário" />
-      <InfoBox content={agendamento.nomeSala!} label="Sala" />
+      <InfoBox content={agendamento.sala!} label="Sala" />
       {user?.cargo === "TECNICO" && (
         <Select
           onSelect={changeResponsavelHandler}
@@ -121,6 +154,12 @@ export default function HorarioModal({
           defaultValue={user}
         />
       )}
+      <Select
+        placeholder="Selecione uma de suas fichas"
+        onSelect={selectFichaHandler}
+        data={fichas!}
+      />
+
       <Switch
         isEnabled={recorrente}
         label="Recorrente?"

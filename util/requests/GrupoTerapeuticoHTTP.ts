@@ -5,11 +5,7 @@ import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
 export const GRUPOS_TERAPEUTICOS: GrupoTerapeutico[] = [];
 
 export function getGruposTerapeuticosByFuncionario(funcionarioId: string) {
-  return GRUPOS_TERAPEUTICOS.filter(
-    (grupo) =>
-      grupo.fichasId.includes(funcionarioId) ||
-      grupo.coordenador.includes(funcionarioId)
-  );
+  return [] as GrupoTerapeutico[];
 }
 
 export function getGrupoById(grupoId: string) {
@@ -45,15 +41,32 @@ export async function getGruposDisponiveis(funcionarioId: string) {
   );
 }
 
-export async function createGrupoTerapeutico(newGrupo: NewGrupo) {
+export async function createGrupoTerapeutico({
+  newGrupo,
+  token,
+}: {
+  newGrupo: NewGrupo;
+  token: string;
+}) {
   const { tema, idMinistrante: coordenador, tipo, descricao } = newGrupo;
   if (tipo === "Terapêutico") {
-    return GRUPOS_TERAPEUTICOS.push({
-      id: GRUPOS_TERAPEUTICOS.length.toString(),
-      coordenador,
-      tema: tema.trim(),
-      fichasId: [],
-      descricao: descricao?.trim(),
-    });
+    return tema;
+    // return GRUPOS_TERAPEUTICOS.push({
+    //   id: GRUPOS_TERAPEUTICOS.length.toString(),
+    //   coordenador,
+    //   tema: tema.trim(),
+    //   fichasId: [],
+    //   descricao: descricao?.trim(),
+    // });
   }
+}
+
+export async function getGruposTerapeuticoDisponiveis({
+  funcionarioId,
+  token,
+}: {
+  funcionarioId: string;
+  token: string;
+}) {
+  return [] as GrupoTerapeutico[];
 }

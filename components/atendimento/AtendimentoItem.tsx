@@ -7,9 +7,9 @@ import { memo } from "react";
 import InfoBox from "../UI/InfoBox";
 import Icon from "../general/Icon";
 import { useMutation } from "@tanstack/react-query";
-import { deleteAgendamento } from "@/util/requests/agendamentoHTTP";
 import { queryClient } from "@/util/queries";
 import useAuth from "@/hooks/useAuth";
+import { deleteAgendamento } from "@/util/requests/atendimentoIndividualHTTP";
 
 type AtendimentoItemProps = {
   agendamento: Agendamento;
@@ -57,7 +57,7 @@ const AgendamentoItem = ({ agendamento }: AtendimentoItemProps) => {
         />
       </View>
 
-      <InfoBox content={agendamento.nomeSala!} label="Sala" />
+      <InfoBox content={agendamento.sala!} label="Sala" />
       <InfoBox content={agendamento.horario!} label="Horário" />
       <InfoBox content={agendamento.data!} label="Dia" />
     </Pressable>

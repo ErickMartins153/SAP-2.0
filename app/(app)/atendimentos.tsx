@@ -4,7 +4,7 @@ import Icon from "@/components/general/Icon";
 import MainPageLayout from "@/components/layouts/MainPageLayout";
 import useAuth from "@/hooks/useAuth";
 import { Agendamento } from "@/interfaces/Agendamento";
-import { getAgendamentosByFuncionario } from "@/util/requests/agendamentoHTTP";
+import { getAgendamentosByFuncionario } from "@/util/requests/atendimentoIndividualHTTP";
 import { useQuery } from "@tanstack/react-query";
 import { router, useNavigation } from "expo-router";
 import { useLayoutEffect } from "react";

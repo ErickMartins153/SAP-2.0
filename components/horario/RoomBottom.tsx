@@ -13,10 +13,13 @@ export default function RoomBottom() {
     queryFn: getSalas,
     initialData: [],
   });
+
   const { onSelectValue } = useBottomSheet();
   function renderSalaHandler(sala: Sala) {
     return (
-      <Button onPress={() => onSelectValue(sala.nome)}>{sala.nome}</Button>
+      <Button onPress={() => onSelectValue(sala.nome)} key={sala.id}>
+        {sala.nome}
+      </Button>
     );
   }
 

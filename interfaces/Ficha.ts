@@ -1,15 +1,14 @@
-import Funcionario from "./Funcionario";
 import GrupoTerapeutico from "./GrupoTerapeutico";
 
 export default interface Ficha {
   id: string;
-  responsavel: Funcionario;
-  grupoTerapeutico?: GrupoTerapeutico;
+  idResponsavel: string;
+  idGrupoTerapeutico?: GrupoTerapeutico;
   nome: string;
 }
 
 export interface NewFicha {
   idResponsavel: string;
-  idGrupoTerapeutico?: string;
+  idGrupoTerapeutico?: string | null;
   nome: string;
 }

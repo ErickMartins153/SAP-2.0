@@ -1,8 +1,7 @@
 export default interface GrupoEstudo {
   id: string;
-  temaEstudo: string;
-  idMinistrante: string;
-  idParticipantes: string[];
+  tema: string;
+  dono: string;
   descricao?: string;
 }
 

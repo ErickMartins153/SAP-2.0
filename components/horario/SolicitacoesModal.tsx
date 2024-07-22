@@ -25,8 +25,8 @@ export default function SolicitacoesModal({
   const DUMMY: Agendamento[] = [
     {
       id: "1",
-      idResponsavel: user?.id!,
-      nomeSala: "1",
+      terapeuta: user?.id!,
+      sala: "1",
       data: "17/07/2024",
       horario: "12:00 - 13:00",
       recorrente: false,

@@ -14,12 +14,11 @@ type GrupoItemProps = {
 };
 
 function isGrupoEstudo(grupo: any): grupo is GrupoEstudo {
-  return typeof grupo === "object" && grupo !== null && "temaEstudo" in grupo;
+  return typeof grupo === "object" && grupo !== null && "dono" in grupo;
 }
 
 const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
   // const dayName = getDayName(grupo);
-  const temaTitulo = isGrupoEstudo(grupo) ? grupo.temaEstudo : grupo.tema;
 
   function onPressHandler() {
     if (onPress) {
@@ -38,7 +37,7 @@ const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
       onPress={onPressHandler}
     >
       <StyledText textAlign="center" fontWeight="bold" size="big">
-        {temaTitulo}
+        {grupo.tema}
       </StyledText>
       {/* <InfoBox label="Data" content={`${dayName}s`} />
       <InfoBox label="Sala" content={grupo.encontro.salaId} /> */}

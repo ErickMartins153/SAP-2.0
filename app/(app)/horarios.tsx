@@ -9,7 +9,7 @@ import RoomModal from "@/components/horario/RoomBottom";
 import HorarioModal from "@/components/horario/HorarioModal";
 import { Agendamento, NewAgendamento, Status } from "@/interfaces/Agendamento";
 import { useQuery } from "@tanstack/react-query";
-import { getAgendamentos } from "@/util/requests/agendamentoHTTP";
+import { getAgendamentos } from "@/util/requests/atendimentoIndividualHTTP";
 import useAuth from "@/hooks/useAuth";
 
 import SolicitacoesModal from "@/components/horario/SolicitacoesModal";
@@ -17,9 +17,10 @@ import SolicitacoesIcon from "@/components/horario/SolicitacoesIcon";
 import { getSalaByName } from "@/util/requests/salaHTTP";
 
 const defaultValues: NewAgendamento = {
-  nomeSala: "",
+  sala: "",
   data: new Date().toLocaleDateString(),
-  idResponsavel: "",
+  terapeuta: "",
+  funcionario: "",
   status: Status.PENDENTE,
 };
 
@@ -39,13 +40,13 @@ export default function Horarios() {
   const [agendamento, setAgendamento] = useState(defaultValues);
   const [showSolicitacoes, setShowSolicitacoes] = useState(false);
   const { data: selectedSala } = useQuery({
-    queryKey: ["salas", agendamento.nomeSala],
-    enabled: !!agendamento.nomeSala,
-    queryFn: () => getSalaByName(agendamento.nomeSala),
+    queryKey: ["salas", agendamento.sala],
+    enabled: !!agendamento.sala,
+    queryFn: () => getSalaByName(agendamento.sala),
   });
 
   const { isLoading, refetch } = useQuery({
-    queryKey: ["agendamentos", agendamento.data, agendamento.nomeSala],
+    queryKey: ["agendamentos", agendamento.data, agendamento.sala],
     enabled: !!selectedSala,
     queryFn: () =>
       getAgendamentos({ data: agendamento.data!, salaId: selectedSala?.id! }),
@@ -106,16 +107,16 @@ export default function Horarios() {
 
   useEffect(() => {
     refetch();
-  }, [agendamento.data, agendamento.nomeSala]);
+  }, [agendamento.data, agendamento.sala]);
 
   useEffect(() => {
     if (selectedValue) {
-      inputHandler("nomeSala", selectedValue);
+      inputHandler("sala", selectedValue);
     }
   }, [selectedValue]);
 
   function toggleModalHandler() {
-    if (agendamento.nomeSala) {
+    if (agendamento.sala) {
       setShowModal((p) => !p);
     } else {
       Alert.alert(

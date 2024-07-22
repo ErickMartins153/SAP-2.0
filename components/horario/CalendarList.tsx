@@ -7,7 +7,7 @@ import {
   getAgendamento,
   getAgendamentos,
   removeAgendamento,
-} from "@/util/requests/agendamentoHTTP";
+} from "@/util/requests/atendimentoIndividualHTTP";
 import { PropsWithoutRef, useEffect, useState } from "react";
 import Dialog from "../layouts/Dialog";
 import StyledText from "../UI/StyledText";
@@ -31,11 +31,12 @@ function isAvailable(
   sala: string,
   agendamentos: Agendamento[]
 ) {
+  return true;
   return !agendamentos.some(
     (agendamento) =>
       agendamento.horario === interval &&
       agendamento.data! === date &&
-      agendamento.nomeSala === sala
+      agendamento.sala === sala
   );
 }
 
@@ -51,10 +52,10 @@ export default function CalendarList({
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["agendamentos", selected.data, selected.nomeSala],
-    enabled: !!selected.nomeSala,
+    queryKey: ["agendamentos", selected.data, selected.sala],
+    enabled: !!selected.sala,
     queryFn: () =>
-      getAgendamentos({ data: selected.data!, salaId: selected.nomeSala! }),
+      getAgendamentos({ data: selected.data!, salaId: selected.sala! }),
   });
 
   const [showDialog, setShowDialog] = useState(false);
@@ -85,14 +86,14 @@ export default function CalendarList({
 
   const { data: funcionarioData } = useQuery({
     queryKey: ["funcionarios", agendamento?.id],
-    queryFn: () => getFuncionarioById(agendamento!.idResponsavel, token!),
+    queryFn: () => getFuncionarioById(agendamento!.terapeuta, token!),
     enabled: !!agendamento?.id,
   });
 
   const { mutate: desmarcar } = useMutation({
     mutationFn: () =>
       removeAgendamento(
-        agendamento?.nomeSala!,
+        agendamento?.sala!,
         agendamento?.data!,
         agendamento?.horario!
       ),
@@ -119,7 +120,7 @@ export default function CalendarList({
 
   useEffect(() => {
     refetch();
-  }, [selected.data, selected.nomeSala]);
+  }, [selected.data, selected.sala]);
 
   function selectDayHandler(interval: string) {
     onSelection(interval);
@@ -131,7 +132,7 @@ export default function CalendarList({
   function renderIntervalItem({ item: interval }: { item: string }) {
     const available =
       selected && agendamentos
-        ? isAvailable(interval, selected.data!, selected.nomeSala, agendamentos)
+        ? isAvailable(interval, selected.data!, selected.sala, agendamentos)
         : false;
 
     return (
@@ -140,7 +141,7 @@ export default function CalendarList({
         lastIndex={false}
         timeInterval={interval}
         available={available}
-        disabled={!selected.nomeSala}
+        disabled={!selected.sala}
         onPress={
           available
             ? selectDayHandler.bind(null, interval)
@@ -148,7 +149,7 @@ export default function CalendarList({
                 null,
                 interval,
                 selected.data!,
-                selected.nomeSala
+                selected.sala
               )
         }
       />
