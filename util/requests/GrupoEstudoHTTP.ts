@@ -74,8 +74,8 @@ export async function addParticipante({
     const response = await axios.post(
       `${BASE_URL}/addFuncionario`,
       {
-        uid: participanteId,
-        uidGrupo: grupoId,
+        idParticipante: participanteId,
+        idGrupo: grupoId,
       },
       { headers: { Authorization: "Bearer " + token } }
     );
@@ -95,6 +95,8 @@ export async function getGruposEstudoDisponiveis({
     const response = await axios.get(`${BASE_URL}/all`, {
       headers: { Authorization: "Bearer " + token },
     });
+    console.log(response.data);
+
     return response.data as GrupoEstudo[];
   } catch (error) {
     console.log(error);
@@ -110,12 +112,6 @@ export async function createGrupoEstudo({
 }) {
   const { tema: temaEstudo, idMinistrante, tipo, descricao } = newGrupo;
   if (tipo === "Estudo") {
-    console.log({
-      tema: temaEstudo.trim(),
-      descricao: descricao?.trim(),
-      dono: idMinistrante,
-    });
-
     const response = await axios.post(
       `${BASE_URL}/`,
       {
@@ -155,6 +151,26 @@ export async function deleteGrupoEstudo({
 }) {
   try {
     const response = await axios.delete(`${BASE_URL}/delete/${grupoId}`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      throw new Error(error.message, { cause: "Algo deu errado" });
+    }
+    throw new Error("Erro inesperado");
+  }
+}
+
+export async function deleteGruposEstudo({
+  gruposId,
+  token,
+}: {
+  gruposId: string[];
+  token: string;
+}) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/delete/many`, {
+      data: gruposId,
       headers: { Authorization: "Bearer " + token },
     });
   } catch (error) {

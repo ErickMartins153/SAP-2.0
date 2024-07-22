@@ -7,51 +7,76 @@ import { router } from "expo-router";
 import InfoBox from "../UI/InfoBox";
 import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
 import { formatText } from "@/util/formatter";
+import { useQuery } from "@tanstack/react-query";
+import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
+import useAuth from "@/hooks/useAuth";
+import Loading from "../UI/Loading";
 
 type GrupoItemProps = {
   grupo: GrupoEstudo | GrupoTerapeutico;
   onPress?: () => void;
+  onSelectGrupo?: (isSelected: boolean, grupoId: string) => void;
+  isSelected?: boolean;
+  anySelected?: boolean;
 };
 
 function isGrupoEstudo(grupo: any): grupo is GrupoEstudo {
   return typeof grupo === "object" && grupo !== null && "dono" in grupo;
 }
 
-const GrupoItem = ({ grupo, onPress }: GrupoItemProps) => {
-  // const dayName = getDayName(grupo);
+const GrupoItem: React.FC<GrupoItemProps> = ({
+  grupo,
+  onPress,
+  onSelectGrupo,
+  isSelected,
+  anySelected,
+}) => {
+  const idDono = isGrupoEstudo(grupo) ? grupo.dono : grupo.idDono;
+  const { token } = useAuth();
+  const { data: funcionario } = useQuery({
+    queryKey: ["funcionarios", idDono],
+    enabled: !!idDono,
+    queryFn: () => getFuncionarioById(idDono!, token!),
+  });
 
-  function onPressHandler() {
-    if (onPress) {
-      onPress();
-    }
+  const handleLongPress = () => {
+    onSelectGrupo?.(!!isSelected, grupo.id);
+  };
 
-    if (isGrupoEstudo(grupo)) {
-      router.navigate(`detalhesGrupo/${grupo.id}`);
+  const handlePress = () => {
+    if (anySelected) {
+      onSelectGrupo?.(!!isSelected, grupo.id);
+    } else {
+      router.push(`detalhesGrupo/${grupo.id}`);
+      if (onPress) {
+        onPress();
+      }
     }
-  }
+  };
 
   return (
     <Pressable
-      style={({ pressed }) => [styles.wrapper, pressed && styles.pressed]}
+      style={[styles.wrapper, isSelected && styles.selected]}
+      onPress={handlePress}
+      onLongPress={handleLongPress}
       android_ripple={{ color: Colors.lightRipple }}
-      onPress={onPressHandler}
     >
       <StyledText textAlign="center" fontWeight="bold" size="big">
         {grupo.tema}
       </StyledText>
-      {/* <InfoBox label="Data" content={`${dayName}s`} />
-      <InfoBox label="Sala" content={grupo.encontro.salaId} /> */}
-      {grupo?.descricao && (
-        <InfoBox label="Descrição" content={formatText(grupo.descricao, 180)} />
-      )}
-      {isGrupoEstudo(grupo) && (
-        <StyledText textAlign="center" fontWeight="bold">
-          Clique para ver mais informações
-        </StyledText>
-      )}
+      <InfoBox label="Descrição" content={grupo?.descricao || ""} />
+      <InfoBox
+        label="Responsável"
+        content={formatText(
+          `${funcionario?.nome} ${funcionario?.sobrenome}`,
+          18
+        )}
+      />
     </Pressable>
   );
 };
+
+export default memo(GrupoItem);
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -63,9 +88,11 @@ const styles = StyleSheet.create({
     elevation: 4,
     gap: 12,
   },
-  pressed: {
-    opacity: 0.8,
+  selected: {
+    opacity: 0.9,
+    backgroundColor: Colors.lightRipple,
+    borderWidth: 0,
+    borderBottomWidth: 2,
+    borderColor: Colors.text,
   },
 });
-
-export default memo(GrupoItem);

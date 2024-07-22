@@ -13,6 +13,7 @@ import { Alert, BackHandler, View } from "react-native";
 
 export default function Mural() {
   const { token } = useAuth();
+
   const navigation = useNavigation();
   const [showPostModal, setShowPostModal] = useState(false);
   const [selectedPosts, setSelectedPosts] = useState<string[]>([]);

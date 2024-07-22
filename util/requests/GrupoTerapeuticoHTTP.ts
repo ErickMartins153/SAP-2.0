@@ -1,11 +1,28 @@
 import { NewGrupo } from "@/components/grupos/AddGrupoModal";
 
 import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
+import axios, { isAxiosError } from "axios";
 
 export const GRUPOS_TERAPEUTICOS: GrupoTerapeutico[] = [];
 
-export function getGruposTerapeuticosByFuncionario(funcionarioId: string) {
-  return [] as GrupoTerapeutico[];
+const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL + "/grupo-terapeutico";
+// headers: { Authorization: "Bearer " + token },
+
+export async function getGruposTerapeuticosByFuncionario({
+  funcionarioId,
+  token,
+}: {
+  funcionarioId: string;
+  token: string;
+}) {
+  try {
+    const response = await axios.get(`${BASE_URL}/many/${funcionarioId}`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+    return response.data as GrupoTerapeutico[];
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export function getGrupoById(grupoId: string) {
@@ -36,7 +53,7 @@ export async function getGruposDisponiveis(funcionarioId: string) {
     (grupo) =>
       !(
         grupo.fichasId.includes(funcionarioId) ||
-        grupo.coordenador.includes(funcionarioId)
+        grupo.idDono.includes(funcionarioId)
       )
   );
 }
@@ -48,16 +65,19 @@ export async function createGrupoTerapeutico({
   newGrupo: NewGrupo;
   token: string;
 }) {
-  const { tema, idMinistrante: coordenador, tipo, descricao } = newGrupo;
-  if (tipo === "Terapêutico") {
-    return tema;
-    // return GRUPOS_TERAPEUTICOS.push({
-    //   id: GRUPOS_TERAPEUTICOS.length.toString(),
-    //   coordenador,
-    //   tema: tema.trim(),
-    //   fichasId: [],
-    //   descricao: descricao?.trim(),
-    // });
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/`,
+      {
+        tema: newGrupo.tema,
+        descricao: newGrupo.descricao,
+        idDono: newGrupo.idMinistrante,
+      },
+      { headers: { Authorization: "Bearer " + token } }
+    );
+    return response.data.tema as string;
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -69,4 +89,43 @@ export async function getGruposTerapeuticoDisponiveis({
   token: string;
 }) {
   return [] as GrupoTerapeutico[];
+}
+
+export async function deleteGrupoTerapeutico({
+  grupoId,
+  token,
+}: {
+  grupoId: string;
+  token: string;
+}) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/delete/${grupoId}`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      throw new Error(error.message, { cause: "Algo deu errado" });
+    }
+    throw new Error("Erro inesperado");
+  }
+}
+
+export async function deleteGruposTerapeutico({
+  gruposId,
+  token,
+}: {
+  gruposId: string[];
+  token: string;
+}) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/delete/many`, {
+      data: gruposId,
+      headers: { Authorization: "Bearer " + token },
+    });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      throw new Error(error.message, { cause: "Algo deu errado" });
+    }
+    throw new Error("Erro inesperado");
+  }
 }

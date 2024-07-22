@@ -8,14 +8,23 @@ import MainPageLayout from "@/components/layouts/MainPageLayout";
 import useAuth from "@/hooks/useAuth";
 import useBottomSheet from "@/hooks/useBottom";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
-import { getGruposByFuncionario } from "@/util/requests/GrupoEstudoHTTP";
+import {
+  deleteGruposEstudo,
+  getGruposByFuncionario,
+} from "@/util/requests/GrupoEstudoHTTP";
 import { useQuery } from "@tanstack/react-query";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { BackHandler, FlatList, StyleSheet, View } from "react-native";
+import { Alert, BackHandler, FlatList, StyleSheet, View } from "react-native";
 import Button from "@/components/general/Button";
-import { getGruposTerapeuticosByFuncionario } from "@/util/requests/GrupoTerapeuticoHTTP";
+import {
+  deleteGruposTerapeutico,
+  getGruposTerapeuticosByFuncionario,
+} from "@/util/requests/GrupoTerapeuticoHTTP";
 import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
+import { useMutation } from "@tanstack/react-query";
+
+import { queryClient } from "@/util/queries";
 
 export default function MeusGrupos() {
   const { user, token } = useAuth();
@@ -26,6 +35,7 @@ export default function MeusGrupos() {
   const [showGrupo, setShowGrupo] = useState<"estudo" | "terapeutico">(
     "estudo"
   );
+  const [selectedGrupos, setSelectedGrupos] = useState<string[]>([]);
 
   function toggleModalHandler() {
     setShowModal((p) => !p);
@@ -51,8 +61,26 @@ export default function MeusGrupos() {
   } = useQuery({
     queryKey: ["grupos", "terapeutico", user!.id],
     enabled: !!user?.id,
-    queryFn: () => getGruposTerapeuticosByFuncionario(user!.id),
+    queryFn: () =>
+      getGruposTerapeuticosByFuncionario({
+        funcionarioId: user!.id!,
+        token: token!,
+      }),
     initialData: [],
+  });
+
+  const { mutate: deleteGrupos } = useMutation({
+    mutationFn:
+      showGrupo === "estudo" ? deleteGruposEstudo : deleteGruposTerapeutico,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["grupos"] });
+      queryClient.refetchQueries({ queryKey: ["grupos"] });
+      Alert.alert(
+        "Grupos deletados",
+        "Todos os grupos selecionados foram deletados com sucesso!"
+      );
+      setSelectedGrupos([]);
+    },
   });
 
   useLayoutEffect(() => {
@@ -65,18 +93,19 @@ export default function MeusGrupos() {
     navigation.setOptions({
       headerRight: () => (
         <Icon
-          name="plus"
+          name={selectedGrupos.length > 0 ? "trash" : "plus"}
+          color={selectedGrupos.length > 0 ? "red" : "icon"}
           style={{
             paddingRight: "8%",
             paddingLeft: "20%",
             height: "100%",
             justifyContent: "center",
           }}
-          onPress={openBottom}
+          onPress={selectedGrupos.length > 0 ? handleDelete : openBottom}
         />
       ),
     });
-  }, [navigation]);
+  }, [navigation, selectedGrupos.length]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", (e) => {
@@ -106,7 +135,16 @@ export default function MeusGrupos() {
   );
 
   function renderGrupoHandler(grupo: GrupoEstudo | GrupoTerapeutico) {
-    return <GrupoItem grupo={grupo} onPress={closeBottom} key={grupo.id} />;
+    return (
+      <GrupoItem
+        grupo={grupo}
+        onPress={closeBottom}
+        key={grupo.id}
+        onSelectGrupo={selectGrupoHandler}
+        isSelected={selectedGrupos.includes(grupo.id)}
+        anySelected={selectedGrupos.length > 0}
+      />
+    );
   }
 
   function toggleGrupoView(v: typeof showGrupo) {
@@ -118,8 +156,35 @@ export default function MeusGrupos() {
     refetchTerapeutico();
   }
 
+  function selectGrupoHandler(isSelected: boolean, grupoId: string) {
+    if (!isSelected) {
+      setSelectedGrupos((prevSelected) => [...prevSelected, grupoId]);
+    } else {
+      setSelectedGrupos((prevSelected) =>
+        prevSelected.filter((id) => id !== grupoId)
+      );
+    }
+  }
+
+  function handleDelete() {
+    Alert.alert(
+      "Tem certeza?",
+      `Confirmar deleção de ${selectedGrupos.length} Grupo${
+        selectedGrupos.length > 1 ? "s" : ""
+      }?`,
+      [
+        { isPreferred: true, text: "Cancelar" },
+        {
+          text: "Confirmar",
+          onPress: () =>
+            deleteGrupos({ gruposId: selectedGrupos, token: token! }),
+        },
+      ]
+    );
+  }
+
   if (loadingEstudo || isError) {
-    return;
+    return null;
   }
 
   return (

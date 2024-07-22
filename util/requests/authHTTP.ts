@@ -59,7 +59,6 @@ export async function registerEstagiario(
     senha,
     urlImagem: "",
   };
-  console.log(`${BASE_URL}/register-estagiario`);
 
   const response = await axios.post(
     `${BASE_URL}/register-estagiario`,

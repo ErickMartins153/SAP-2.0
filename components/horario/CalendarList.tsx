@@ -142,6 +142,7 @@ export default function CalendarList({
         timeInterval={interval}
         available={available}
         disabled={!selected.sala}
+        key={interval}
         onPress={
           available
             ? selectDayHandler.bind(null, interval)

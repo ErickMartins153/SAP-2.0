@@ -28,7 +28,6 @@ export default function GrupoBottom({
     queryFn: () =>
       getGruposEstudoDisponiveis({ funcionarioId: user!.id, token: token! }),
   });
-  console.log(gruposEstudoDisponiveis);
 
   const { data: gruposTerapeuticosDisponiveis } = useQuery({
     queryKey: ["grupos", "terapeuticos", "disponiveis", user?.id],

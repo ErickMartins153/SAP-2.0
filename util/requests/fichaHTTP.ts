@@ -14,15 +14,13 @@ export async function createFicha({
     if (ficha.idGrupoTerapeutico === "") {
       delete ficha.idGrupoTerapeutico;
     }
-    console.log(BASE_URL);
-    console.log(ficha);
 
     const response = await axios.post(`${BASE_URL}/`, ficha, {
       headers: { Authorization: "Bearer " + token },
     });
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error.toJSON());
+      console.log(error);
     }
   }
 }

@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { router } from "expo-router";
 import { PropsWithoutRef, useState } from "react";
 import { Alert, ModalProps } from "react-native";
 import ModalLayout from "../layouts/ModalLayout";
@@ -64,7 +63,7 @@ export default function AddGrupoModal({
     onSuccess: (nome) => {
       setNewGrupo(defaultValues);
       toggleDialog();
-      toggleModal();
+      closeHandler();
       queryClient.invalidateQueries({
         exact: false,
         queryKey: ["grupos", "estudo", "agendamentos"],
@@ -75,7 +74,6 @@ export default function AddGrupoModal({
         "Grupo criado com sucesso",
         `O grupo ${nome} foi criado com sucesso`
       );
-      router.navigate("grupos");
     },
   });
 

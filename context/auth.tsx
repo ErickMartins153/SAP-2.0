@@ -2,7 +2,7 @@ import Funcionario, { Token } from "@/interfaces/Funcionario";
 import { Credentials, authenticateUser } from "@/util/requests/authHTTP";
 import { useMutation } from "@tanstack/react-query";
 import { ReactNode, createContext, useState } from "react";
-import * as SecureStore from "expo-secure-store";
+// import * as SecureStore from "expo-secure-store";
 import { Alert } from "react-native";
 
 interface AuthContextType {
@@ -35,7 +35,7 @@ export default function AuthContextProvider({
       if (user) {
         setUserData(user.funcionario);
         setToken(user.token);
-        SecureStore.setItemAsync("token", user.token.token);
+        // SecureStore.setItemAsync("token", user.token.token);
       }
     },
     onError: (e) => {
@@ -49,6 +49,7 @@ export default function AuthContextProvider({
 
   function logout() {
     setUserData(null);
+    // SecureStore.deleteItemAsync("token");
     setToken(null);
   }
 

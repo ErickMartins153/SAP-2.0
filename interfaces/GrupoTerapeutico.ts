@@ -1,7 +1,7 @@
 export default interface GrupoTerapeutico {
   id: string;
   tema: string;
-  coordenador: string;
+  idDono: string;
   fichasId: string[];
   descricao?: string;
 }

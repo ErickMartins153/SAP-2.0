@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "@/util/requests/postHTTP";
 import useAuth from "@/hooks/useAuth";
 import StyledText from "../UI/StyledText";
+import Loading from "../UI/Loading";
 
 function isSelected(postId: string, selectedPosts: string[]) {
   return selectedPosts.includes(postId);
@@ -49,10 +50,14 @@ export default function PostList({
     );
   }
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       <FlatList
-        data={posts}
+        data={posts || []}
         ListEmptyComponent={
           <View
             style={{

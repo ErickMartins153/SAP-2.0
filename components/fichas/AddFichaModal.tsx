@@ -39,7 +39,11 @@ export default function AddFichaModal({
   } = useQuery({
     queryKey: ["grupos", "terapeutico", user!.id],
     enabled: !!user?.id && hasGroup,
-    queryFn: () => getGruposTerapeuticosByFuncionario(user!.id),
+    queryFn: () =>
+      getGruposTerapeuticosByFuncionario({
+        funcionarioId: user!.id!,
+        token: token!,
+      }),
     initialData: [],
   });
 
@@ -126,7 +130,7 @@ export default function AddFichaModal({
         />
         {hasGroup && (
           <Select
-            data={gruposTerapeuticos}
+            data={gruposTerapeuticos || []}
             placeholder="Escolha o grupo terapêutico"
             onSelect={inputHandler.bind(null, "idGrupoTerapeutico")}
           />

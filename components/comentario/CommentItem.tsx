@@ -40,7 +40,7 @@ const CommentItem = ({ comentario, onDelete }: CommentItemProps) => {
   });
 
   function confirmDeleteHandler() {
-    if (user!.cargo === "TECNICO" || user?.id === comentario.idAutor) {
+    if (user!.cargo === "TECNICO") {
       Alert.alert(
         "Tem certeza?",
         "Você tem certeza que deseja remover este comentário?",
