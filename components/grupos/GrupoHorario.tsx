@@ -1,11 +1,13 @@
 import { View } from "react-native";
 import DaySelector from "../horario/DaySelector";
 import Select from "../form/Select";
-import { SALAS } from "@/interfaces/Sala";
 
 import CalendarList from "../horario/CalendarList";
 import { NewAgendamento } from "@/interfaces/Agendamento";
 import ModalLayout from "../layouts/ModalLayout";
+import { useQuery } from "@tanstack/react-query";
+import { getSalas } from "@/util/requests/salaHTTP";
+import useAuth from "@/hooks/useAuth";
 
 type GrupoHorarioProps = {
   inputHandler: (field: keyof NewAgendamento, text: string) => void;
@@ -20,6 +22,12 @@ export default function GrupoHorario({
   toggleDialog,
   selected,
 }: GrupoHorarioProps) {
+  const { token } = useAuth();
+  const { data: salas } = useQuery({
+    queryKey: ["salas"],
+    queryFn: () => getSalas(token!),
+    initialData: [],
+  });
   function confirmHandler(horario: string) {
     inputHandler("horario", horario);
     toggleDialog();
@@ -30,9 +38,9 @@ export default function GrupoHorario({
       <View style={{ marginVertical: "4%", gap: 24 }}>
         <DaySelector onSelection={inputHandler.bind(null, "data")} />
         <Select
-          data={SALAS}
-          onSelect={inputHandler.bind(null, "sala")}
-          placeholder="Sala"
+          data={salas || []}
+          onSelect={inputHandler.bind(null, "idSala")}
+          placeholder="Selecione a sala desejada"
           key="salas"
         />
         <CalendarList

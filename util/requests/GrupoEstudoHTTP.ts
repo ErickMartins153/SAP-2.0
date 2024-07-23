@@ -1,11 +1,13 @@
 import { NewGrupo } from "@/components/grupos/AddGrupoModal";
-import { NewAgendamento, Status } from "@/interfaces/Agendamento";
+import { NewAgendamento } from "@/interfaces/Agendamento";
 import GrupoEstudo from "@/interfaces/GrupoEstudo";
-import { createAtendimento } from "./atendimentoIndividualHTTP";
 
 import axios, { isAxiosError } from "axios";
+import { createTimestamps, formatDateTime } from "../dateUtils";
 
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL + "/grupoEstudo";
+
+const AGENDAR_URL = process.env.EXPO_PUBLIC_BASE_URL + "/atividades/encontros";
 
 export async function getGruposByFuncionario({
   funcionarioId,
@@ -84,18 +86,17 @@ export async function addParticipante({
   }
 }
 
-export async function getGruposEstudoDisponiveis({
-  funcionarioId,
-  token,
-}: {
-  funcionarioId: string;
-  token: string;
-}) {
+export async function getGruposEstudoDisponiveis(
+  funcionarioId: string,
+  token: string
+) {
   try {
-    const response = await axios.get(`${BASE_URL}/all`, {
-      headers: { Authorization: "Bearer " + token },
-    });
-    console.log(response.data);
+    const response = await axios.get(
+      `${BASE_URL}/grupo-nao-participados/many/${funcionarioId}`,
+      {
+        headers: { Authorization: "Bearer " + token },
+      }
+    );
 
     return response.data as GrupoEstudo[];
   } catch (error) {
@@ -178,5 +179,65 @@ export async function deleteGruposEstudo({
       throw new Error(error.message, { cause: "Algo deu errado" });
     }
     throw new Error("Erro inesperado");
+  }
+}
+
+export async function createAgendamentoEstudo({
+  agendamento,
+  token,
+}: {
+  agendamento: Omit<NewAgendamento, "idFicha"> & { idGrupoEstudo: string };
+  token: string;
+}) {
+  try {
+    const {
+      idFuncionario: idFuncionario,
+      idSala: idSala,
+      data,
+      idGrupoEstudo,
+      horario,
+      statusAtividade,
+    } = agendamento;
+    const { tempoFim, tempoInicio } = createTimestamps(data!, horario!);
+    const finalData = {
+      idSala,
+      idFuncionario,
+      tempoInicio,
+      tempoFim,
+      statusAtividade: "PENDENTE",
+      idGrupoEstudo,
+    };
+    console.log(`${AGENDAR_URL}/one`);
+
+    console.log(finalData);
+
+    const response = await axios.post(`${AGENDAR_URL}/one`, finalData, {
+      headers: { Authorization: "Bearer " + token },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getAgendamentoEstudo(
+  idGrupoEstudo: string,
+  token: string
+) {
+  try {
+    const url = `${AGENDAR_URL}/many/id-grupo/${idGrupoEstudo}`;
+
+    const response = await axios.get(url, {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (response.data.length < 1) {
+      return null;
+    }
+
+    const { tempoInicio, tempoFim } = response.data[0];
+    const { data, horario } = formatDateTime(tempoInicio, tempoFim);
+    return { data, horario };
+  } catch (error) {
+    console.log(error);
   }
 }

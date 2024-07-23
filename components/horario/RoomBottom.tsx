@@ -6,18 +6,20 @@ import useBottomSheet from "@/hooks/useBottom";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { getSalas } from "@/util/requests/salaHTTP";
+import useAuth from "@/hooks/useAuth";
 
 export default function RoomBottom() {
+  const { token } = useAuth();
   const { data: salas } = useQuery({
     queryKey: ["salas"],
-    queryFn: getSalas,
+    queryFn: () => getSalas(token!),
     initialData: [],
   });
 
   const { onSelectValue } = useBottomSheet();
   function renderSalaHandler(sala: Sala) {
     return (
-      <Button onPress={() => onSelectValue(sala.nome)} key={sala.id}>
+      <Button onPress={() => onSelectValue(sala.uid)} key={sala.uid}>
         {sala.nome}
       </Button>
     );
@@ -32,7 +34,7 @@ export default function RoomBottom() {
       }
       data={salas}
       renderItem={({ item }) => renderSalaHandler(item)}
-      keyExtractor={({ id: idSala }) => idSala}
+      keyExtractor={({ uid: idSala }) => idSala}
       contentContainerStyle={styles.items}
     ></BottomSheetFlatList>
   );

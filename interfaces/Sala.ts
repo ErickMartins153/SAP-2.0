@@ -1,5 +1,5 @@
 export default interface Sala {
-  id: string;
+  uid: string;
   nome: string;
   tipoSala: TipoSala;
 }

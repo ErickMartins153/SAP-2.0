@@ -7,7 +7,7 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { Alert, BackHandler } from "react-native";
 import RoomModal from "@/components/horario/RoomBottom";
 import HorarioModal from "@/components/horario/HorarioModal";
-import { Agendamento, NewAgendamento, Status } from "@/interfaces/Agendamento";
+import { Agendamento, NewAgendamento } from "@/interfaces/Agendamento";
 import { useQuery } from "@tanstack/react-query";
 import { getAgendamentos } from "@/util/requests/atendimentoIndividualHTTP";
 import useAuth from "@/hooks/useAuth";
@@ -17,16 +17,16 @@ import SolicitacoesIcon from "@/components/horario/SolicitacoesIcon";
 import { getSalaByName } from "@/util/requests/salaHTTP";
 
 const defaultValues: NewAgendamento = {
-  sala: "",
+  idSala: "",
   data: new Date().toLocaleDateString(),
-  terapeuta: "",
-  funcionario: "",
-  status: Status.PENDENTE,
+  idTerapeuta: "",
+  idFuncionario: "",
+  statusAtividade: "PENDENTE",
 };
 
 export default function Horarios() {
   const navigation = useNavigation();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const {
     clear,
     isVisible,
@@ -40,17 +40,26 @@ export default function Horarios() {
   const [agendamento, setAgendamento] = useState(defaultValues);
   const [showSolicitacoes, setShowSolicitacoes] = useState(false);
   const { data: selectedSala } = useQuery({
-    queryKey: ["salas", agendamento.sala],
-    enabled: !!agendamento.sala,
-    queryFn: () => getSalaByName(agendamento.sala),
+    queryKey: ["salas", agendamento.idSala],
+    enabled: !!agendamento.idSala,
+    queryFn: () => getSalaByName(agendamento.idSala, token!),
   });
 
-  const { isLoading, refetch } = useQuery({
-    queryKey: ["agendamentos", agendamento.data, agendamento.sala],
+  const {
+    data: agendamentos,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["agendamentos", agendamento.data, agendamento.idSala],
     enabled: !!selectedSala,
     queryFn: () =>
-      getAgendamentos({ data: agendamento.data!, salaId: selectedSala?.id! }),
+      getAgendamentos({
+        data: agendamento.data!,
+        salaId: selectedSala?.uid!,
+        token: token!,
+      }),
   });
+  console.log(agendamento);
 
   useLayoutEffect(() => {
     changeBottomContent(<RoomModal />);
@@ -60,10 +69,7 @@ export default function Horarios() {
     if (user?.cargo === "TECNICO") {
       navigation.setOptions({
         headerRight: () => (
-          <SolicitacoesIcon
-            qtdSolicitacoes={2}
-            toggleModal={toggleSolicitacoesHandler}
-          />
+          <SolicitacoesIcon toggleModal={toggleSolicitacoesHandler} />
         ),
       });
     }
@@ -107,16 +113,16 @@ export default function Horarios() {
 
   useEffect(() => {
     refetch();
-  }, [agendamento.data, agendamento.sala]);
+  }, [agendamento.data, agendamento.idSala]);
 
   useEffect(() => {
     if (selectedValue) {
-      inputHandler("sala", selectedValue);
+      inputHandler("idSala", selectedValue);
     }
   }, [selectedValue]);
 
   function toggleModalHandler() {
-    if (agendamento.sala) {
+    if (agendamento.idSala) {
       setShowModal((p) => !p);
     } else {
       Alert.alert(

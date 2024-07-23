@@ -66,7 +66,7 @@ export default function detalhesPost() {
     isRefetching: refetchingComentarios,
   } = useQuery({
     queryKey: ["comentarios", postId],
-    queryFn: () => getComentariosByPost(postId!),
+    queryFn: () => getComentariosByPost(postId!, token!),
     enabled: !!postId,
   });
 

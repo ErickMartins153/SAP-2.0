@@ -1,4 +1,4 @@
-import { memo, useEffect, useLayoutEffect, useState } from "react";
+import { memo, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { Colors } from "@/constants/Colors";
@@ -13,9 +13,9 @@ type DaySelectorProps = {
 };
 
 const DaySelector = ({ onSelection }: DaySelectorProps) => {
-  const today = todayDate.getDate();
+  const today = useMemo(() => todayDate.getDate(), [todayDate]);
   const [week, setWeek] = useState<Day[]>([]);
-  const [selectedDay, setSelectedDay] = useState(today);
+  const [selectedDay, setSelectedDay] = useState(todayDate.getDate());
 
   useLayoutEffect(() => {
     const weekDays = getWeekDays(todayDate);

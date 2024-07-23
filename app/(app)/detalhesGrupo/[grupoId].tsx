@@ -1,7 +1,9 @@
 import useAuth from "@/hooks/useAuth";
 import {
   addParticipante,
+  createAgendamentoEstudo,
   deleteGrupoEstudo,
+  getAgendamentoEstudo,
   getGrupoById,
   getParticipantesByGrupo,
   removeParticipante,
@@ -34,9 +36,9 @@ import GrupoHorario from "@/components/grupos/GrupoHorario";
 import { NewAgendamento } from "@/interfaces/Agendamento";
 import Dialog from "@/components/layouts/Dialog";
 import InfoBox from "@/components/UI/InfoBox";
-import { notBlank } from "@/util/validate";
 import Loading from "@/components/UI/Loading";
-import Select from "@/components/form/Select";
+
+import { getSalaById } from "@/util/requests/salaHTTP";
 
 type mutateProps = {
   participanteId: string;
@@ -44,10 +46,10 @@ type mutateProps = {
 };
 
 const defaultValue: NewAgendamento = {
-  terapeuta: "",
-  sala: "",
-  data: "",
-  funcionario: "",
+  idTerapeuta: "",
+  idSala: "",
+  data: new Date().toLocaleDateString(),
+  idFuncionario: "",
 };
 
 function participa(funcionarioId: string, participantes: string[]) {
@@ -60,7 +62,6 @@ export default function detalhesGrupo() {
   const [showAgendar, setShowAgendar] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [agendamentoInfo, setAgendamentoInfo] = useState(defaultValue);
-  const nextDate = "Indefinido";
   const [showFuncionarios, setShowFuncionarios] = useState<
     "ministrantes" | "participantes"
   >("ministrantes");
@@ -104,6 +105,18 @@ export default function detalhesGrupo() {
     initialData: [],
   });
 
+  const { data: sala } = useQuery({
+    queryKey: ["salas", agendamentoInfo.idSala],
+    enabled: !!agendamentoInfo.idSala,
+    queryFn: () => getSalaById(agendamentoInfo.idSala!, token!),
+  });
+
+  const { data: encontro, isLoading: loadingEncontro } = useQuery({
+    queryKey: ["agendamento", "grupo", grupoId],
+    enabled: !!grupoId,
+    queryFn: () => getAgendamentoEstudo(grupoId!, token!),
+  });
+
   const { mutate: removerGrupo } = useMutation({
     mutationFn: ({ participanteId, grupoId }: mutateProps) =>
       removeParticipante({
@@ -115,6 +128,7 @@ export default function detalhesGrupo() {
       queryClient.invalidateQueries({ queryKey: ["grupos"] });
       await refetchIdParticipantes();
       await refetchParticipantes();
+      router.back();
     },
   });
 
@@ -128,6 +142,17 @@ export default function detalhesGrupo() {
         "Entrada confirmada!",
         `Você agora faz parte do grupo ${grupoData?.tema}!`
       );
+    },
+  });
+
+  const { mutate: agendarEncontro } = useMutation({
+    mutationFn: createAgendamentoEstudo,
+    onSuccess: () => {
+      Alert.alert("Grupo agendado", "O grupo foi agendado com sucesso");
+      toggleAgendamento();
+      toggleDialog();
+      queryClient.invalidateQueries({ queryKey: ["agendamentos"] });
+      queryClient.refetchQueries({ queryKey: ["agendamentos"] });
     },
   });
 
@@ -207,7 +232,14 @@ export default function detalhesGrupo() {
         },
       ]);
     } else {
-      adicionarGrupo({ participanteId: user!.id, grupoId: grupoId! });
+      Alert.alert("Entrar no grupo?", undefined, [
+        { text: "Cancelar" },
+        {
+          text: "Confirmar",
+          onPress: () =>
+            adicionarGrupo({ participanteId: user!.id, grupoId: grupoId! }),
+        },
+      ]);
     }
   }
 
@@ -235,26 +267,45 @@ export default function detalhesGrupo() {
 
   function toggleAgendamento() {
     setShowAgendar(!showAgendar);
+    setAgendamentoInfo(defaultValue);
   }
 
   function toggleDialog() {
-    setShowDialog(!showDialog);
+    if (!!agendamentoInfo.idSala) {
+      setShowDialog(!showDialog);
+    } else {
+      Alert.alert(
+        "Erro",
+        "Preencha todas as informações necessárias para continuar."
+      );
+    }
   }
 
   function agendarHandler() {
-    if (notBlank(agendamentoInfo)) {
-      console.log(agendamentoInfo);
-    }
+    agendarEncontro({
+      agendamento: {
+        ...agendamentoInfo,
+        idFuncionario: user?.id!,
+        idGrupoEstudo: grupoId!,
+      },
+      token: token!,
+    });
   }
 
   if (
     !grupoData ||
     loadingMinistrante ||
     loadingParticipantes ||
-    loadingIdParticipantes
+    loadingIdParticipantes ||
+    loadingEncontro
   ) {
     return <Loading />;
   }
+
+  const nextDate =
+    !loadingEncontro && encontro
+      ? `${encontro?.data} às ${encontro?.horario}`
+      : "Indefinido";
 
   return (
     <StackPageLayout
@@ -374,7 +425,7 @@ export default function detalhesGrupo() {
       >
         <InfoBox content={agendamentoInfo.data!} label="Dia" />
         <InfoBox content={agendamentoInfo.horario!} label="Horário" />
-        <InfoBox content={agendamentoInfo.sala!} label="Sala" />
+        <InfoBox content={sala?.nome! || "Carregando..."} label="Sala" />
       </Dialog>
     </StackPageLayout>
   );

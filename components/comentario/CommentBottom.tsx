@@ -20,7 +20,7 @@ export default function CommentBottom({
   comentarios,
   postId,
 }: CommentBottomProps) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { mutate: addComment } = useMutation({
     mutationFn: addComentario,
     onSuccess: () => {
@@ -47,9 +47,8 @@ export default function CommentBottom({
 
   function submitComentarioHandler(conteudo: string) {
     addComment({
-      conteudo,
-      idAutor: user!.id,
-      idPost: postId,
+      comentarioData: { conteudo, idAutor: user!.id, idPost: postId },
+      token: token!,
     });
   }
 

@@ -4,9 +4,18 @@ import StyledText from "../UI/StyledText";
 import Icon from "../general/Icon";
 import { Colors } from "@/constants/Colors";
 import useBottomSheet from "@/hooks/useBottom";
+import { useQuery } from "@tanstack/react-query";
+import { getSalaById } from "@/util/requests/salaHTTP";
+import useAuth from "@/hooks/useAuth";
 
 export default function RoomSelector() {
+  const { token } = useAuth();
   const { openBottom, selectedValue } = useBottomSheet();
+  const { data: sala } = useQuery({
+    queryKey: ["salas", selectedValue],
+    enabled: !!selectedValue,
+    queryFn: () => getSalaById(selectedValue!, token!),
+  });
 
   return (
     <Pressable
@@ -14,7 +23,7 @@ export default function RoomSelector() {
       onPress={openBottom}
     >
       <StyledText size="big" color="white">
-        {selectedValue ? selectedValue : "Selecione a sala desejada"}
+        {sala ? sala?.nome : "Selecione a sala desejada"}
       </StyledText>
       <Icon name="chevron-down" size={28} color="white" onPress={openBottom} />
     </Pressable>

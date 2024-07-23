@@ -57,12 +57,12 @@ export default function Navbar({ ...props }: DrawerContentComponentProps) {
               onPress={handleNavigation}
               page="index"
             />
-            <NavbarItem
+            {/* <NavbarItem
               label="Horários"
               icon="calendar"
               onPress={handleNavigation}
               page="horarios"
-            />
+            /> */}
             <NavbarItem
               label="Atendimentos"
               icon="book"

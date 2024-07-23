@@ -25,6 +25,7 @@ import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
 import { useMutation } from "@tanstack/react-query";
 
 import { queryClient } from "@/util/queries";
+import { deleteAtividade } from "@/util/requests/atividadesHTTP";
 
 export default function MeusGrupos() {
   const { user, token } = useAuth();
@@ -70,8 +71,7 @@ export default function MeusGrupos() {
   });
 
   const { mutate: deleteGrupos } = useMutation({
-    mutationFn:
-      showGrupo === "estudo" ? deleteGruposEstudo : deleteGruposTerapeutico,
+    mutationFn: deleteAtividade,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["grupos"] });
       queryClient.refetchQueries({ queryKey: ["grupos"] });
@@ -137,9 +137,9 @@ export default function MeusGrupos() {
   function renderGrupoHandler(grupo: GrupoEstudo | GrupoTerapeutico) {
     return (
       <GrupoItem
-        grupo={grupo}
+        grupoId={grupo}
         onPress={closeBottom}
-        key={grupo.id}
+        key={grupo.id + grupo.tema}
         onSelectGrupo={selectGrupoHandler}
         isSelected={selectedGrupos.includes(grupo.id)}
         anySelected={selectedGrupos.length > 0}
@@ -177,7 +177,7 @@ export default function MeusGrupos() {
         {
           text: "Confirmar",
           onPress: () =>
-            deleteGrupos({ gruposId: selectedGrupos, token: token! }),
+            deleteGrupos({ idsAtividade: selectedGrupos, token: token! }),
         },
       ]
     );

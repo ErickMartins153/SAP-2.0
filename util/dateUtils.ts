@@ -81,3 +81,29 @@ export function createTimestamps(data: string, horario: string) {
     tempoFim: tempoFimISO,
   };
 }
+
+export function formatDateTime(
+  tempoInicio: string,
+  tempoFim: string
+): { data: string; horario: string } {
+  const inicio = new Date(tempoInicio);
+  const fim = new Date(tempoFim);
+
+  const formatDate = (date: Date): string => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const formatTime = (date: Date): string => {
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  const data = formatDate(inicio);
+  const horario = `${formatTime(inicio)} - ${formatTime(fim)}`;
+
+  return { data, horario };
+}

@@ -15,6 +15,7 @@ import { getFuncionariosAtivos } from "@/util/requests/funcionarioHTTP";
 import Loading from "../UI/Loading";
 import { getFichasByFuncionario } from "@/util/requests/fichaHTTP";
 import { notBlank } from "@/util/validate";
+import { getSalaById } from "@/util/requests/salaHTTP";
 
 type HorarioModalProps = {
   toggleDialog: () => void;
@@ -39,7 +40,7 @@ export default function HorarioModal({
     onSuccess: () => {
       toggleDialog();
       queryClient.invalidateQueries({
-        queryKey: ["agendamentos", agendamento.data, agendamento.sala],
+        queryKey: ["agendamentos", agendamento.data, agendamento.idSala],
       });
       setRecorrente(false);
       Alert.alert(
@@ -75,6 +76,12 @@ export default function HorarioModal({
     initialData: [],
   });
 
+  const { data: sala } = useQuery({
+    queryKey: ["salas", agendamento.idSala],
+    enabled: !!agendamento.idSala,
+    queryFn: () => getSalaById(agendamento.idSala!, token!),
+  });
+
   useFocusEffect(
     useCallback(() => {
       function onBackPress() {
@@ -95,14 +102,14 @@ export default function HorarioModal({
   );
 
   function agendarHandler() {
-    const atendimento = {
+    const atendimento: NewAgendamento = {
       ...agendamento,
-      terapeuta: responsavelId,
-      funcionario: user?.id!,
+      idTerapeuta: responsavelId,
+      idFuncionario: user?.id!,
     };
     if (notBlank(atendimento) && !!ficha) {
       agendar({
-        atendimento,
+        atendimento: { ...atendimento, idFicha: ficha },
         token: token!,
       });
     } else {
@@ -145,7 +152,7 @@ export default function HorarioModal({
     >
       {agendamento.data && <InfoBox content={agendamento.data} label="Dia" />}
       <InfoBox content={agendamento.horario!} label="Horário" />
-      <InfoBox content={agendamento.sala!} label="Sala" />
+      <InfoBox content={sala?.nome || ""} label="Sala" />
       {user?.cargo === "TECNICO" && (
         <Select
           onSelect={changeResponsavelHandler}
@@ -160,11 +167,11 @@ export default function HorarioModal({
         data={fichas!}
       />
 
-      <Switch
+      {/* <Switch
         isEnabled={recorrente}
         label="Recorrente?"
         onToggle={toggleRecorrencia}
-      />
+      /> */}
     </Dialog>
   );
 }

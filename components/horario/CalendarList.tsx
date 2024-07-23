@@ -16,6 +16,7 @@ import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 import useAuth from "@/hooks/useAuth";
 import Button from "../general/Button";
 import { queryClient } from "@/util/queries";
+import { Atividade } from "@/util/requests/atividadesHTTP";
 
 type CalendarListProps = {
   onSelection: (horario: string) => void;
@@ -29,15 +30,36 @@ function isAvailable(
   interval: string,
   date: string,
   sala: string,
-  agendamentos: Agendamento[]
+  agendamentos: Atividade
 ) {
-  return true;
-  return !agendamentos.some(
-    (agendamento) =>
-      agendamento.horario === interval &&
-      agendamento.data! === date &&
-      agendamento.sala === sala
-  );
+  const [start, end] = interval.split(" - ");
+  const [day, month, year] = date.split("/");
+
+  const intervalStart = `${year}-${month}-${day}T${start}:00`;
+  const intervalEnd = `${year}-${month}-${day}T${end}:00`;
+
+  const isConflict = (agendamento: any) => {
+    const agendamentoStart = new Date(agendamento.tempoInicio);
+    const agendamentoEnd = new Date(agendamento.tempoFim);
+    const intervalStartDate = new Date(intervalStart);
+    const intervalEndDate = new Date(intervalEnd);
+
+    return (
+      agendamento.idSala === sala &&
+      ((intervalStartDate >= agendamentoStart &&
+        intervalStartDate < agendamentoEnd) ||
+        (intervalEndDate > agendamentoStart &&
+          intervalEndDate <= agendamentoEnd) ||
+        (intervalStartDate <= agendamentoStart &&
+          intervalEndDate >= agendamentoEnd))
+    );
+  };
+
+  const hasConflict =
+    agendamentos.atendimentosIndividuais.some(isConflict) ||
+    agendamentos.encontros.some(isConflict);
+
+  return !hasConflict;
 }
 
 export default function CalendarList({
@@ -49,13 +71,17 @@ export default function CalendarList({
   const { user, token } = useAuth();
   const {
     data: agendamentos,
-    isLoading,
+    isLoading: loadingAgendamentos,
     refetch,
   } = useQuery({
-    queryKey: ["agendamentos", selected.data, selected.sala],
-    enabled: !!selected.sala,
+    queryKey: ["agendamentos", selected.data, selected.idSala],
+    enabled: !!selected.idSala,
     queryFn: () =>
-      getAgendamentos({ data: selected.data!, salaId: selected.sala! }),
+      getAgendamentos({
+        data: selected.data!,
+        salaId: selected.idSala!,
+        token: token!,
+      }),
   });
 
   const [showDialog, setShowDialog] = useState(false);
@@ -86,14 +112,14 @@ export default function CalendarList({
 
   const { data: funcionarioData } = useQuery({
     queryKey: ["funcionarios", agendamento?.id],
-    queryFn: () => getFuncionarioById(agendamento!.terapeuta, token!),
+    queryFn: () => getFuncionarioById(agendamento!.idTerapeuta, token!),
     enabled: !!agendamento?.id,
   });
 
   const { mutate: desmarcar } = useMutation({
     mutationFn: () =>
       removeAgendamento(
-        agendamento?.sala!,
+        agendamento?.idSala!,
         agendamento?.data!,
         agendamento?.horario!
       ),
@@ -120,11 +146,17 @@ export default function CalendarList({
 
   useEffect(() => {
     refetch();
-  }, [selected.data, selected.sala]);
+  }, [selected.data, selected.idSala]);
 
   function selectDayHandler(interval: string) {
     onSelection(interval);
     if (toggleModal) {
+      queryClient.invalidateQueries({
+        queryKey: ["agendamentos", selected.data, selected.idSala],
+      });
+      queryClient.refetchQueries({
+        queryKey: ["agendamentos", selected.data, selected.idSala],
+      });
       toggleModal();
     }
   }
@@ -132,7 +164,7 @@ export default function CalendarList({
   function renderIntervalItem({ item: interval }: { item: string }) {
     const available =
       selected && agendamentos
-        ? isAvailable(interval, selected.data!, selected.sala, agendamentos)
+        ? isAvailable(interval, selected.data!, selected.idSala, agendamentos)
         : false;
 
     return (
@@ -141,7 +173,7 @@ export default function CalendarList({
         lastIndex={false}
         timeInterval={interval}
         available={available}
-        disabled={!selected.sala}
+        disabled={!selected.idSala}
         key={interval}
         onPress={
           available
@@ -150,7 +182,7 @@ export default function CalendarList({
                 null,
                 interval,
                 selected.data!,
-                selected.sala
+                selected.idSala
               )
         }
       />
@@ -192,7 +224,7 @@ export default function CalendarList({
     }
   }
 
-  if (isLoading) {
+  if (loadingAgendamentos || !agendamentos) {
     return;
   }
 

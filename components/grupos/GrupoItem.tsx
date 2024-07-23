@@ -10,10 +10,9 @@ import { formatText } from "@/util/formatter";
 import { useQuery } from "@tanstack/react-query";
 import { getFuncionarioById } from "@/util/requests/funcionarioHTTP";
 import useAuth from "@/hooks/useAuth";
-import Loading from "../UI/Loading";
 
 type GrupoItemProps = {
-  grupo: GrupoEstudo | GrupoTerapeutico;
+  grupoId: GrupoEstudo | GrupoTerapeutico;
   onPress?: () => void;
   onSelectGrupo?: (isSelected: boolean, grupoId: string) => void;
   isSelected?: boolean;
@@ -25,7 +24,7 @@ function isGrupoEstudo(grupo: any): grupo is GrupoEstudo {
 }
 
 const GrupoItem: React.FC<GrupoItemProps> = ({
-  grupo,
+  grupoId: grupo,
   onPress,
   onSelectGrupo,
   isSelected,
@@ -47,7 +46,9 @@ const GrupoItem: React.FC<GrupoItemProps> = ({
     if (anySelected) {
       onSelectGrupo?.(!!isSelected, grupo.id);
     } else {
-      router.push(`detalhesGrupo/${grupo.id}`);
+      if (isGrupoEstudo(grupo)) {
+        router.push(`detalhesGrupo/${grupo.id}`);
+      }
       if (onPress) {
         onPress();
       }
@@ -72,6 +73,11 @@ const GrupoItem: React.FC<GrupoItemProps> = ({
           18
         )}
       />
+      {isGrupoEstudo(grupo) && (
+        <StyledText textAlign="center">
+          Clique para ver mais informações
+        </StyledText>
+      )}
     </Pressable>
   );
 };

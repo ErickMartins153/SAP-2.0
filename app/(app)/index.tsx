@@ -12,7 +12,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { Alert, BackHandler, View } from "react-native";
 
 export default function Mural() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   const navigation = useNavigation();
   const [showPostModal, setShowPostModal] = useState(false);
@@ -95,18 +95,21 @@ export default function Mural() {
       });
     } else {
       navigation.setOptions({
-        headerRight: () => (
-          <Icon
-            name="plus"
-            style={{
-              paddingRight: "8%",
-              paddingLeft: "20%",
-              height: "100%",
-              justifyContent: "center",
-            }}
-            onPress={togglePostModal}
-          />
-        ),
+        headerRight:
+          user?.cargo === "TECNICO"
+            ? () => (
+                <Icon
+                  name="plus"
+                  style={{
+                    paddingRight: "8%",
+                    paddingLeft: "20%",
+                    height: "100%",
+                    justifyContent: "center",
+                  }}
+                  onPress={togglePostModal}
+                />
+              )
+            : undefined,
       });
     }
   }, [selectedPosts.length, navigation]);

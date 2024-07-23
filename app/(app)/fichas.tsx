@@ -133,7 +133,7 @@ export default function Fichas({ ...props }: FichasProps) {
         }
         data={fichas}
         renderItem={({ item }) => renderFichaHandler(item)}
-        contentContainerStyle={{ gap: 16 }}
+        contentContainerStyle={{ gap: 16, marginVertical: "2%" }}
         // onRefresh={refetch}
         // refreshing={isRefetching}
       />

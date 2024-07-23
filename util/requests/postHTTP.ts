@@ -3,9 +3,12 @@ import axios from "axios";
 
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL + "/posts";
 
-export async function getPosts() {
-  const response = await axios.get(`${BASE_URL}/all`);
+export async function getPosts(token: string) {
+  const response = await axios.get(`${BASE_URL}/all`, {
+    headers: { Authorization: "Bearer " + token },
+  });
   const posts = response.data as Post[];
+
   const postsNormalizados = posts.map((post) => ({
     ...post,
     dataPublicacao: new Date(post.dataPublicacao),

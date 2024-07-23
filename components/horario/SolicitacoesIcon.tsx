@@ -2,16 +2,34 @@ import { Pressable, View } from "react-native";
 import Icon from "../general/Icon";
 import StyledText from "../UI/StyledText";
 import { Colors } from "@/constants/Colors";
+import { useQuery } from "@tanstack/react-query";
+
+import useAuth from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
+import { getAtividadesByStatus } from "@/util/requests/atividadesHTTP";
 
 type SolicitacoesIconProps = {
   toggleModal: () => void;
-  qtdSolicitacoes: number;
 };
 
 export default function SolicitacoesIcon({
-  qtdSolicitacoes,
   toggleModal,
 }: SolicitacoesIconProps) {
+  const { token } = useAuth();
+  const [qtdPendentes, setQtdPendentes] = useState<number>(0);
+
+  const { data: pendentes } = useQuery({
+    queryKey: ["agendamentos", "pendentes"],
+    queryFn: () => getAtividadesByStatus({ status: "PENDENTE", token: token! }),
+  });
+  console.log(pendentes);
+
+  useEffect(() => {
+    if (pendentes) {
+      setQtdPendentes(pendentes.length);
+    }
+  }, [pendentes]);
+
   return (
     <Pressable
       style={{
@@ -25,11 +43,11 @@ export default function SolicitacoesIcon({
       <View style={{ position: "relative" }}>
         <Icon
           name="bell"
-          color={qtdSolicitacoes < 0 ? "icon" : "red"}
+          color={qtdPendentes < 0 ? "icon" : "red"}
           onPress={toggleModal}
           style={{ zIndex: 100 }}
         />
-        {qtdSolicitacoes > 0 && (
+        {qtdPendentes > 0 && (
           <View
             style={{
               position: "absolute",
@@ -45,7 +63,7 @@ export default function SolicitacoesIcon({
             }}
           >
             <StyledText color="white" fontWeight="bold">
-              {qtdSolicitacoes}
+              {qtdPendentes}
             </StyledText>
           </View>
         )}

@@ -22,16 +22,7 @@ export default function SolicitacoesModal({
   const [selectedAtividade, setSelectedAtividade] = useState<string | null>(
     null
   );
-  const DUMMY: Agendamento[] = [
-    {
-      id: "1",
-      terapeuta: user?.id!,
-      sala: "1",
-      data: "17/07/2024",
-      horario: "12:00 - 13:00",
-      recorrente: false,
-    },
-  ];
+
   function openDialog() {
     setShowDialog(true);
   }
@@ -49,7 +40,7 @@ export default function SolicitacoesModal({
   return (
     <ModalLayout {...props} scrollEnabled={false}>
       <SolicitacoesList
-        agendamentos={DUMMY}
+        agendamentos={[]}
         onSelectAtividade={selectAtividadeHandler}
       />
       <SolicitacaoDialog

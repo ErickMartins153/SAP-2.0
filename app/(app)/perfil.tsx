@@ -188,9 +188,9 @@ export default function ProfileScreen() {
           <UserAvatar
             size={144}
             imageURL={imageURI ?? user?.urlImagem}
-            icon={(props) => (
-              <Icon name="edit" {...props} onPress={toggleDialog} />
-            )}
+            // icon={(props) => (
+            //   <Icon name="edit" {...props} onPress={toggleDialog} />
+            // )}
           />
           <View style={{ alignItems: "center" }}>
             <StyledText fontWeight="bold" textTransform="capitalize">
@@ -204,9 +204,10 @@ export default function ProfileScreen() {
           <View style={styles.buttonsContainer}>
             {!imageURI && (
               <>
-                <Button onPress={() => router.navigate("estatisticas")}>
-                  Estatísticas
-                </Button>
+                {/* <Button onPress={() => router.navigate("estatisticas")}>
+                    Estatísticas
+                  </Button>
+                 */}
                 {user?.cargo === "TECNICO" && (
                   <Button onPress={openBottom}>Meus supervisionados</Button>
                 )}

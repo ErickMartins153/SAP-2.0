@@ -49,6 +49,8 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
             return onSelection(false, index);
           } else if (item.id) {
             return onSelection(item.id, index);
+          } else if (item.uid) {
+            return onSelection(item.uid, index);
           } else if (item.tema) {
             return onSelection(item.tema, index);
           } else {
@@ -82,7 +84,7 @@ const Select = forwardRef<SelectDropdown, SelectProps>(
                 ...styles.dropdownItemStyle,
                 ...(isSelected && { backgroundColor: Colors.button }),
               }}
-              key={item.id}
+              key={item.id || item.uid}
             >
               <Icon name={item.icon} style={styles.dropdownItemIconStyle} />
               <StyledText

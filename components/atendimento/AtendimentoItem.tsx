@@ -57,7 +57,7 @@ const AgendamentoItem = ({ agendamento }: AtendimentoItemProps) => {
         />
       </View>
 
-      <InfoBox content={agendamento.sala!} label="Sala" />
+      <InfoBox content={agendamento.idSala!} label="Sala" />
       <InfoBox content={agendamento.horario!} label="Horário" />
       <InfoBox content={agendamento.data!} label="Dia" />
     </Pressable>

@@ -9,7 +9,8 @@ import useAuth from "@/hooks/useAuth";
 import { getGruposEstudoDisponiveis } from "@/util/requests/GrupoEstudoHTTP";
 import GrupoItem from "./GrupoItem";
 import Button from "../general/Button";
-import { getGruposTerapeuticoDisponiveis } from "@/util/requests/GrupoTerapeuticoHTTP";
+import { getGruposDisponiveis } from "@/util/requests/GrupoTerapeuticoHTTP";
+import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
 
 export default function GrupoBottom({
   toggleModal,
@@ -25,22 +26,17 @@ export default function GrupoBottom({
   const { data: gruposEstudoDisponiveis } = useQuery({
     queryKey: ["grupos", "estudo", "disponiveis", user?.id],
     enabled: !!user?.id && mode === "estudo",
-    queryFn: () =>
-      getGruposEstudoDisponiveis({ funcionarioId: user!.id, token: token! }),
+    queryFn: () => getGruposEstudoDisponiveis(user!.id, token!),
   });
 
   const { data: gruposTerapeuticosDisponiveis } = useQuery({
     queryKey: ["grupos", "terapeuticos", "disponiveis", user?.id],
     enabled: !!user?.id && mode === "terapeutico",
-    queryFn: () =>
-      getGruposTerapeuticoDisponiveis({
-        funcionarioId: user!.id,
-        token: token!,
-      }),
+    queryFn: () => getGruposDisponiveis(user!.id, token!),
   });
 
-  function renderSalaHandler(grupo: GrupoEstudo) {
-    return <GrupoItem grupo={grupo} key={grupo.id} onPress={closeBottom} />;
+  function renderSalaHandler(grupo: GrupoEstudo | GrupoTerapeutico) {
+    return <GrupoItem grupoId={grupo} key={grupo.id} onPress={closeBottom} />;
   }
 
   const suggestionText =

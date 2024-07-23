@@ -21,7 +21,7 @@ export default function PostList({
   onSelection,
   selectedPosts,
 }: PostListProps) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   const {
     data: posts,
@@ -31,7 +31,7 @@ export default function PostList({
     isRefetching,
   } = useQuery({
     queryKey: ["posts"],
-    queryFn: getPosts,
+    queryFn: () => getPosts(token!),
   });
 
   function renderPostHandler(post: Post) {

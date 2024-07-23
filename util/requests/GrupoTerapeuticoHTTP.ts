@@ -1,12 +1,15 @@
 import { NewGrupo } from "@/components/grupos/AddGrupoModal";
+import { NewAgendamento } from "@/interfaces/Agendamento";
 
 import GrupoTerapeutico from "@/interfaces/GrupoTerapeutico";
 import axios, { isAxiosError } from "axios";
+import { createTimestamps } from "../dateUtils";
 
 export const GRUPOS_TERAPEUTICOS: GrupoTerapeutico[] = [];
 
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL + "/grupo-terapeutico";
-// headers: { Authorization: "Bearer " + token },
+const AGENDAR_URL =
+  process.env.EXPO_PUBLIC_BASE_URL + "/atividades/atendimentos-grupo";
 
 export async function getGruposTerapeuticosByFuncionario({
   funcionarioId,
@@ -16,6 +19,8 @@ export async function getGruposTerapeuticosByFuncionario({
   token: string;
 }) {
   try {
+    console.log(`${BASE_URL}/many/${funcionarioId}`);
+
     const response = await axios.get(`${BASE_URL}/many/${funcionarioId}`, {
       headers: { Authorization: "Bearer " + token },
     });
@@ -48,14 +53,26 @@ export async function addParticipante(participanteId: string, grupoId: string) {
   }
 }
 
-export async function getGruposDisponiveis(funcionarioId: string) {
-  return GRUPOS_TERAPEUTICOS.filter(
-    (grupo) =>
-      !(
-        grupo.fichasId.includes(funcionarioId) ||
-        grupo.idDono.includes(funcionarioId)
-      )
-  );
+export async function getGruposDisponiveis(
+  funcionarioId: string,
+  token: string
+) {
+  try {
+    console.log(
+      `${BASE_URL}/grupo-nao-participados/many?uid-funcionario=${funcionarioId}`
+    );
+
+    const response = await axios.get(
+      `${BASE_URL}/grupo-nao-participados/many?uid-funcionario=${funcionarioId}`,
+      {
+        headers: { Authorization: "Bearer " + token },
+      }
+    );
+
+    return response.data as GrupoTerapeutico[];
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function createGrupoTerapeutico({
@@ -81,14 +98,41 @@ export async function createGrupoTerapeutico({
   }
 }
 
-export async function getGruposTerapeuticoDisponiveis({
-  funcionarioId,
+export async function createAgendamentoTerapeutico({
+  agendamento,
   token,
 }: {
-  funcionarioId: string;
+  agendamento: NewAgendamento;
   token: string;
 }) {
-  return [] as GrupoTerapeutico[];
+  try {
+    const {
+      idFuncionario: idFuncionario,
+      idSala: idSala,
+      idTerapeuta: terapeuta,
+      data,
+      idFicha: idGrupoTerapeutico,
+      horario,
+    } = agendamento;
+    const { tempoFim, tempoInicio } = createTimestamps(data!, horario!);
+    const finalData = {
+      idSala,
+      tempoInicio,
+      tempoFim,
+      status: "PENDENTE",
+      idFuncionario,
+      idGrupoTerapeutico,
+    };
+    console.log(`${AGENDAR_URL}/one`);
+
+    console.log(finalData);
+
+    const response = await axios.post(`${AGENDAR_URL}/one`, finalData, {
+      headers: { Authorization: "Bearer " + token },
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function deleteGrupoTerapeutico({
